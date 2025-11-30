@@ -1,0 +1,1 @@
+# Redis connector, used for queues like email queues 
