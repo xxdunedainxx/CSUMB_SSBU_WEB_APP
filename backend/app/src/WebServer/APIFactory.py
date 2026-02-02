@@ -31,5 +31,5 @@ class APIFactory:
 
     @staticmethod
     def run_api_in_thread():
-        APIFactory.instance = APIFactory(appHealthOnly=False)
+        APIFactory.instance = APIFactory()
         APIFactory.instance.run()
