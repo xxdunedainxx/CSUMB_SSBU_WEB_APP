@@ -3,6 +3,10 @@
   Date: 2/1/26
   Synopsis: Container for all possible custom exceptions that can be thrown by the application.
 """
+
+from src.util.errors.CriticalAppCrashException import CriticalAppCrashedException
+from src.util.errors.ExitCodes import ExitCodes
+
 import sys, traceback
 
 # Formats an exception into a nice string :)
