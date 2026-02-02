@@ -1,3 +1,8 @@
+"""
+  Author: Zach McFadden
+  Date: 2/1/26
+  Synopsis: Used to generate loggers for application logging.
+"""
 from src.util.FileIO import FileIO
 
 import logging

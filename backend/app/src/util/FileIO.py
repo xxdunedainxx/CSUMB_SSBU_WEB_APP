@@ -1,3 +1,8 @@
+"""
+  Author: Zach McFadden
+  Date: 2/1/26
+  Synopsis: Simple container class for common File/IO operations
+"""
 import os
 from datetime import datetime
 import shutil

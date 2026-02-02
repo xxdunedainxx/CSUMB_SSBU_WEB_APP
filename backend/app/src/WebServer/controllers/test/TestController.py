@@ -1,3 +1,8 @@
+"""
+  Author: Zach McFadden
+  Date: 2/1/26
+  Synopsis: Example Test/'Hello world' controller.
+"""
 from src.util.LogFactory import LogFactory
 from src.WebServer.decorators.HTTPLogger import http_logger
 from src.WebServer.WebServerInit import WebServerInit

@@ -1,3 +1,8 @@
+"""
+  Author: Zach McFadden
+  Date: 2/1/26
+  Synopsis: This class is a simple container class for setting up the flask instance. Will set things like the CORs policy.
+"""
 from src.util.LogFactory import LogFactory
 from src.Configuration import CONF_INSTANCE
 

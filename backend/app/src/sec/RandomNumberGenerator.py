@@ -1,3 +1,8 @@
+"""
+  Author: Zach McFadden
+  Date: 2/1/26
+  Synopsis: A simple RNG
+"""
 # May not be used
 import random
 import string

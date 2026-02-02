@@ -1,10 +1,11 @@
-# General library imports
+"""
+  Author: Zach McFadden
+  Date: 2/1/26
+  Synopsis: Decorator for logging HTTP inbound requests.
+            NOTE: These logs DO not go into 'main.log'. Rather they go into the 'http.log' file.
+"""
 from functools import wraps
-import os
-
-# Flask imports
 from flask import request
-# Logging
 from src.util.LogFactory import LogFactory
 
 LOGGER = LogFactory.get_logger('http')

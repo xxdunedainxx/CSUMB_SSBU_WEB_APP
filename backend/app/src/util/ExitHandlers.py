@@ -1,3 +1,9 @@
+"""
+  Author: Zach McFadden
+  Date: 2/1/26
+  Synopsis: Handles a 'graceful' shutdown of the system when a fatal exception happens within the server, or when the server is shutting down.
+            Hooks into common OS Signals for program exit.
+"""
 import signal
 import glob
 import json

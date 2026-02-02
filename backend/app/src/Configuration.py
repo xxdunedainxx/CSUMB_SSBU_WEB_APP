@@ -1,8 +1,17 @@
+"""
+  Author: Zach McFadden
+  Date: 2/1/26
+  Synopsis: Configuration container class for all related application configurations. This should have things like:
+    * Redis configs
+    * DB configs
+    * Feature TOGGLES
+    * Flask configurations
+    * Log Levels
+    * etc..
+"""
 import os
 import json
 from src.Services import ServiceNames
-from src.util.LogFactory import LogFactory
-from src.util.FileIO import FileIO
 
 class Configuration:
 

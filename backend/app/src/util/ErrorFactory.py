@@ -1,8 +1,11 @@
-from src.util.errors.CriticalAppCrashException import CriticalAppCrashedException
-from src.util.errors.ExitCodes import ExitCodes
-
+"""
+  Author: Zach McFadden
+  Date: 2/1/26
+  Synopsis: Container for all possible custom exceptions that can be thrown by the application.
+"""
 import sys, traceback
 
+# Formats an exception into a nice string :)
 def errorStackTrace(e):
     exc_type, exc_obj, exc_tb = sys.exc_info()
     trace = traceback.format_exc()

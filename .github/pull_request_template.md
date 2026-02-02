@@ -51,3 +51,9 @@ Steps to verify this change:
 ## 📝 Additional Notes (Optional)
 
 Anything reviewers should know? Edge cases? Screenshots?
+
+## How does this PR make you feel?
+
+<img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzd2YXVlZW8wbjczNzgxN2IyeDRnYTFtMjk1dnlqYXpkeXJ2bnYxOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/13v8FHww5OKufwDQdH/giphy.gif" alt="Alt text" width="500">
+
+
