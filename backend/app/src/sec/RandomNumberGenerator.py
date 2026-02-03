@@ -12,6 +12,7 @@ class RandomNumberGenerator:
   def __init__(self):
     pass
 
+  # TODO - This is honestly kind of terrible, and could be improved lol
   @staticmethod
   def generate_random_string(length: int) -> str:
     r_string_builder: str = ''
