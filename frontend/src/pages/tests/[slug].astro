@@ -1,0 +1,45 @@
+---
+import TestLayout from '../../layouts/TestLayout.astro';
+import { testMap } from '../../data/tests';
+
+// Tell Astro which pages to generate at build time
+export function getStaticPaths() {
+    return Object.keys(testMap).map(slug => ({
+        params: { slug }
+    }));
+}
+
+const { slug } = Astro.params;
+
+// Get test info
+const testInfo = testMap[slug];
+
+if (!testInfo) {
+    return Astro.redirect('/404');
+}
+
+const testUrl = testInfo.file;
+---
+
+<TestLayout 
+    title={testInfo.name}
+    description={testInfo.description}
+    testName={testInfo.name}
+>
+    <div class="test-iframe-wrapper" style="height:100vh; width:100%;">
+        <iframe 
+            class="test-iframe"
+            src={testUrl}
+            style="height:100%; width:100%; border:none;"
+            title={testInfo.name}
+            allow="fullscreen"
+        ></iframe>
+    </div>
+
+    <script slot="scripts">
+        // Optional: Listen for messages from iframe (for test completion, scores, etc.)
+        window.addEventListener('message', (event) => {
+            console.log('Message from test:', event.data);
+        });
+    </script>
+</TestLayout>
