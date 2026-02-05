@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Card from '../../components/Card.astro';
+import TestInfo from '../../data/tests';
+
+const tests = TestInfo;
+---
+
+<BaseLayout title="Our Apps - Studio Veldkaap" description="Browse apps by Studio VeldKaap">
+    <div class="container">
+        <h1>Our Cognitive and Reaction tests!</h1>
+        <p class="muted">Test and measure your cognitive and reaction skills!.</p>
+
+        <section class="test-list" aria-label="Cognitive and Reaction Tests">
+            {tests.map(test => (
+                <Card test={test} />
+            ))}
+        </section>
+    </div>
+</BaseLayout>

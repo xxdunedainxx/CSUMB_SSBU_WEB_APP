@@ -17,6 +17,24 @@ body {
 	padding: 0 1rem;
 }
 
+/* Page layout to keep footer at the bottom of the viewport
+   - Makes body a column flex container so header/main/footer stack
+   - `main` grows to fill available space so footer sits at bottom when content is short
+*/
+html, body {
+	height: 100%;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+main {
+	flex: 1 0 auto;
+}
+
 /* Header Styles */
 .site-header {
 	background-color: #fff;
@@ -207,5 +225,135 @@ body {
 
 	.under-construction p {
 		font-size: 1.2rem;
+	}
+}
+
+
+/* Layout for full-page tests: prevent site scrolling, let iframe scroll (scoped to test pages) */
+body.test-page {
+    height: 100vh;
+    /* Prevent the browser window from scrolling */
+    overflow: hidden;
+    /* Make header + main a column so main can fill remaining space */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main should take remaining space and not scroll itself */
+body.test-page main#main {
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+.test-container {
+	height: 100%;
+}
+
+.test-iframe-wrapper {
+	height: 100%;
+	width: 100%;
+}
+
+.test-iframe {
+	height: 100%;
+	width: 100%;
+	border: none;
+	display: block;
+}
+
+/* Tests list and card styles */
+.test-list {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 1rem;
+	margin-top: 1.5rem;
+}
+
+.app-card {
+	display: flex;
+	gap: 1rem;
+	align-items: flex-start;
+	background: #ffffff;
+	border: 1px solid #e6e9ee;
+	border-radius: 12px;
+	padding: 1rem;
+	box-shadow: 0 6px 18px rgba(20, 30, 60, 0.06);
+	transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.app-card:hover {
+	transform: translateY(-6px);
+	box-shadow: 0 12px 30px rgba(20, 30, 60, 0.12);
+}
+
+.card-media {
+	flex: 0 0 96px;
+	width: 96px;
+	height: 96px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.card-media img {
+	width: 96px;
+	height: 96px;
+	object-fit: cover;
+	border-radius: 8px;
+}
+
+.card-body {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.card-title {
+	font-size: 1.05rem;
+	color: #111827;
+}
+
+.card-desc {
+	color: #6b7280;
+	font-size: 0.95rem;
+}
+
+.card-tags {
+	display: flex;
+	gap: 0.5rem;
+	list-style: none;
+	padding: 0;
+	margin-top: 0.25rem;
+}
+
+.tag {
+	background: #eef2ff;
+	color: #3730a3;
+	padding: 0.25rem 0.5rem;
+	border-radius: 999px;
+	font-size: 0.8rem;
+}
+
+/* Make the whole card clickable while preserving accessible focus styles */
+.card-link {
+	display: block;
+	text-decoration: none;
+	color: inherit;
+	border-radius: 12px; /* matches .app-card */
+}
+
+.card-link:focus-visible {
+	outline: 3px solid rgba(59,130,246,0.25);
+	outline-offset: 4px;
+}
+
+@media (max-width: 480px) {
+	.app-card {
+		gap: 0.75rem;
+		padding: 0.75rem;
+	}
+
+	.test-list {
+		grid-template-columns: 1fr;
 	}
 }

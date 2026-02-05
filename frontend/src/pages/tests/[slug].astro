@@ -4,9 +4,7 @@ import { testMap } from '../../data/tests';
 
 // Tell Astro which pages to generate at build time
 export function getStaticPaths() {
-    return Object.keys(testMap).map(slug => ({
-        params: { slug }
-    }));
+    return Object.keys(testMap).map(slug => ({ params: { slug } }));
 }
 
 const { slug } = Astro.params;
@@ -26,11 +24,10 @@ const testUrl = testInfo.file;
     description={testInfo.description}
     testName={testInfo.name}
 >
-    <div class="test-iframe-wrapper" style="height:100vh; width:100%;">
+    <div class="test-iframe-wrapper">
         <iframe 
             class="test-iframe"
             src={testUrl}
-            style="height:100%; width:100%; border:none;"
             title={testInfo.name}
             allow="fullscreen"
         ></iframe>
