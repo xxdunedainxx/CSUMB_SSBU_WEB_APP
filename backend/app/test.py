@@ -1,3 +1,8 @@
+"""
+  Author: Zach McFadden
+  Date: 2/7/26
+  Synopsis: Testing framework entry point. 
+"""
 from src.util.FileIO import FileIO
 from src.util.LogFactory import LogFactory
 from test.util.TestToggles import TEST_CONF

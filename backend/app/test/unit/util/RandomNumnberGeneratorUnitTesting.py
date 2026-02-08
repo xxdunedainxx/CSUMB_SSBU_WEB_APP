@@ -3,7 +3,7 @@
   Date: 2/2/26
   Synopsis: Unit testing for RNG 
 """
-from src.sec.RandomNumberGenerator import RandomNumberGenerator
+from src.util.RandomNumberGenerator import RandomNumberGenerator
 from src.util.LogFactory import LogFactory
 
 from test.util.decorators.Toggle import enabled
