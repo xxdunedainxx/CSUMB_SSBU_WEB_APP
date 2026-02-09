@@ -1,12 +1,5 @@
-# Astro Starter Kit: Minimal
 
-```sh
-npm create astro@latest -- --template minimal
-```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
+## Project Structure
 
 Inside of your Astro project, you'll see the following folders and files:
 
@@ -14,8 +7,10 @@ Inside of your Astro project, you'll see the following folders and files:
 /
 ├── public/
 ├── src/
-│   └── pages/
-│       └── index.astro
+│   ├── components/
+│   ├── layouts/
+│   ├── pages/
+│   └── styles/
 └── package.json
 ```
 
@@ -24,6 +19,25 @@ Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page
 There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
 
 Any static assets, like images, can be placed in the `public/` directory.
+
+## Architecture
+
+Below is a simple Mermaid diagram showing the frontend structure and relationships between the main folders.
+
+```mermaid
+%%{init: {'theme':'base'}}%%
+flowchart TB
+	Public[public/] -->|serves assets| Pages[src/pages/]
+	Pages --> Components[src/components/]
+	Pages --> Layouts[src/layouts/]
+	Pages --> Styles[src/styles/]
+	Components --> Styles
+	Data[src/data/] --> Pages
+	classDef folder fill:#f3f4f6,stroke:#111827,stroke-width:1px;
+	class Public,Pages,Components,Layouts,Styles,Data folder;
+```
+
+> Note: GitHub renders Mermaid diagrams in some views; if your viewer doesn't render them, use the Mermaid Live Editor (https://mermaid.live) to paste the source above.
 
 ## 🧞 Commands
 
