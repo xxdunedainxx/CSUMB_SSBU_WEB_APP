@@ -1,57 +1,63 @@
+**Frontend — Astro (minimal)**
 
-## Project Structure
+This folder contains the frontend site built with Astro (v5). It serves a small UI for cognitive and reaction tests (static HTML test pages live under `public/cognitive_dexterity_tests/`).
 
-Inside of your Astro project, you'll see the following folders and files:
+**Quick start**
 
-```text
-/
-├── public/
-├── src/
-│   ├── components/
-│   ├── layouts/
-│   ├── pages/
-│   └── styles/
-└── package.json
+- Install dependencies:
+
+```powershell
+cd frontend
+npm install
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+- Run development server (hot reload):
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## Architecture
-
-Below is a simple Mermaid diagram showing the frontend structure and relationships between the main folders.
-
-```mermaid
-%%{init: {'theme':'base'}}%%
-flowchart TB
-	Public[public/] -->|serves assets| Pages[src/pages/]
-	Pages --> Components[src/components/]
-	Pages --> Layouts[src/layouts/]
-	Pages --> Styles[src/styles/]
-	Components --> Styles
-	Data[src/data/] --> Pages
-	classDef folder fill:#f3f4f6,stroke:#111827,stroke-width:1px;
-	class Public,Pages,Components,Layouts,Styles,Data folder;
+```powershell
+npm run dev
 ```
 
-> Note: GitHub renders Mermaid diagrams in some views; if your viewer doesn't render them, use the Mermaid Live Editor (https://mermaid.live) to paste the source above.
+- Build for production:
 
-## 🧞 Commands
+```powershell
+npm run build
+```
 
-All commands are run from the root of the project, from a terminal:
+- Preview a production build locally:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+```powershell
+npm run preview
+```
 
-## 👀 Want to learn more?
+Scripts are defined in `package.json` and use the installed `astro` package.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+**Project structure (important files)**
+
+- `public/` — static files and the HTML-based cognitive tests (e.g., `public/cognitive_dexterity_tests/GoNoGo.html`). These are served as-is.
+- `src/pages/` — Astro pages and route entry points (e.g., `src/pages/index.astro`).
+- `src/layouts/` — layout templates used across pages (`BaseLayout.astro`, `TestLayout.astro`).
+- `src/components/` — shared UI components such as `Header.astro` and `Footer.astro`.
+- `src/data/tests.ts` — metadata for the test pages (IDs, filenames, descriptions). The app uses this to list available tests.
+- `src/styles/global.css` — global styling.
+
+**Notes & TODOs found in code**
+
+- `src/components/Header.astro` and `Footer.astro` include TODOs for site title and credit text.
+- `src/data/tests.ts` contains descriptive TODOs for improving test descriptions.
+
+These are safe to edit as you flesh out branding and content.
+
+**How tests are served**
+
+The tests are simple HTML/JS apps living in `public/cognitive_dexterity_tests/`. The frontend lists them using the metadata in `src/data/tests.ts` and links directly to the static HTML files.
+
+**Contributing / Iteration tips**
+
+- Update test metadata in `src/data/tests.ts` when adding or changing tests.
+- Update layout and components in `src/layouts/` and `src/components/` to change site chrome.
+- Add images and other static assets to `public/`.
+
+**Useful links**
+
+- Astro docs: https://docs.astro.build
+
