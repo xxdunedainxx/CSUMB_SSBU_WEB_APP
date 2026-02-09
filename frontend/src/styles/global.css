@@ -8,7 +8,8 @@
 body {
 	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 	line-height: 1.6;
-	color: #333;
+	color: #d1d5db;
+	background-color: #0a0a0a;
 }
 
 .container {
@@ -37,13 +38,12 @@ main {
 
 /* Header Styles */
 .site-header {
-	background-color: #fff;
-	border-bottom: 2px solid #e5e7eb;
+	background-color: #171717;
+	border-bottom: 1px solid #262626;
 	padding: 1rem 0;
 	position: sticky;
 	top: 0;
 	z-index: 1000;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-inner {
@@ -55,13 +55,13 @@ main {
 .site-logo {
 	font-size: 1.5rem;
 	font-weight: bold;
-	color: #1f2937;
+	color: #f5f5f5;
 	text-decoration: none;
 	transition: color 0.3s;
 }
 
 .site-logo:hover {
-	color: #3b82f6;
+	color: #d1d5db;
 }
 
 .nav-toggle {
@@ -76,7 +76,7 @@ main {
 	display: block;
 	width: 25px;
 	height: 2px;
-	background-color: #333;
+	background-color: #e5e7eb;
 	position: relative;
 }
 
@@ -86,7 +86,7 @@ main {
 	position: absolute;
 	width: 25px;
 	height: 2px;
-	background-color: #333;
+	background-color: #e5e7eb;
 	transition: all 0.3s;
 }
 
@@ -109,21 +109,21 @@ main {
 }
 
 .nav-list a {
-	color: #4b5563;
+	color: #d1d5db;
 	text-decoration: none;
 	font-weight: 500;
 	transition: color 0.3s;
 }
 
 .nav-list a:hover {
-	color: #3b82f6;
+	color: #f5f5f5;
 }
 
 /* Footer Styles */
 .site-footer {
-	background-color: #1f2937;
-	color: #fff;
-	padding: 2rem 0;
+	background-color: #0a0a0a;
+	color: #737373;
+	padding: 1.5rem 0;
 	margin-top: auto;
 }
 
@@ -136,7 +136,8 @@ main {
 }
 
 .footer-left p {
-	color: #d1d5db;
+	color: #737373;
+	font-size: 0.875rem;
 }
 
 .footer-right {
@@ -150,13 +151,14 @@ main {
 }
 
 .social a {
-	color: #d1d5db;
+	color: #737373;
 	text-decoration: none;
 	transition: color 0.3s;
+	font-size: 0.875rem;
 }
 
 .social a:hover {
-	color: #3b82f6;
+	color: #a3a3a3;
 }
 
 /* Under Construction Page */
@@ -173,12 +175,12 @@ main {
 .under-construction h1 {
 	font-size: 3rem;
 	margin-bottom: 1rem;
-	color: #333;
+	color: #f5f5f5;
 }
 
 .under-construction p {
 	font-size: 1.5rem;
-	color: #666;
+	color: #a3a3a3;
 }
 
 /* Responsive Design */
@@ -192,9 +194,7 @@ main {
 		top: 100%;
 		left: 0;
 		right: 0;
-		background-color: #fff;
-		border-top: 1px solid #e5e7eb;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		background-color: #171717;
 		max-height: 0;
 		overflow: hidden;
 		transition: max-height 0.3s ease;
@@ -264,35 +264,40 @@ body.test-page main#main {
 /* Tests list and card styles */
 .test-list {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	grid-template-columns: 1fr;
 	gap: 1rem;
 	margin-top: 1.5rem;
+	max-width: flex;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .app-card {
 	display: flex;
-	gap: 1rem;
+	flex-direction: row;
 	align-items: flex-start;
-	background: #ffffff;
-	border: 1px solid #e6e9ee;
+	gap: 1.5rem;
+	background: #1a1a1a;
+	border: 1px solid #262626;
 	border-radius: 12px;
-	padding: 1rem;
-	box-shadow: 0 6px 18px rgba(20, 30, 60, 0.06);
-	transition: transform 200ms ease, box-shadow 200ms ease;
+	padding: 1.5rem;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
 }
 
 .app-card:hover {
-	transform: translateY(-6px);
-	box-shadow: 0 12px 30px rgba(20, 30, 60, 0.12);
+	transform: translateY(-4px);
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+	border-color: #404040;
 }
 
 .card-media {
-	flex: 0 0 96px;
 	width: 96px;
 	height: 96px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-shrink: 0;
 }
 
 .card-media img {
@@ -306,16 +311,27 @@ body.test-page main#main {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
+	flex: 1;
 }
 
 .card-title {
-	font-size: 1.05rem;
-	color: #111827;
+	font-size: 1.1rem;
+	color: #f5f5f5;
+	font-weight: 600;
+	margin-bottom: 0.25rem;
 }
 
 .card-desc {
-	color: #6b7280;
-	font-size: 0.95rem;
+	color: #a3a3a3;
+	font-size: 0.9rem;
+	line-height: 1.5;
+}
+
+.card-description {
+	color: #888;
+	font-size: 0.85rem;
+	line-height: 1.5;
+	margin-top: 0.25rem;
 }
 
 .card-tags {
@@ -323,15 +339,17 @@ body.test-page main#main {
 	gap: 0.5rem;
 	list-style: none;
 	padding: 0;
-	margin-top: 0.25rem;
+	margin-top: auto;
+	flex-wrap: wrap;
 }
 
 .tag {
-	background: #eef2ff;
-	color: #3730a3;
+	background: #262626;
+	color: #d1d5db;
 	padding: 0.25rem 0.5rem;
 	border-radius: 999px;
 	font-size: 0.8rem;
+	font-weight: 500;
 }
 
 /* Make the whole card clickable while preserving accessible focus styles */
@@ -343,7 +361,7 @@ body.test-page main#main {
 }
 
 .card-link:focus-visible {
-	outline: 3px solid rgba(59,130,246,0.25);
+	outline: 2px solid #525252;
 	outline-offset: 4px;
 }
 

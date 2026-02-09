@@ -11,6 +11,9 @@ const { test } = Astro.props;
         <div class="card-body">
             <h3 id={`title-${test.id}`} class="card-title">{test.name}</h3>
             <p class="card-desc">{test.shortDescription}</p>
+            {test.description && (
+                <p class="card-description">{test.description}</p>
+            )}
 
             {test.tags && test.tags.length ? (
                 <ul class="card-tags" aria-hidden="false">
