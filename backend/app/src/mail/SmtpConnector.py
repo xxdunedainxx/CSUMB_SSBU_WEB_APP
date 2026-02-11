@@ -1,7 +1,7 @@
 '''
 Author: Carson Cardoza
 Date: 2/4/26
-Synopsis: Util class for sending SMTP emails
+Synopsis: Util class for sending emails
 ''' 
 
 '''
