@@ -1,0 +1,38 @@
+---
+const siteTitle = ''; //TODO: update this with offical name
+---
+
+<header class="site-header" role="banner">
+    <div class="container header-inner">
+        <a class="site-logo" href="/" aria-label={siteTitle}>
+            <span>{siteTitle}</span>
+        </a>
+
+        <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="hamburger" aria-hidden="true"></span>
+        </button>
+
+        <nav id="primary-navigation" class="primary-nav" aria-label="Main">
+            <ul class="nav-list">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tests/">Cognitive and Reaction Tests</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+        /*
+        Copy/paste of responize hamburger menu for smaller screens(mobile devices)
+        */
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.querySelector('.nav-toggle');
+            const nav = document.getElementById('primary-navigation');
+            if (!btn || !nav) return;
+            btn.addEventListener('click', () => {
+                const expanded = btn.getAttribute('aria-expanded') === 'true';
+                btn.setAttribute('aria-expanded', String(!expanded));
+                nav.classList.toggle('open');
+            });
+        });
+    </script>
+</header>
