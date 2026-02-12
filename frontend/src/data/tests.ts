@@ -20,7 +20,7 @@ const TestInfo: TestInfo[] = [
     },
     {
         id: 'GoNoGo',
-        file: '/cognitive_dexterity_tests/GoNoGo.html',
+        file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/GoNoGo.html',
         name: 'Go No GO',
         shortDescription: 'Test your reaction and cognitive ablities', 
         description: 'A test measuring reaction and cognitive skils', //TODO make more descriptive/specific
@@ -29,7 +29,7 @@ const TestInfo: TestInfo[] = [
     },
     {
         id: 'Posner',
-        file: '/cognitive_dexterity_tests/Posner.html',
+        file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/Posner.html',
         name: 'Posner Queuing Test',
         shortDescription: 'Test your reaction and cognitive ablities', 
         description: 'Ummmmm, idk really know what this test does', //TODO make more descriptive/specific
@@ -38,7 +38,7 @@ const TestInfo: TestInfo[] = [
     },
     {
         id: 'TaskSwitching',
-        file: '/cognitive_dexterity_tests/TaskSwitching.html',
+        file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/TaskSwitching.html',
         name: 'Task Switching',
         shortDescription: 'Test your reaction and cognitive ablities', 
         description: 'Ummmmm, idk really know what this test does', //TODO make more descriptive/specific
@@ -47,7 +47,7 @@ const TestInfo: TestInfo[] = [
     },
     {
         id: 'SimpleReactionOnly',
-        file: '/cognitive_dexterity_tests/SimpleReactionOnly.html',
+        file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/SimpleReactionOnly.html',
         name: 'Simple Reaction',
         shortDescription: 'Test your reaction time!', 
         description: 'Tests your simple reaction time using a spacebar', //TODO make more descriptive/specific
