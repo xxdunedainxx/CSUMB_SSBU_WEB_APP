@@ -43,11 +43,6 @@ class LogFactory():
         return LogFactory.loggers[logName]
 
     @staticmethod
-    def touch_file(path):
-        with open(path, 'w+'):
-            os.utime(path, None)
-
-    @staticmethod
     def main_log():
         if LogFactory.MAIN_LOG is None:
           LogFactory.MAIN_LOG = LogFactory.get_logger(f"main", stdOutOnly=False)
