@@ -3,6 +3,7 @@
   Date: 2/1/26
   Synopsis: the MAIN entry point for the backend of the application
 """
+from src.data.db.DBConnector import DBConnector
 from src.util.LogFactory import LogFactory
 from src.util.ErrorFactory import errorStackTrace, ExitCodes, CriticalAppCrashedException
 from src.App import App

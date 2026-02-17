@@ -1,0 +1,1 @@
+docker run -p 5432:5432 --name csumbdbpg -e POSTGRES_PASSWORD=my-secret-pw -d csumbdb
