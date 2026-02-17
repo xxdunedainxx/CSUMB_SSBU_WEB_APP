@@ -63,7 +63,7 @@ class TestEmail(unittest.TestCase):
 
     @enabled
     #checks for an invalid email in a list of valid emails
-    def test_one(self) -> bool:
+    def test_good_emails(self) -> bool:
         test = True
         print("Good Emails Test")
         for email in GOOD_EMAILS:
@@ -74,7 +74,7 @@ class TestEmail(unittest.TestCase):
 
     @enabled
     # checks for a valid email in a list where its only supposed to have invalid emails
-    def test_two(self) -> bool:
+    def test_bad_emails(self) -> bool:
         test = False
         print('Bad Emails Test')
         for email in BAD_EMAILS:
