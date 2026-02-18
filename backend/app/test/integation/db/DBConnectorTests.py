@@ -10,7 +10,6 @@ from test.util.decorators.Toggle import enabled
 
 import unittest
 
-
 @enabled
 def db_connector_tests():
     LogFactory.MAIN_LOG.info(f"RUNNING DB connection tests tests")
@@ -29,7 +28,8 @@ class DBConnectorTests(unittest.TestCase):
             5432
         )
 
-        dbConnect.execute_query("TRUNCATE TABLE simpletestdataone", readOrWrite=DBConnector.WRITE)
+        # Cleanup the table
+        dbConnect.execute_query("TRUNCATE TABLE simpleTestDataOne", readOrWrite=DBConnector.WRITE)
 
         records = dbConnect.read_data("SELECT * FROM simpleTestDataOne")
         print(len(records))

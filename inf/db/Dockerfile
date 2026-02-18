@@ -3,4 +3,6 @@
 # Ex build: docker build . -t csumbdb
 FROM postgres:14.21-trixie
 
-COPY sql/TEST_DB.sql /docker-entrypoint-initdb.d/TEST_DB.sql
+# Placing SQL here, postgres will auto run them
+COPY sql/01.createTestDb.sql /docker-entrypoint-initdb.d/01.createTestDb.sql
+COPY sql/02.populateTestDb.sql /docker-entrypoint-initdb.d/02.populateTestDb.sql
