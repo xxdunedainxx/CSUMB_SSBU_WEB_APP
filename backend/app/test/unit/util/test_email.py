@@ -4,7 +4,6 @@
   Synopsis: Unit testing for emails
 """
 
-import pytest
 from src.sec.DataValidation import Email
 from src.util.LogFactory import LogFactory
 from test.util.decorators.Toggle import enabled
