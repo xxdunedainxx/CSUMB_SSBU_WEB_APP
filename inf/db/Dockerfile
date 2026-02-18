@@ -6,4 +6,3 @@ FROM postgres:14.21-trixie
 # Placing SQL here, postgres will auto run them
 COPY sql/01.createTestDb.sql /docker-entrypoint-initdb.d/01.createTestDb.sql
 COPY sql/02.populateTestDb.sql /docker-entrypoint-initdb.d/02.populateTestDb.sql
-COPY sql/TEST_DB.sql /docker-entrypoint-initdb.d/TEST_DB.sql
