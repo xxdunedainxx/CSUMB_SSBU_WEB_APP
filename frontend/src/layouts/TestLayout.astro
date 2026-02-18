@@ -1,0 +1,37 @@
+---
+import Header from '../components/Header.astro';
+import '../styles/global.css';
+
+const {
+    title = 'Cognitive Test',
+    description = 'Test your cognitive and reaction abilities',
+    lang = 'en',
+    testName = 'Test',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="website" />
+        <link rel="icon" href="/favicon.ico" />
+    </head>
+
+    <body class="test-page">
+        <Header />
+
+        <main id="main" role="main">
+            <div class="test-container">
+                <slot />
+            </div>
+        </main>
+
+        <slot name="scripts" />
+    </body>
+</html>
