@@ -20,3 +20,4 @@ ${PYTHON_INTERPRETER} -m pip install requests
 ${PYTHON_INTERPRETER} -m pip install flask
 ${PYTHON_INTERPRETER} -m pip install flask-cors
 ${PYTHON_INTERPRETER} -m pip install psycopg2
+${PYTHON_INTERPRETER} -m pip install email-validator
