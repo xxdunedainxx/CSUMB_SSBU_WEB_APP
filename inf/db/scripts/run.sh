@@ -8,7 +8,7 @@ echo "Runniing Postgres Docker container.."
 docker stop csumbdbpg && docker rm csumbdbpg && echo "Stopped and removed running postgres containers" \
  || echo "No running postgres container detected"
 
-docker run -p 5432:5432 --name csumbdbpg -e POSTGRES_DB=test -e POSTGRES_PASSWORD=my-secret-pw -d csumbdb
+docker run -p 5432:5432 --name csumbdbpg -e POSTGRES_DB=csumb_webapp -e POSTGRES_PASSWORD=my-secret-pw -d csumbdb
 
 echo "Check if container is up"
 dockerIsUp=$(docker ps | grep "csumbdbpg")
