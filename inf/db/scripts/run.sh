@@ -17,7 +17,7 @@ echo "Runniing Postgres Docker container.."
 
 ./inf/db/scripts/stop.sh
 
-docker run -p 5432:5432 --name csumbdbpg -e POSTGRES_DB=test -e POSTGRES_PASSWORD=my-secret-pw -d csumbdb
+docker run -p 5432:5432 --name csumbdbpg -e POSTGRES_DB=csumb_webapp -e POSTGRES_PASSWORD=my-secret-pw -d csumbdb
 
 echo "Check if container is up"
 dockerIsUp=$(docker ps | grep "csumbdbpg")
