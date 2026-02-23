@@ -19,6 +19,8 @@ class APIFactory:
     def prep_controllers(self):
         from src.WebServer.controllers.test.TestController import TestController
         self.test_controller: TestController = TestController()
+        from src.WebServer.controllers.feedback.FeedbackController import FeedbackController
+        self.feedback_controller = FeedbackController()
 
 
     def run(self, port: int = CONF_INSTANCE.FLASK_PORT_BIND):
