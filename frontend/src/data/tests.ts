@@ -10,9 +10,9 @@ export interface TestInfo {
 
 const TestInfo: TestInfo[] = [
     {
-        id: 'joystick-precision',
-        file: '/cognitive_dexterity_tests/joystick_precision_test.html',
-        name: 'Joystick Precision Test',
+        id: 'HeneveldControlllerParadigm',
+        file: 'https://micahheneveld.github.io/Heneveld_Controller_Testing_Paradigm/',
+        name: 'Heneveld Controller Testing Paradigm',
         shortDescription: 'Test your controller precision and control',
         description: 'A precision test measuring dexterity through reaction and cognitive tests using game controller joysticks',
         icon: '/cognitive_dexterity_tests/joystick-image.png',
