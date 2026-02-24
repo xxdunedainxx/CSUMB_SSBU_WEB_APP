@@ -12,7 +12,7 @@ import unittest
 
 @enabled
 def db_connector_tests():
-    LogFactory.MAIN_LOG.info(f"RUNNING DB connection tests tests")
+    LogFactory.MAIN_LOG.info(f"RUNNING DB connection tests")
     unittest.main(module=__name__, exit=False)
 
 
@@ -22,7 +22,7 @@ class DBConnectorTests(unittest.TestCase):
     def test_simple_connect_and_insert(self):
         dbConnect: DBConnector = DBConnector(
             "localhost",
-            "test",
+            "csumb_webapp",
             "postgres",
             "my-secret-pw",
             5432
