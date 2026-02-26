@@ -5,14 +5,17 @@ CREATE TABLE IF NOT EXISTS userTable (
     salt VARCHAR(100) NOT NULL,
     verified BOOLEAN NOT NULL,
     whenCreated TIMESTAMPTZ,
-    lastLogin TIMESTAMPTZ,
+    lastLogin TIMESTAMPTZ
 );
+
+-- TODO -
+CREATE TABLE userDemographicInfo();
 
 CREATE TABLE testResults (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     userID INT REFERENCES userTable(id),
     whenGenerated TIMESTAMPTZ,
-    classification VARCHAR(100), -- Unclassified data could be queried by the ML Model?
+    classification VARCHAR(100) -- Unclassified data could be queried by the ML Model?
 );
 
 -- Each may be in their own table
@@ -30,6 +33,7 @@ CREATE TABLE srtTestResultData(
     StatusOfAnswer INT NOT NULL
 );
 
+-- TODO
 CREATE TABLE gngTestResultData();
 CREATE TABLE taskSwitchingTestResultData();
 CREATE TABLE posnerQueueTestResultData();
