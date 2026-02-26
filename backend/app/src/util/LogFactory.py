@@ -3,7 +3,7 @@
   Date: 2/1/26
   Synopsis: Used to generate loggers for application logging.
 """
-from .FileIO import FileIO
+from src.util.FileIO import FileIO
 
 import logging
 import sys
