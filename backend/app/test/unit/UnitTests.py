@@ -17,4 +17,5 @@ class UnitTests:
     random_number_generation_tests()
     file_io_unit_tests()
     test_emails()
+    pii_data_scrubber_tests()
 
