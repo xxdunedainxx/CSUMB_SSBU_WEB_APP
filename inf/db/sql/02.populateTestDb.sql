@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS simpleTestDataOne(id integer, data TEXT);
