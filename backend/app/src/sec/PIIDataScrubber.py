@@ -1,9 +1,7 @@
 """
-
-
-Author: Ishaya Iliya
-Date: 2.18.2026
-Synopsis: Class to detect and scrub PII from strings
+    Author: Ishaya Iliya
+    Date: 2.18.2026
+    Synopsis: Class to detect and scrub PII from strings
 """
 
 import re
