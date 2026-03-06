@@ -1,12 +1,21 @@
+#!/bin/bash
 # Dev runner for DB
 # Example usage: ./inf/db/scripts/run.sh
 # This script will clean up any existing containers and run a new one
-# TODO - Improvement - add option for building a new container + running it
+
+echo "Build container, if needed"
+
+back=$(pwd)
+
+cd inf/db
+
+./scripts/build.sh
+
+cd $back
 
 echo "Runniing Postgres Docker container.."
 
-docker stop csumbdbpg && docker rm csumbdbpg && echo "Stopped and removed running postgres containers" \
- || echo "No running postgres container detected"
+./inf/db/scripts/stop.sh
 
 docker run -p 5432:5432 --name csumbdbpg -e POSTGRES_DB=test -e POSTGRES_PASSWORD=my-secret-pw -d csumbdb
 
