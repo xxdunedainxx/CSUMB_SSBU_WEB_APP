@@ -5,6 +5,7 @@
 """
 from src.Configuration import Configuration, CONF_INSTANCE
 from src.WebServer.APIFactory import APIFactory
+from .Setup import Setup
 
 class App:
 
@@ -16,3 +17,5 @@ class App:
   # TODO
   def run(self):
     APIFactory.run_api_in_thread()
+    Setup.setup()
+
