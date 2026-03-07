@@ -11,7 +11,7 @@ class Setup:
         pass
 
     @staticmethod
-    # entry point for application setup
+    # entry point for application setups
     def setup():
         LogFactory.main_log()
         LogFactory.MAIN_LOG.info(f"Executing Application Setup!")
