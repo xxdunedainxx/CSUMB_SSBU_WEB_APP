@@ -4,13 +4,14 @@
   Synopsis: Container class for executing general startup setup steps
 """
 from .util.LogFactory import LogFactory
-# from .Configuration import CONF_INSTANCE
+from .Configuration import CONF_INSTANCE
 
 class Setup:
     def __init__(self):
         pass
 
     @staticmethod
+    # entry point for application setup
     def setup():
         LogFactory.main_log()
         LogFactory.MAIN_LOG.info(f"Executing Application Setup!")
