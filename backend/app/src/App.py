@@ -14,8 +14,8 @@ class App:
   def __init__(self):
     self.conf: Configuration = CONF_INSTANCE
 
-  # TODO
   def run(self):
-    APIFactory.run_api_in_thread()
     Setup.setup()
+    APIFactory.run_api_in_thread()
+
 
