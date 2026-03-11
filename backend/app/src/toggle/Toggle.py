@@ -3,10 +3,8 @@
     Date: 3/9/26
     Synopsis: The class allows you to turn off/on certain features at runtime
 """
+import json
 
-"""
-    TODO - Class description
-"""
 class ToggleService:
 
     # TODO - SET Singleton Instance IN CONSTRUCTOR
@@ -20,6 +18,7 @@ class ToggleService:
     def __init__(self, toggleConfigurationFilePath: str):
         # Toggles are a dictionary of strings --> bools
         self.__TOGGLES: dict[str, bool] = {}
+        # when an object is created, convert the file path to a dictionary and store in Toggles
         self.__load_toggle_configuration(toggleConfigurationFilePath)
 
     """
@@ -27,13 +26,19 @@ class ToggleService:
         This should setup the __TOGGLES var based on what is in the toggle configuration file
     """
     def __load_toggle_configuration(self, toggleConfPath):
-        pass
+        # with is a context manager that closes the file given after we're done
+        # helps with avoiding an error of having too many files open at once
+        with open(toggleConfPath, "r") as tempFile:
+            self.__TOGGLES = json.load(tempFile)
+
 
     """
         TODO - implement a way to determine if a toggle is enabled
     """
     def is_toggle_enabled(self, toggleName: str) -> bool:
-        pass
+        if toggleName in self.__TOGGLES:
+            return True
+        return False
 
 toggles = ToggleService("TODO_FILE_PATH.json")
 
