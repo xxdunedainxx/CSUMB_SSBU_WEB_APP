@@ -21,20 +21,12 @@ class ToggleService:
         # when an object is created, convert the file path to a dictionary and store in Toggles
         self.__load_toggle_configuration(toggleConfigurationFilePath)
 
-    """
-        TODO - Load initial toggle state from file.
-        This should setup the __TOGGLES var based on what is in the toggle configuration file
-    """
     def __load_toggle_configuration(self, toggleConfPath):
         # with is a context manager that closes the file given after we're done
         # helps with avoiding an error of having too many files open at once
         with open(toggleConfPath, "r") as tempFile:
             self.__TOGGLES = json.load(tempFile)
 
-
-    """
-        TODO - implement a way to determine if a toggle is enabled
-    """
     def is_toggle_enabled(self, toggleName: str) -> bool:
         if toggleName in self.__TOGGLES:
             return True
