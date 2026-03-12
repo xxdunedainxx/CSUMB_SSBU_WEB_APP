@@ -15,6 +15,12 @@ class ToggleService:
     """
         Class constructor
     """
+    def __new__(cls): ##
+        if cls.INSTANCE is None:
+            cls.INSTANCE = super().__new__(cls) # creates new instance of the class
+        return cls.INSTANCE
+
+
     def __init__(self, toggleConfigurationFilePath: str):
         # Toggles are a dictionary of strings --> bools
         self.__TOGGLES: dict[str, bool] = {}
