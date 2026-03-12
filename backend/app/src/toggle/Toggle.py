@@ -37,7 +37,7 @@ class ToggleService:
             self.__TOGGLES = json.load(tempFile)
 
     def is_toggle_enabled(self, toggleName: str) -> bool:
-        if toggleName in self.__TOGGLES:
+        if self.__TOGGLES.get(toggleName):
             return True
         return False
 
