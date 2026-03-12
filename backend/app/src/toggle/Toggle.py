@@ -7,7 +7,7 @@ import json
 
 class ToggleService:
 
-    # TODO - SET Singleton Instance IN CONSTRUCTOR
+    # Singleton Instance which ensures only one instance of the class is created and that there's global
     INSTANCE = None
 
     EXAMPLE_TOGGLE="EXAMPLE_TOGGLE"
@@ -41,6 +41,4 @@ class ToggleService:
             return True
         return False
 
-toggles = ToggleService("TODO_FILE_PATH.json")
-
-toggles.is_toggle_enabled(ToggleService.EXAMPLE_TOGGLE)
+toggles = ToggleService("Example.json")
