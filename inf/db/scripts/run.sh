@@ -3,21 +3,26 @@
 # Example usage: ./inf/db/scripts/run.sh
 # This script will clean up any existing containers and run a new one
 
+ORIGIN=$(pwd)
+
 echo "Build container, if needed"
 
-back=$(pwd)
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+echo $parent_path
+pwd
 
-cd inf/db
+./scripts/stop.sh
 
 ./scripts/build.sh
 
-cd $back
+cd $ORIGIN
 
 echo "Runniing Postgres Docker container.."
 
-./inf/db/scripts/stop.sh
-
 docker run -p 5432:5432 --name csumbdbpg -e POSTGRES_DB=csumb_webapp -e POSTGRES_PASSWORD=my-secret-pw -d csumbdb
+
+echo "Wait for a sec..."
+sleep 5
 
 echo "Check if container is up"
 dockerIsUp=$(docker ps | grep "csumbdbpg")
