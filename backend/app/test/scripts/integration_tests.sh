@@ -17,7 +17,10 @@ function setupDependencies(){
   # Startup a postgres container
   echo "Init post gres container"
 
-  ./inf/db/scripts/run.sh
+  cd ./inf/db
+
+  # Run it
+  ./scripts/run.sh
 
   cd $back
 
