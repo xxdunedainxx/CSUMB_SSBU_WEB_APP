@@ -25,4 +25,4 @@ class TestFeatureToggles(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
-test_one = ToggleService("test/unit/util/ToggleTests/Example.json")
+test_one = ToggleService("util/ToggleTests/Example.json")
