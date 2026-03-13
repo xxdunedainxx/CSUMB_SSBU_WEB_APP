@@ -12,12 +12,15 @@ def test_toggles():
 
 class TestFeatureToggles(unittest.TestCase):
 
+    # test that an error raises when a key doesn't exist
     def test_check_error(self):
         with self.assertRaises(KeyError) as tc:
             test_one.is_toggle_enabled("RANDOM_TOGGLE")
 
+    # tests that no error raises when key does exist
     def test_check_true(self):
-        assert test_one.is_toggle_enabled("NEW_FEATURE") ==  True
+        with does_not_raise():
+            assert test_one.is_toggle_enabled("NEW_FEATURE")
 
 if __name__ == '__main__':
     unittest.main()
