@@ -37,6 +37,6 @@ class ToggleService:
             self.__TOGGLES = json.load(tempFile)
 
     def is_toggle_enabled(self, toggleName: str) -> bool:
-        if not toggleName in self.__TOGGLES:
+        if toggleName not in self.__TOGGLES:
             raise KeyError(f"{toggleName} does not exist")
         return self.__TOGGLES[toggleName]
