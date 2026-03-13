@@ -19,9 +19,6 @@ function setupDependencies(){
 
   cd ./inf/db
 
-  # Build container new
-  ./scripts/build.sh
-
   # Run it
   ./scripts/run.sh
 
