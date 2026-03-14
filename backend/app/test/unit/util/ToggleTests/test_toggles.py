@@ -6,7 +6,7 @@ import os
 from contextlib import nullcontext as does_not_raise
 
 @enabled
-def test_toggles():
+def test_togglers():
     LogFactory.MAIN_LOG.info(f"RUNNING feature toggle tests")
     unittest.main(module=__name__, exit=False)
 
@@ -29,3 +29,4 @@ if __name__ == '__main__':
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 test_one = ToggleService(f"{base_dir}/Example.json")
+LogFactory.main_log()

@@ -9,7 +9,6 @@ from src.util.LogFactory import LogFactory
 from test.util.decorators.Toggle import enabled
 from typing import List
 import unittest
-# "email@123.123.123.123",
 
 # LogFactory.main_log()
 GOOD_EMAILS: List[str] = [
@@ -72,7 +71,7 @@ class TestEmail(unittest.TestCase):
         assert test == True
 
     @enabled
-    # checks for a valid email in a list where its only supposed to have invalid emails
+    # checks for a valid email in a list where it's only supposed to have invalid emails
     def test_bad_emails(self) -> bool:
         test = False
         print('Bad Emails Test')
@@ -83,3 +82,4 @@ class TestEmail(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+LogFactory.main_log()
