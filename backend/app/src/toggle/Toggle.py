@@ -40,3 +40,5 @@ class ToggleService:
         if toggleName not in self.__TOGGLES:
             raise KeyError(f"{toggleName} does not exist")
         return self.__TOGGLES[toggleName]
+    def get_toggles(self):
+        return self.__TOGGLES
