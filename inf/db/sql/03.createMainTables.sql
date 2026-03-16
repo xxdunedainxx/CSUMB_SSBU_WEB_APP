@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS userTable (
 );
 
 -- TODO -
-CREATE TABLE userDemographicInfo();
+CREATE TABLE IF NOT EXISTS userDemographicInfo();
 
-CREATE TABLE testResults (
+CREATE TABLE IF NOT EXISTS testResults (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     userID INT REFERENCES userTable(id),
     whenGenerated TIMESTAMPTZ,
@@ -19,9 +19,9 @@ CREATE TABLE testResults (
 );
 
 -- Each may be in their own table
-CREATE TABLE controllerTestResultData();
+CREATE TABLE IF NOT EXISTS controllerTestResultData();
 
-CREATE TABLE srtTestResultData(
+CREATE TABLE IF NOT EXISTS srtTestResultData(
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     testResultId INT REFERENCES testResults(id), -- link back to entire testing set result
     TestOrTrial VARCHAR(100) NOT NULL,
@@ -34,8 +34,9 @@ CREATE TABLE srtTestResultData(
 );
 
 -- TODO
-CREATE TABLE gngTestResultData();
-CREATE TABLE taskSwitchingTestResultData();
-CREATE TABLE posnerQueueTestResultData();
+CREATE TABLE IF NOT EXISTS gngTestResultData();
+CREATE TABLE IF NOT EXISTS taskSwitchingTestResultData();
+CREATE TABLE IF NOT EXISTS posnerQueueTestResultData();
 
 -- TODO Feedback table
+CREATE TABLE IF NOT EXISTS feedback();
