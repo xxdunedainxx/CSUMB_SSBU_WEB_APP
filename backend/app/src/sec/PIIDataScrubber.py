@@ -12,15 +12,17 @@ class PIIDataScrubber:
     PHONE_PATTERN = r"\b\d{3}-\d{3}-\d{4}\b|\(\d{3}\)\s?\d{3}-\d{4}"
     CREDIT_CARD_PATTERN = r"\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b"
 
-    @staticmethod
-    def does_contain_pii(data: str) -> bool:
-        """Return True if the string contains SSN, phone number, or credit card"""
-        patterns = [
+    # list of patterns
+       patterns = [
             PIIDataScrubber.SSN_PATTERN,
             PIIDataScrubber.PHONE_PATTERN,
             PIIDataScrubber.CREDIT_CARD_PATTERN
         ]
-        for pattern in patterns:
+
+    @staticmethod
+    def does_contain_pii(data: str) -> bool:
+        """Return True if the string contains SSN, phone number, or credit card"""
+        for pattern in PIIDataScrubber.PATTERNS:
             if re.search(pattern, data):
                 return True
         return False
@@ -28,11 +30,6 @@ class PIIDataScrubber:
     @staticmethod
     def scrub_pii(data: str) -> str:
         """Replace PII with '**REDACTED**'"""
-        patterns = [
-            PIIDataScrubber.SSN_PATTERN,
-            PIIDataScrubber.PHONE_PATTERN,
-            PIIDataScrubber.CREDIT_CARD_PATTERN
-        ]
         scrubbed_data = data
         for pattern in patterns:
             scrubbed_data = re.sub(pattern, "**REDACTED**", scrubbed_data)
