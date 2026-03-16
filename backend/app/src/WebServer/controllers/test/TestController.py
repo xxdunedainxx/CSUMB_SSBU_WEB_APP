@@ -4,7 +4,6 @@
   Synopsis: Example Test/'Hello world' controller.
 """
 from src.util.LogFactory import LogFactory
-from src.WebServer.decorators.HTTPLogger import http_logger
 from src.WebServer.WebServerInit import WebServerInit
 from src.util.ErrorFactory import errorStackTrace
 
@@ -19,7 +18,6 @@ class TestController:
 
   @staticmethod
   @flask_ref.route('/test', methods=['GET'])
-  @http_logger
   def test_api():
     try:
       LogFactory.MAIN_LOG.info("test api")

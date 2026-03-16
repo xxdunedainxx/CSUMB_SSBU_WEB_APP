@@ -4,6 +4,7 @@
   Synopsis: The API 'factory' is used to register controllers with the main flask server,
             and then run flask once those controllers are registered.
 """
+from src.WebServer.RequestProcessing import after_request_processor, before_request_processor
 from src.WebServer.WebServerInit import WebServerInit
 from src.Configuration import CONF_INSTANCE
 
