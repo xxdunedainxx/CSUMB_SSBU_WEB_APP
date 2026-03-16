@@ -39,4 +39,5 @@ CREATE TABLE IF NOT EXISTS taskSwitchingTestResultData();
 CREATE TABLE IF NOT EXISTS posnerQueueTestResultData();
 
 -- TODO Feedback table
+-- TODO fill out feedback attributes below
 CREATE TABLE IF NOT EXISTS feedback();

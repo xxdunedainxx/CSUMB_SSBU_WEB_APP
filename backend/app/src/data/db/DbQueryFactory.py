@@ -98,3 +98,8 @@ class DbQueryFactory:
     """
     def create_new_srt_test_result(self):
         pass
+
+    # TODO!!! NEED TO CRAFT A SQL QUERY TO SUBMIT FEEDBACK
+    # TODO -- REMEMBER TO SCRUB USER SUBMITTED DATA!!
+    def feedback_submit(self):
+        pass
