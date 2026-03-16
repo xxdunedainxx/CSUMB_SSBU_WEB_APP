@@ -7,17 +7,12 @@ app = Flask(__name__)
 
 test_one = ToggleService("test/unit/util/ToggleTests/Example.json")
 
-@app.route("/api")
-def home():
-    return jsonify()
-
-
-@app.route("/api/v1/toggle")
+# each endpoint has the get method by default
+@app.route("/api/v1/toggles")
 def get_toggles():
     return test_one.get_toggles()
 
-# get method by default
-@app.route("/api/v1/toggle/<toggle_name>")
+@app.route("/api/v1/toggles/<toggle_name>")
 def index(toggle_name: str):
     test = {
         toggle_name: test_one.is_toggle_enabled(toggle_name)
