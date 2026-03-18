@@ -12,7 +12,6 @@ class ToggleController:
         LogFactory.MAIN_LOG.info('Starting ToggleController')
         self.toggle_file = ToggleService("src/WebServer/controllers/toggle/Toggles.json")
 
-        @staticmethod
         @flask_ref.route("/api/v1/toggles")
         @http_logger
         def get_toggles():
