@@ -13,16 +13,16 @@ class PIIDataScrubber:
     CREDIT_CARD_PATTERN = r"\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b"
 
     # list of patterns
-       patterns = [
-            PIIDataScrubber.SSN_PATTERN,
-            PIIDataScrubber.PHONE_PATTERN,
-            PIIDataScrubber.CREDIT_CARD_PATTERN
-        ]
+    patterns = [
+        SSN_PATTERN,
+        PHONE_PATTERN,
+        CREDIT_CARD_PATTERN
+    ]
 
     @staticmethod
     def does_contain_pii(data: str) -> bool:
         """Return True if the string contains SSN, phone number, or credit card"""
-        for pattern in PIIDataScrubber.PATTERNS:
+        for pattern in PIIDataScrubber.patterns:
             if re.search(pattern, data):
                 return True
         return False
@@ -31,6 +31,6 @@ class PIIDataScrubber:
     def scrub_pii(data: str) -> str:
         """Replace PII with '**REDACTED**'"""
         scrubbed_data = data
-        for pattern in patterns:
+        for pattern in PIIDataScrubber.patterns:
             scrubbed_data = re.sub(pattern, "**REDACTED**", scrubbed_data)
         return scrubbed_data

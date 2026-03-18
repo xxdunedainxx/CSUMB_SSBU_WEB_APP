@@ -6,6 +6,7 @@
 from src.util.LogFactory import LogFactory
 from test.integation.db.DBConnectorTests import db_connector_tests
 from test.integation.db.DBQueryFactoryTests import db_query_factory_tests
+from test.integation.controllers.TestControllerTests import test_controller_tests
 
 class IntegrationTests:
 
@@ -14,3 +15,4 @@ class IntegrationTests:
       LogFactory.MAIN_LOG.info('Running Integration tests!')
       db_connector_tests()
       db_query_factory_tests()
+      test_controller_tests()
