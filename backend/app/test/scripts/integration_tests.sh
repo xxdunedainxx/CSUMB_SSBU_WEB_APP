@@ -9,8 +9,14 @@
 #                ./test/scripts/integration_tests.sh "YES" /usr/bin/python3
 #########
 
-# Used when integration tests are run on a single machine
-function setupDependencies(){
+export INTEGRATION_TESTING_ENABLED=true
+export END_TO_END_TESTING_ENABLED=false
+export UNIT_TESTING_ENABLED=false
+
+ALL_ON_ONE_MACHINE_ARG="${1:-NO}"
+PYTHON_INTERPRETER="${2:-python3}"
+
+function postGresSetup(){
   back=$(pwd)
 
   cd ../..
@@ -27,12 +33,37 @@ function setupDependencies(){
   echo "Dependency setup complete"
 }
 
-export INTEGRATION_TESTING_ENABLED=true
-export END_TO_END_TESTING_ENABLED=false
-export UNIT_TESTING_ENABLED=false
+function setupBackendPythonApp(){
+  echo "SETUP BACKEND PYTHON APP"
+  nohup ${PYTHON_INTERPRETER} app.py  > backend.log 2>&1 &
+  sleep 2
+  echo "Startup info..."
+  cat backend.log
+  primaryPID=$(cat PRIMARY.PID)
+  echo "Running on pid '${primaryPID}'"
+}
 
-ALL_ON_ONE_MACHINE_ARG="${1:-NO}"
-PYTHON_INTERPRETER="${2:-python3}"
+# Used when integration tests are run on a single machine
+function setupDependencies(){
+  postGresSetup
+
+  setupBackendPythonApp
+}
+
+function cleanup(){
+  echo "cleanup"
+  ../../inf/db/scripts/stop.sh
+
+  backendPrimaryPID=$(cat PRIMARY.PID)
+
+  echo "Stop backend PID ${backendPrimaryPID}"
+
+  kill -9 $backendPrimaryPID
+
+  echo "Cleanup complete"
+}
+
+
 
 echo "'ALL_ON_ONE_MACHINE_ARG': $ALL_ON_ONE_MACHINE_ARG"
 
@@ -45,4 +76,6 @@ fi
 
 echo "Using python interpreter $PYTHON_INTERPRETER"
 
-${PYTHON_INTERPRETER} test.py
+${PYTHON_INTERPRETER} test.py && echo "TESTS PASSED" || echo "TESTS FAILED"
+
+cleanup || echo "OH NO, CLEANUP FAILED"

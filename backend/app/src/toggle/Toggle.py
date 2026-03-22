@@ -18,7 +18,6 @@ class ToggleService:
             cls.INSTANCE = super().__new__(cls) # creates new instance of the class
         return cls.INSTANCE
 
-
     # Class constructor
     def __init__(self, toggleConfigurationFilePath: str):
         # checks if _initialized exists and if its true otherwise set up the instance
@@ -40,3 +39,6 @@ class ToggleService:
         if toggleName not in self.__TOGGLES:
             raise KeyError(f"{toggleName} does not exist")
         return self.__TOGGLES[toggleName]
+
+    def get_toggles(self):
+        return self.__TOGGLES
