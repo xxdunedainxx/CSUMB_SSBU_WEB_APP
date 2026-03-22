@@ -7,3 +7,6 @@ FROM postgres:14.21-trixie
 COPY sql/01.createDb.sql /docker-entrypoint-initdb.d/01.createDb.sql
 COPY sql/02.createTestTable.sql /docker-entrypoint-initdb.d/02.createTestTable.sql
 COPY sql/03.createMainTables.sql /docker-entrypoint-initdb.d/03.createMainTables.sql
+
+# Copy backup script into container for periodic backups
+COPY scripts/backup.sh backup.sh
