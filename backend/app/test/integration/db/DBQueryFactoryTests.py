@@ -50,3 +50,9 @@ class DBConnectorTests(unittest.TestCase):
         assert(newUserRecord.email == emailToUse)
         assert(newUserRecord.verified == False)
         assert(newUserRecord.salt=="blah")
+
+    # TODO - fill out an integration test that tests the creation of user submitted feedback
+    # Test should create the feedback, and then fetch it back to ensure it exists.
+    @enabled
+    def test_create_feedback(self):
+        pass

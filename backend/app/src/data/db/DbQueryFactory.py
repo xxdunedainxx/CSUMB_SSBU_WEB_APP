@@ -98,3 +98,9 @@ class DbQueryFactory:
     """
     def create_new_srt_test_result(self):
         pass
+
+    # TODO - fill in submnit feedback method. This should create a feedback record in the database.
+    # feedback: the feedback string
+    # userId: the unique id of the user submitting the feedback
+    def submit_feedback(self, feedback: str, userId: int):
+        pass
