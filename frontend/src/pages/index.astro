@@ -1,10 +1,120 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import TestInfo from "../data/tests";
+const testCount = TestInfo.length;
 ---
 
-<BaseLayout title="Under Construction">
-	<div class="under-construction">
-		<h1>Under Construction</h1>
-		<p>This site is currently being built. Check back soon!</p>
-	</div>
+<BaseLayout
+	title="Lab.io — Cognitive Intelligence Hub"
+	description="Unified cognitive and reaction testing with embedded dashboards"
+>
+	<section class="hero">
+		<div class="hero__pill">
+			<span class="pill-dot" aria-hidden="true"></span>
+			<span class="pill-text">Unified Cognitive Intelligence Hub</span>
+		</div>
+
+		<div class="hero__grid">
+			<div class="hero__copy">
+				<h1 class="headline">Precision at scale</h1>
+				<p class="lede">
+					The definitive lab for measuring cognitive performance. Standardized protocols, embedded
+					tests, and millisecond-aware tracking for competitors and researchers.
+				</p>
+				<div class="hero__actions">
+					<a class="btn btn-primary" href="/tests/">Enter tests dashboard</a>
+					<a class="btn btn-ghost" href="#how-it-works">How it works</a>
+				</div>
+
+				<div class="hero__meta" aria-label="Highlights">
+					<div class="meta-card">
+						<span class="meta-label">Available tests</span>
+						<span class="meta-value">{testCount}</span>
+					</div>
+					<div class="meta-card">
+						<span class="meta-label">Setup</span>
+						<span class="meta-value">No account needed</span>
+					</div>
+					<div class="meta-card">
+						<span class="meta-label">Modes</span>
+						<span class="meta-value">Keyboard / Controller</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="hero__visual" aria-hidden="true">
+				<div class="visual-blob"></div>
+				<div class="visual-frame">
+					<div class="visual-chip">
+						<div class="chip-top">
+							<span class="chip-label">Lab.io System</span>
+							<span class="chip-icon">⚡</span>
+						</div>
+						<div class="chip-bar">
+							<span class="chip-bar__fill" style="width: 85%"></span>
+						</div>
+						<p class="chip-caption">Neural processing: optimized</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="how-it-works" class="section">
+		<div class="section__header">
+			<p class="eyebrow">Designed for clarity</p>
+			<h2 class="section__title">How Lab.io works</h2>
+			<p class="section__lede">A streamlined path from selecting a protocol to seeing actionable insights.</p>
+		</div>
+
+		<div class="steps">
+			<article class="step-card">
+				<div class="step-icon">🧭</div>
+				<h3 class="step-title">1. Select protocol</h3>
+				<p class="step-copy">Choose from curated cognitive and reaction assessments right inside the tests dashboard.</p>
+			</article>
+			<article class="step-card">
+				<div class="step-icon">⏱️</div>
+				<h3 class="step-title">2. Run high-precision test</h3>
+				<p class="step-copy">Launch in an embedded frame—no downloads—so we capture inputs with minimal latency.</p>
+			</article>
+			<article class="step-card">
+				<div class="step-icon">📊</div>
+				<h3 class="step-title">3. Review insights</h3>
+				<p class="step-copy">See results immediately and benchmark against your own sessions or research cohorts.</p>
+			</article>
+		</div>
+	</section>
+
+	<section class="section cta">
+		<div class="cta__panel">
+			<div>
+				<p class="eyebrow">Available now</p>
+				<h2 class="cta__title">Master your metrics.</h2>
+				<p class="cta__copy">Access the full suite of cognitive tools—no account setup required.</p>
+			</div>
+			<div class="cta__actions">
+				<a class="btn btn-primary" href="/tests/">Go to tests</a>
+				<a class="btn btn-ghost" href="#how-it-works">Learn more</a>
+			</div>
+		</div>
+	</section>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const observer = new IntersectionObserver((entries, obs) => {
+				entries.forEach(entry => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('visible');
+						obs.unobserve(entry.target);
+					}
+				});
+			}, {
+				threshold: 0.15,
+				rootMargin: '0px 0px -5% 0px'
+			});
+
+			document.querySelectorAll('.meta-card, .step-card, .cta__panel').forEach(el => observer.observe(el));
+		});
+	</script>
 </BaseLayout>

@@ -1,0 +1,500 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Results Analyzer" description="Upload test results and view quick stats">
+    <div class="results-page lab-shell">
+        <section class="lab-hero">
+            <div class="lab-hero__grid">
+                <div class="lab-hero__copy">
+                    <span class="lab-pill">
+                        <span class="pill-dot"></span>
+                        Neural Metrics Lab
+                    </span>
+                    <h1 class="lab-title">Results Analyzer</h1>
+                    <p class="lab-lede">Upload CSV or JSON outputs for each paradigm and see tailored metrics instantly. Processing happens entirely in the browser—no data ever leaves this page.</p>
+                    <div class="lab-hero__actions">
+                        <button data-load-samples class="btn btn-primary">Load example stats</button>
+                        <a class="btn btn-ghost" href="/" aria-label="Back to home">Return home</a>
+                    </div>
+                    <div class="lab-chips">
+                        <span class="chip chip--outline">Client-side parsing</span>
+                        <span class="chip chip--outline">CSV + JSON</span>
+                        <span class="chip chip--outline">5 paradigms</span>
+                    </div>
+                </div>
+                <div class="lab-hero__visual">
+                    <div class="lab-hero__halo"></div>
+                    <div class="lab-hero__card">
+                        <div class="lab-hero__card-top">
+                            <p class="eyebrow">Real-time readouts</p>
+                            <span class="lab-dot"></span>
+                        </div>
+                        <div class="lab-hero__card-body">
+                            <div class="lab-hero__stat">
+                                <p class="lab-hero__label">Paradigms</p>
+                                <p class="lab-hero__value">5</p>
+                                <p class="lab-hero__hint">Heneveld, Go/No-Go, Posner, Simple, Task Switching</p>
+                            </div>
+                            <div class="lab-hero__stat-grid">
+                                <div>
+                                    <p class="lab-hero__label">Data stays local</p>
+                                    <p class="lab-hero__value">100%</p>
+                                </div>
+                                <div>
+                                    <p class="lab-hero__label">Sample files</p>
+                                    <p class="lab-hero__value">Bundled</p>
+                                </div>
+                                <div>
+                                    <p class="lab-hero__label">Upload</p>
+                                    <p class="lab-hero__value">Drag & Drop</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="lab-section-list" id="sections"></section>
+
+        <section class="results-samples">
+            <div class="results-samples__header">
+                <div>
+                    <p class="eyebrow">Example data</p>
+                    <h2 class="lab-subtitle">Run the bundled files</h2>
+                    <p class="lab-lede">Use the curated samples to verify parsing and styling, then upload your own exports.</p>
+                </div>
+                <button data-load-samples class="btn btn-primary">Load all examples</button>
+            </div>
+            <div class="results-grid lab-samples__grid" id="sampleGrid" aria-live="polite"></div>
+        </section>
+    </div>
+
+    <script>
+        let fadeObserver;
+
+        const tests = [
+            { id: 'heneveld', title: 'Heneveld Controller', sample: '/test_result_examples/combined_24_tests_Heneveld_Paradigm.json', type: 'json', accept: '.json' },
+            { id: 'gng', title: 'Go/No-Go', sample: '/test_result_examples/GoNoGo_3-29-2026,_9_47_22_PM.csv', type: 'csv', accept: '.csv' },
+            { id: 'posner', title: 'Posner Cueing', sample: '/test_result_examples/PosnerCue_3-29-2026,_9_54_38_PM.csv', type: 'csv', accept: '.csv' },
+            { id: 'simple', title: 'Simple Reaction', sample: '/test_result_examples/SimpleReaction_3-29-2026,_8_43_49_PM.csv', type: 'csv', accept: '.csv' },
+            { id: 'task', title: 'Task Switching', sample: '/test_result_examples/TaskSwitching_3-30-2026,_8_31_43_AM.csv', type: 'csv', accept: '.csv' }
+        ];
+
+        const parsers = {
+            csv(content) {
+                const lines = content.trim().split(/\r?\n/);
+                if (!lines.length) return [];
+                const headers = lines.shift().split(',').map(h => h.replace(/"/g, '').trim());
+                return lines.filter(Boolean).map(line => {
+                    const cells = line.split(',');
+                    const row = {};
+                    headers.forEach((h, i) => row[h] = cells[i]?.replace(/"/g, '').trim());
+                    return row;
+                });
+            },
+            json(content) {
+                return JSON.parse(content);
+            }
+        };
+
+        const pickNumber = (row, keys) => {
+            for (const k of keys) {
+                const val = row[k];
+                if (val === undefined) continue;
+                const num = Number(val);
+                if (!Number.isNaN(num)) return num;
+            }
+            return null;
+        };
+
+        const analyzers = {
+            heneveld(data) {
+                const groups = extractHeneveldGroups(data);
+                return groups.map(({ label, trials }) => {
+                    const hitRT = [];
+                    let hits = 0;
+                    let misses = 0;
+                    trials.forEach(t => {
+                        const rt = pickNumber(t, ['reaction_ms', 'hit_ms']);
+                        if (rt !== null) hitRT.push(rt);
+                        const targetHit = Number(t.target_hit);
+                        if (targetHit === 1 || t.target_hit === true) hits++;
+                        if (t.missed === true || targetHit === 0) misses++;
+                    });
+                    return {
+                        label,
+                        stats: summarize(hitRT, {
+                            count: trials.length,
+                            extra: {
+                                hitRate: trials.length ? hits / trials.length * 100 : 0,
+                                missRate: trials.length ? misses / trials.length * 100 : 0
+                            }
+                        })
+                    };
+                }).filter(r => r.stats);
+            },
+            gng(rows) {
+                if (!rows.length) return [];
+                const buckets = { training: [], testing: [] };
+                const nogoStats = { training: { errors: 0, timeouts: 0, total: 0 }, testing: { errors: 0, timeouts: 0, total: 0 } };
+                rows.forEach(r => {
+                    const label = String(r.GoNoGoAndTestOrTrial || '').toLowerCase();
+                    const rt = pickNumber(r, ['ResponseTimeMs']);
+                    const isNoGo = label.startsWith('nogo');
+                    const isGo = label.startsWith('go');
+                    const phase = label.includes('training') ? 'training' : 'testing';
+                    if (isGo && !isNoGo && rt !== null && rt < 2000) buckets[phase].push(rt);
+                    if (isNoGo) {
+                        nogoStats[phase].total++;
+                        if (rt === 2000) nogoStats[phase].timeouts++;
+                        if (Number(r.ErrorStatus) === 1) nogoStats[phase].errors++;
+                    }
+                });
+                return ['training', 'testing'].map(phase => {
+                    const stats = summarize(buckets[phase], { count: buckets[phase].length });
+                    if (!stats) return null;
+                    stats.nogoErrorRate = nogoStats[phase].total ? (nogoStats[phase].errors / nogoStats[phase].total * 100) : 0;
+                    stats.nogoTimeoutRate = nogoStats[phase].total ? (nogoStats[phase].timeouts / nogoStats[phase].total * 100) : 0;
+                    return { label: phase, stats };
+                }).filter(Boolean);
+            },
+            posner(rows) {
+                if (!rows.length) return [];
+                const phases = { training: [], testing: [] };
+                const phaseErrors = { training: 0, testing: 0 };
+                const phaseCounts = { training: 0, testing: 0 };
+                rows.forEach(r => {
+                    const rt = pickNumber(r, ['ResponsetimeMS', 'ResponseTimeMS']);
+                    const validFlag = String(r.CueValidity || '').toLowerCase() === 'valid';
+                    const phase = String(r.TestOrTraining || '').toLowerCase().includes('training') ? 'training' : 'testing';
+                    if (rt !== null) {
+                        phases[phase].push({ rt, valid: validFlag });
+                    }
+                    phaseCounts[phase]++;
+                    if (Number(r.StatusOfAnswer) !== 1) phaseErrors[phase]++;
+                });
+                return ['training', 'testing'].map(phase => {
+                    const data = phases[phase];
+                    if (!data.length) return null;
+                    const valid = data.filter(d => d.valid).map(d => d.rt);
+                    const invalid = data.filter(d => !d.valid).map(d => d.rt);
+                    const combined = data.map(d => d.rt);
+                    const base = summarize(combined, { count: phaseCounts[phase] });
+                    if (!base) return null;
+                    return {
+                        label: phase,
+                        stats: {
+                            ...base,
+                            validMean: avg(valid),
+                            invalidMean: avg(invalid),
+                            errorRate: phaseCounts[phase] ? (phaseErrors[phase] / phaseCounts[phase] * 100) : 0
+                        }
+                    };
+                }).filter(Boolean);
+            },
+            simple(rows) {
+                if (!rows.length) return [];
+                const phases = { training: [], real: [] };
+                const filtered = { training: 0, real: 0 };
+                rows.forEach(r => {
+                    const rt = pickNumber(r, ['ResponseTime']);
+                    const phase = Number(r.TrainingOrReal) === 1 ? 'training' : 'real';
+                    if (rt === null) return;
+                    if (rt < 50) { filtered[phase]++; return; }
+                    phases[phase].push(rt);
+                });
+                return [
+                    { label: 'training', data: phases.training, filtered: filtered.training },
+                    { label: 'real', data: phases.real, filtered: filtered.real }
+                ].map(p => {
+                    const stats = summarize(p.data, { count: p.data.length, extra: { filteredSub50: p.filtered } });
+                    return stats ? { label: p.label, stats } : null;
+                }).filter(Boolean);
+            },
+            task(rows) {
+                if (!rows.length) return [];
+                const hasTrials = Object.keys(rows[0] || {}).some(k => k.toLowerCase().includes('taskswitchtypeandtestortrial'));
+                if (hasTrials) {
+                    const phases = { training: [], testing: [] };
+                    rows.forEach(r => {
+                        const label = String(r.TaskSwitchTypeAndTestOrTrial || '').toLowerCase();
+                        const rt = pickNumber(r, ['responseTimeMs', 'ResponseTime', 'ResponseTimeMs']);
+                        const ok = Number(r.status ?? r.StatusOfAnswer ?? 1) === 1;
+                        if (rt === null || !ok) return;
+                        const phase = label.includes('training') ? 'training' : 'testing';
+                        phases[phase].push(rt);
+                    });
+                    return ['training', 'testing'].map(phase => {
+                        const stats = summarize(phases[phase], { count: phases[phase].length });
+                        return stats ? { label: phase, stats: { ...stats, switchCostMean: 0 } } : null;
+                    }).filter(Boolean);
+                }
+
+                // Fallback for aggregated stats CSV
+                const buckets = { training: [], testing: [] };
+                const switchCosts = { training: [], testing: [] };
+                rows.forEach(r => {
+                    Object.entries(r).forEach(([key, raw]) => {
+                        const k = key.toLowerCase();
+                        const num = Number(raw);
+                        if (!Number.isFinite(num)) return;
+                        const phase = k.includes('training') ? 'training' : (k.includes('testing') ? 'testing' : null);
+                        if (phase === null) return;
+                        if (k.includes('switchcost')) {
+                            switchCosts[phase].push(Math.abs(num));
+                        } else if (k.includes('mean') || k.includes('response') || k.includes('rt')) {
+                            if (num > 0) buckets[phase].push(num);
+                        }
+                    });
+                });
+                return ['training', 'testing'].map(phase => {
+                    const stats = summarize(buckets[phase], { count: buckets[phase].length });
+                    if (!stats) return null;
+                    stats.switchCostMean = switchCosts[phase].length ? avg(switchCosts[phase]) : 0;
+                    return { label: phase, stats };
+                }).filter(Boolean);
+            }
+        };
+
+        function extractHeneveldGroups(data) {
+            const groups = [];
+            if (data && typeof data === 'object') {
+                // Dual structure: top-level "dual" with trials containing left/right objects
+                if (data.dual && Array.isArray(data.dual.trials)) {
+                    ['left', 'right'].forEach(side => {
+                        const trials = data.dual.trials
+                            .map(t => t[side])
+                            .filter(Boolean)
+                            .map(t => ({
+                                reaction_ms: t.reaction_ms,
+                                hit_ms: t.hit_ms ?? t.reaction_ms,
+                                target_hit: true,
+                                missed: false
+                            }));
+                        if (trials.length) groups.push({ label: `dual-${side}`, trials });
+                    });
+                }
+                Object.entries(data).forEach(([key, val]) => {
+                    if (val && typeof val === 'object' && Array.isArray(val.trials)) {
+                        groups.push({ label: key, trials: val.trials });
+                    }
+                });
+            }
+            return groups.length ? groups : [{ label: 'trials', trials: extractTrials(data) }];
+        }
+
+        function extractTrials(data) {
+            if (Array.isArray(data)) return data;
+            if (Array.isArray(data?.trials)) return data.trials;
+            if (data && typeof data === 'object') {
+                for (const val of Object.values(data)) {
+                    if (Array.isArray(val?.trials)) return val.trials;
+                }
+            }
+            return [];
+        }
+
+        function avg(arr) { return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0; }
+
+        function summarize(rts, { count, extra = {} }) {
+            if (!rts.length) return null;
+            const sorted = [...rts].sort((a, b) => a - b);
+            const mean = avg(rts);
+            const median = (sorted[Math.floor((sorted.length - 1) / 2)] + sorted[Math.ceil((sorted.length - 1) / 2)]) / 2;
+            return {
+                count,
+                mean,
+                median,
+                min: sorted[0],
+                max: sorted[sorted.length - 1],
+                ...extra
+            };
+        }
+
+        function ensureFadeObserver() {
+            if (fadeObserver) return;
+            fadeObserver = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, {
+                root: null,
+                threshold: 0.15,
+                rootMargin: '0px 0px -5% 0px'
+            });
+        }
+
+        function renderCard(container, title, stats, source, extras = []) {
+            const card = document.createElement('article');
+            card.className = 'result-card';
+            if (!stats) {
+                card.innerHTML = `<div class="result-card__header"><h3>${title}</h3>${source ? `<p class="meta">${source}</p>` : ''}</div><p class="result-card__error">Unsupported file or unable to parse.</p>`;
+                container.appendChild(card);
+                return;
+            }
+
+            const extraRows = extras.map(([label, val, unit]) => `<li><span>${label}</span><strong>${val}${unit || ''}</strong></li>`).join('');
+
+            card.innerHTML = `
+                <div class="result-card__header">
+                    <h3>${title}</h3>
+                    ${source ? `<p class="meta">${source}</p>` : ''}
+                </div>
+                <ul class="result-card__stats">
+                    <li><span>Trials</span><strong>${stats.count}</strong></li>
+                    <li><span>Mean RT (ms)</span><strong>${stats.mean.toFixed(1)}</strong></li>
+                    <li><span>Median RT (ms)</span><strong>${stats.median.toFixed(1)}</strong></li>
+                    <li><span>Min / Max (ms)</span><strong>${stats.min.toFixed(0)} / ${stats.max.toFixed(0)}</strong></li>
+                    ${extraRows}
+                </ul>
+            `;
+            container.appendChild(card);
+            ensureFadeObserver();
+            fadeObserver.observe(card);
+        }
+
+        async function processFile(file, testId, container) {
+            const ext = file.name.toLowerCase().endsWith('.json') ? 'json' : 'csv';
+            const text = await file.text();
+            let data;
+            try { data = parsers[ext](text); } catch (e) { renderCard(container, file.name, null, 'Upload'); return; }
+            const analyzer = analyzers[testId];
+            const results = analyzer ? analyzer(data) : null;
+            if (!results || !results.length) { renderCard(container, file.name, null, 'Upload'); return; }
+            results.forEach(res => {
+                const extras = buildExtras(testId, res.stats);
+                renderCard(container, `${file.name} — ${res.label}`, res.stats, 'Upload', extras);
+            });
+        }
+
+        function buildExtras(testId, stats) {
+            if (!stats) return [];
+            switch (testId) {
+                case 'heneveld': return [
+                    ['Hit rate', (stats.hitRate ?? 0).toFixed(1), '%'],
+                    ['Miss rate', (stats.missRate ?? 0).toFixed(1), '%']
+                ];
+                case 'gng': return [
+                    ['No-Go errors', (stats.nogoErrorRate ?? 0).toFixed(1), '%'],
+                    ['No-Go timeouts', (stats.nogoTimeoutRate ?? 0).toFixed(1), '%']
+                ];
+                case 'posner': return [
+                    ['Valid mean', (stats.validMean ?? 0).toFixed(1), ' ms'],
+                    ['Invalid mean', (stats.invalidMean ?? 0).toFixed(1), ' ms'],
+                    ['Error rate', (stats.errorRate ?? 0).toFixed(1), '%']
+                ];
+                case 'simple': return [
+                    ['Filtered <50ms', (stats.filteredSub50 ?? 0).toFixed(0)]
+                ];
+                case 'task': return [
+                    ['Switch cost mean', (stats.switchCostMean ?? 0).toFixed(1), ' ms']
+                ];
+                default: return [];
+            }
+        }
+
+        function renderSection(container, test) {
+            const section = document.createElement('section');
+            section.className = 'lab-panel';
+            section.innerHTML = `
+                <div class="lab-panel__header">
+                    <div>
+                        <p class="eyebrow">${test.title}</p>
+                        <h2 class="lab-subtitle">${test.title} stats</h2>
+                        <p class="lab-hint">${test.type.toUpperCase()} upload • processed locally</p>
+                    </div>
+                    <div class="lab-panel__actions">
+                        <label class="lab-upload">
+                            <input type="file" accept="${test.accept}" data-input="${test.id}" />
+                            <span class="lab-upload__cta">Upload ${test.type.toUpperCase()}</span>
+                            <small>Drop or click</small>
+                        </label>
+                        <button class="btn btn-ghost" data-sample="${test.id}">Use sample</button>
+                    </div>
+                </div>
+                <div class="results-grid lab-panel__grid" id="grid-${test.id}" aria-live="polite"></div>
+            `;
+            container.appendChild(section);
+            ensureFadeObserver();
+            fadeObserver.observe(section);
+        }
+
+        async function loadSample(test) {
+            try {
+                const res = await fetch(test.sample);
+                const text = await res.text();
+                const data = parsers[test.type](text);
+                const results = analyzers[test.id](data);
+                const grid = document.getElementById(`grid-${test.id}`);
+                grid.innerHTML = '';
+                if (!results || !results.length) {
+                    renderCard(grid, `${test.title} example`, null, 'Example file');
+                    return;
+                }
+                results.forEach(r => {
+                    const extras = buildExtras(test.id, r.stats);
+                    renderCard(grid, `${test.title} example — ${r.label}`, r.stats, 'Example file', extras);
+                });
+            } catch (e) {
+                const grid = document.getElementById(`grid-${test.id}`);
+                grid.innerHTML = '';
+                renderCard(grid, `${test.title} example`, null, 'Example file');
+            }
+        }
+
+        function wireSections() {
+            const container = document.getElementById('sections');
+            tests.forEach(t => renderSection(container, t));
+
+            container.addEventListener('change', (e) => {
+                const input = e.target.closest('input[data-input]');
+                if (!input) return;
+                const testId = input.dataset.input;
+                const files = Array.from(input.files || []);
+                const grid = document.getElementById(`grid-${testId}`);
+                grid.innerHTML = '';
+                files.forEach(f => processFile(f, testId, grid));
+            });
+
+            container.addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-sample]');
+                if (!btn) return;
+                const test = tests.find(t => t.id === btn.dataset.sample);
+                if (test) loadSample(test);
+            });
+        }
+
+        async function loadSamplesAll() {
+            const grid = document.getElementById('sampleGrid');
+            grid.innerHTML = '';
+            for (const t of tests) {
+                try {
+                    const res = await fetch(t.sample);
+                    const text = await res.text();
+                    const data = parsers[t.type](text);
+                    const results = analyzers[t.id](data);
+                    if (!results || !results.length) {
+                        renderCard(grid, t.title, null, 'Example file');
+                        continue;
+                    }
+                    results.forEach(r => {
+                        const extras = buildExtras(t.id, r.stats);
+                        renderCard(grid, `${t.title} — ${r.label}`, r.stats, 'Example file', extras);
+                    });
+                } catch (e) {
+                    renderCard(grid, t.title, null, 'Example file');
+                }
+            }
+        }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                wireSections();
+                document.querySelectorAll('[data-load-samples]').forEach(btn => btn.addEventListener('click', loadSamplesAll));
+            });
+    </script>
+</BaseLayout>

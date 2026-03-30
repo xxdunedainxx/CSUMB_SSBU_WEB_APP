@@ -1,20 +1,116 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Card from '../../components/Card.astro';
 import TestInfo from '../../data/tests';
 
 const tests = TestInfo;
+const tags = Array.from(new Set(tests.flatMap(t => t.tags ?? [])));
 ---
 
-<BaseLayout title="CSUMB SSBU Research Lab" description="CSUMB Research">
-    <div class="container">
-        <h1>Our Cognitive and Reaction tests!</h1>
-        <p class="muted">Test and measure your cognitive and reaction skills!.</p>
+<BaseLayout title="Tests Dashboard | Lab.io" description="Browse and launch cognitive and reaction paradigms">
+    <div class="tests-page">
+        <section class="tests-hero">
+            <div class="tests-hero__heading">
+                <p class="eyebrow">Validated paradigms</p>
+                <h1 class="tests-title">Neuro-Cognitive <span class="accent">Inventory</span></h1>
+                <p class="tests-lede">Select a protocol to begin data collection. All tests run in-browser and keep you inside the dashboard.</p>
+            </div>
 
-        <section class="test-list" aria-label="Cognitive and Reaction Tests">
+            <div class="tests-controls" aria-label="Test filters">
+		        <div class="filters" role="list" aria-label="Filter tests by tag">
+		            <button class="filter filter--active" data-filter-tag="all" type="button" role="listitem">All tests</button>
+		            {tags.map(tag => (
+		                <button class="filter" data-filter-tag={tag} type="button" role="listitem">{tag}</button>
+		            ))}
+		        </div>
+            </div>
+        </section>
+
+        <section class="tests-grid" aria-label="Tests">
             {tests.map(test => (
-                <Card test={test} />
+                <article class="test-card" id={test.id} data-tags={(test.tags ?? []).join(',')}>
+                    <div class="test-card__media">
+                        <div class="test-card__media-img" aria-hidden="true">
+                            <img src={test.icon} alt={test.name + ' illustration'} loading="lazy" />
+                        </div>
+                        {test.tags && test.tags.length ? (
+                            <div class="test-card__tags">
+                                {test.tags.map(tag => (
+                                    <span class="chip">{tag}</span>
+                                ))}
+                            </div>
+                        ) : null}
+                    </div>
+
+                    <div class="test-card__body">
+                        <h3 class="test-card__title">{test.name}</h3>
+                        <p class="test-card__desc">{test.shortDescription}</p>
+                        {test.description && <p class="test-card__detail">{test.description}</p>}
+
+                        <div class="test-card__footer">
+                            <span class="meta">Estimated: pending</span>
+                            <a class="btn btn-text" href={`/tests/${test.id}`} aria-label={`Launch ${test.name}`}>
+                                Launch test →
+                            </a>
+                        </div>
+                    </div>
+                </article>
             ))}
         </section>
+
+        <section class="tests-stats" aria-label="System status">
+            <div class="stat">
+                <span class="stat-label">Global precision</span>
+                <span class="stat-value">±0.04ms</span>
+            </div>
+            <div class="stat-divider" aria-hidden="true"></div>
+            <div class="stat">
+                <span class="stat-label">System status</span>
+                <span class="stat-value stat-pill">Live monitoring</span>
+            </div>
+            <div class="stat-divider" aria-hidden="true"></div>
+            <div class="stat">
+                <span class="stat-label">Environment</span>
+                <span class="stat-value">Lab.io research v4.2.0</span>
+            </div>
+        </section>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const buttons = Array.from(document.querySelectorAll('[data-filter-tag]'));
+                const cards = Array.from(document.querySelectorAll('.test-card[data-tags]'));
+
+                const applyFilter = (tag) => {
+                    cards.forEach(card => {
+                        const tags = (card.dataset.tags || '').split(',').map(t => t.trim()).filter(Boolean);
+                        const visible = tag === 'all' || tags.includes(tag);
+                        card.style.display = visible ? '' : 'none';
+                    });
+                };
+
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const tag = btn.dataset.filterTag || 'all';
+                        buttons.forEach(b => b.classList.toggle('filter--active', b === btn));
+                        applyFilter(tag);
+                    });
+                });
+
+                // Fade-in on scroll
+                const observer = new IntersectionObserver((entries, obs) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    root: null,
+                    threshold: 0.15,
+                    rootMargin: '0px 0px -5% 0px'
+                });
+
+                cards.forEach(card => observer.observe(card));
+            });
+        </script>
     </div>
 </BaseLayout>

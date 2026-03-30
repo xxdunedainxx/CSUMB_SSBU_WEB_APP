@@ -1,13 +1,13 @@
 ---
-const siteTitle = ''; //TODO: update this with offical name
+const siteTitle = 'Lab.io';
 ---
 
 <header class="site-header" role="banner">
-    <div class="container header-inner">
-        <a class="site-logo" href="/" aria-label={siteTitle}>
-            <span>{siteTitle}</span>
-        </a>
+    <a class="logo-float" href="/" aria-label={siteTitle}>
+        <img class="logo-img" src="/lab_io_logo.png" alt={siteTitle} loading="lazy" />
+    </a>
 
+    <div class="container header-inner">
         <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false" aria-label="Toggle navigation">
             <span class="hamburger" aria-hidden="true"></span>
         </button>
@@ -16,6 +16,7 @@ const siteTitle = ''; //TODO: update this with offical name
             <ul class="nav-list">
                 <li><a href="/">Home</a></li>
                 <li><a href="/tests/">Cognitive and Reaction Tests</a></li>
+                <li><a href="/results/">Results</a></li>
             </ul>
         </nav>
     </div>
