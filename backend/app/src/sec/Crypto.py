@@ -27,14 +27,20 @@ class CryptoService:
     def __init__(self, initiazationVectorFile: str, keyFile: str):
         self.__establish_aes_cipher(initiazationVectorFile, keyFile)
 
-    def encrypt_bytes(self, data):
+    """
+        Encrypts a series of bytes, and returns the cyphertext as bytes 
+    """
+    def encrypt_bytes(self, data: bytes) -> bytes:
         return self.aes256.encrypt(
             self.iv,
             data,
             associated_data=None
         )
 
-    def decrypt_to_bytes(self, data):
+    """
+        Decrypts a series of bytes, and returns the plain text as bytes 
+    """
+    def decrypt_to_bytes(self, data: bytes) -> bytes:
         return self.aes256.decrypt(
             self.iv,
             data,
@@ -54,7 +60,7 @@ class CryptoService:
     """
         Decrypts the ciphertext data string to a plaintext string 
     """
-    def decrypt_to_string(self, data):
+    def decrypt_to_string(self, data: str) -> str:
         return self.aes256.decrypt(
             self.iv,
             base64.b64decode(data.encode(CryptoService.ENCODING)),

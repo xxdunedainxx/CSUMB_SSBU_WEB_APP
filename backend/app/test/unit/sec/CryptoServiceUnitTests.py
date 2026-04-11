@@ -53,5 +53,8 @@ class CryptoServiceUnitTests(unittest.TestCase):
         encryptedData=cryptoService.encrypt_string(stringToEncrypt)
         assert(cryptoService.decrypt_to_string(encryptedData) == stringToEncrypt)
 
+        # Ensure the tmp files were removed
+        assert(FileIO.file_exists(ivFile) == False and FileIO.file_exists(keyFile) == False)
+
 if __name__ == "__main__":
     unittest.main()
