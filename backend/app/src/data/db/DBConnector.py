@@ -112,7 +112,7 @@ class DBConnector:
             if readOrWrite == DBConnector.WRITE:
                 self.__CONNECTION.commit()
                 # TODO - check commits
-                return None
+                return queryCursor.fetchone()
             else:
                 return queryCursor.fetchall()
 

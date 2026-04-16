@@ -78,7 +78,7 @@ class DbQueryFactory:
         Create a new test result object 
     """
     def create_new_test_result(self, testRsult: TestResult):
-        self.dbConnector.write_or_update_data(
+        return self.dbConnector.write_or_update_data(
             query="INSERT INTO testResults (userID, whenGenerated, classification) VALUES (%s, %s, %s)",
             vars=(
                 testRsult.userId,
@@ -97,4 +97,8 @@ class DbQueryFactory:
         TODO Create a new simple reaction time test result row 
     """
     def create_new_srt_test_result(self):
+        pass
+
+    # TODO
+    def get_gng_test_results(self):
         pass

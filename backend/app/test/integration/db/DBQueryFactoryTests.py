@@ -50,3 +50,12 @@ class DBConnectorTests(unittest.TestCase):
         assert(newUserRecord.email == emailToUse)
         assert(newUserRecord.verified == False)
         assert(newUserRecord.salt=="blah")
+
+    @enabled
+    def test_create_test_result(self):
+        pass
+
+    @enabled
+    def test_create_gng_results(self):
+        pass
+    

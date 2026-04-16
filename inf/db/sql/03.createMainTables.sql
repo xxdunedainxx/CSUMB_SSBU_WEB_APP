@@ -33,8 +33,15 @@ CREATE TABLE IF NOT EXISTS srtTestResultData(
     StatusOfAnswer INT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS gngTestResultData(
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    testResultId INT REFERENCES testResults(id), -- link back to entire testing set result
+    GoNoGoAndTestOrTrial VARCHAR(1000) NOT NULL,
+    ResponseTimeMs INT NOT NULL,
+    ErrorStatus INT NOT NULL
+);
+
 -- TODO
-CREATE TABLE IF NOT EXISTS gngTestResultData();
 CREATE TABLE IF NOT EXISTS taskSwitchingTestResultData();
 CREATE TABLE IF NOT EXISTS posnerQueueTestResultData();
 
