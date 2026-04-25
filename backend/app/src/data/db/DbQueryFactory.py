@@ -6,6 +6,7 @@
 from datetime import datetime, timezone
 
 from src.data.db.DBConnector import DBConnector
+from src.data.db.model.CompleteTestResults import CompleteTestResults
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.TestResult import TestResult
 from src.data.db.model.User import User
@@ -88,11 +89,39 @@ class DbQueryFactory:
             )
         )
 
+    def create_new_test_result_non_structured(self, userId: str, classification: str):
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO testResults (userID, whenGenerated, classification) VALUES (%s, %s, %s) RETURNING id, userID, whenGenerated, classification",
+            vars=(
+                userId,
+                DateTimeUtils.get_current_datetime_in_iso_format_str(),
+                classification
+            )
+        )
+
     """
-        TODO Get test result information 
+        Fetches an object containing all test and trial related data 
     """
-    def get_test_results(self):
-        pass
+    def get_test_results(self, testId: int) -> CompleteTestResults:
+        testResultDbRecord = self.dbConnector.read_data(
+            query="SELECT userID, whenGenerated, classification from testResults WHERE id=%s",
+            vars=(testId,)
+        )
+
+        testRecord=TestResult(
+            id=testId,
+            userId=testResultDbRecord[0][0],
+            whenGenerated=testResultDbRecord[0][1],
+            classification=testResultDbRecord[0][2]
+        )
+
+        gngRecords = self.get_gng_test_results(testId=testId)
+
+        return CompleteTestResults(
+            testResult=testRecord,
+            GngTestResults=gngRecords
+        )
+
 
     """
         TODO Create a new simple reaction time test result row 
@@ -102,7 +131,7 @@ class DbQueryFactory:
 
     def get_gng_test_results(self, testId: int):
         allResults = self.dbConnector.read_data(
-            query="SELECT * FROM gngTestResultData WHERE testResultId=%s",
+            query="SELECT id, GoNoGoAndTestOrTrial, ResponseTimeMs, ErrorStatus FROM gngTestResultData WHERE testResultId=%s",
             vars=(testId,)
         )
 

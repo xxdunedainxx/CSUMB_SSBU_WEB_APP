@@ -11,7 +11,7 @@
 """
 import os
 import json
-from src.Services import ServiceNames
+from src.ServiceNames import ServiceNames
 
 class Configuration:
 
@@ -73,6 +73,7 @@ class Configuration:
     self.SERVICE_TOGGLES: dict = self._get_value("SERVICE_TOGGLES")
     self.PRODUCTION_ENVIRONMENT: bool = self._get_value("PRODUCTION_ENVIRONMENT")
     # self.ENVIRONMENT_HOSTNAME: bool = self._get_value("ENVIRONMENT_HOSTNAME")
+    self.DB: dict = self._get_value("DB")
 
 
   def _get_value(self, key: str):
