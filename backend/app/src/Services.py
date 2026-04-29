@@ -22,7 +22,7 @@ class Services:
     @staticmethod
     def initialize_services():
         Services.toggleService = ToggleService("./toggles.json")
-        Services.DbQueryFactory = DbQueryFactory(
+        Services.dbQueryFactory = DbQueryFactory(
             dbConnector=DBConnector(
                 host=CONF_INSTANCE.DB["host"],
                 databaseName=CONF_INSTANCE.DB["db"],

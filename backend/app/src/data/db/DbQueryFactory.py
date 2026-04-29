@@ -89,8 +89,8 @@ class DbQueryFactory:
             )
         )
 
-    def create_new_test_result_non_structured(self, userId: str, classification: str):
-        return self.dbConnector.write_or_update_data(
+    def create_new_test_result_non_structured(self, userId: str, classification: str) -> TestResult:
+        record= self.dbConnector.write_or_update_data(
             query="INSERT INTO testResults (userID, whenGenerated, classification) VALUES (%s, %s, %s) RETURNING id, userID, whenGenerated, classification",
             vars=(
                 userId,
@@ -99,13 +99,36 @@ class DbQueryFactory:
             )
         )
 
+        return TestResult(
+            id=record[0][0],
+            userId=record[0][1],
+            whenGenerated=record[0][2],
+            classification=record[0][3]
+        )
+
+    """
+        Simple utility to get all user test result data IDs
+    """
+    def get_all_user_test_result_ids(self, userId: int):
+        testResultDbRecords = self.dbConnector.read_data(
+            query="SELECT id from testResults WHERE userID=%s",
+            vars=(userId,)
+        )
+
+        testIDs : [int] = []
+
+        for res in testResultDbRecords:
+            testIDs.append(int(res[0]))
+
+        return testIDs
+
     """
         Fetches an object containing all test and trial related data 
     """
-    def get_test_results(self, testId: int) -> CompleteTestResults:
+    def get_test_results(self, testId: int, userId: int) -> CompleteTestResults:
         testResultDbRecord = self.dbConnector.read_data(
-            query="SELECT userID, whenGenerated, classification from testResults WHERE id=%s",
-            vars=(testId,)
+            query="SELECT userID, whenGenerated, classification from testResults WHERE id=%s AND userID=%s",
+            vars=(testId,userId,)
         )
 
         testRecord=TestResult(
@@ -141,10 +164,10 @@ class DbQueryFactory:
             structuredGngResults.append(
                 GngTestResult(
                     id=int(res[0]),
-                    testResultId=int(res[1]),
-                    GoNoGoAndTestOrTrial=str(res[2]),
-                    ResponseTimeMs=int(res[3]),
-                    ErrorStatus=int(res[4])
+                    testResultId=testId,
+                    GoNoGoAndTestOrTrial=str(res[1]),
+                    ResponseTimeMs=int(res[2]),
+                    ErrorStatus=int(res[3])
                 )
             )
 

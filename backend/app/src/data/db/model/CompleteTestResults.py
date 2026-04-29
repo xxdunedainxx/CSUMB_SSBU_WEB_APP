@@ -16,7 +16,7 @@ class CompleteTestResults:
         gngRecords = []
 
         for gngRecord in self.gngTestResults:
-            gngRecord.append(gngRecord.serialize())
+            gngRecords.append(gngRecord.serialize())
 
         return {
             "testResult" : self.testResult.serialize(),
