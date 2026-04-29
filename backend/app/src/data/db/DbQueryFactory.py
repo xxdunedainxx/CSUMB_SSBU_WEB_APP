@@ -6,6 +6,8 @@
 from datetime import datetime, timezone
 
 from src.data.db.DBConnector import DBConnector
+from src.data.db.model.CompleteTestResults import CompleteTestResults
+from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.TestResult import TestResult
 from src.data.db.model.User import User
 from src.util.DateTimeUtil import DateTimeUtils
@@ -63,8 +65,8 @@ class DbQueryFactory:
             lastLogin TIMESTAMPTZ,
     """
     def create_new_user(self, user: User):
-        self.dbConnector.write_or_update_data(
-            query="INSERT INTO userTable (email, password, salt, verified, whenCreated) VALUES (%s, %s, %s, %s, %s)",
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO userTable (email, password, salt, verified, whenCreated) VALUES (%s, %s, %s, %s, %s) RETURNING id",
             vars=(
               user.email,
               user.password,
@@ -78,8 +80,8 @@ class DbQueryFactory:
         Create a new test result object 
     """
     def create_new_test_result(self, testRsult: TestResult):
-        self.dbConnector.write_or_update_data(
-            query="INSERT INTO testResults (userID, whenGenerated, classification) VALUES (%s, %s, %s)",
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO testResults (userID, whenGenerated, classification) VALUES (%s, %s, %s) RETURNING id, userID, whenGenerated, classification",
             vars=(
                 testRsult.userId,
                 DateTimeUtils.get_current_datetime_in_iso_format_str(),
@@ -87,14 +89,106 @@ class DbQueryFactory:
             )
         )
 
+    def create_new_test_result_non_structured(self, userId: str, classification: str) -> TestResult:
+        record= self.dbConnector.write_or_update_data(
+            query="INSERT INTO testResults (userID, whenGenerated, classification) VALUES (%s, %s, %s) RETURNING id, userID, whenGenerated, classification",
+            vars=(
+                userId,
+                DateTimeUtils.get_current_datetime_in_iso_format_str(),
+                classification
+            )
+        )
+
+        return TestResult(
+            id=record[0][0],
+            userId=record[0][1],
+            whenGenerated=record[0][2],
+            classification=record[0][3]
+        )
+
     """
-        TODO Get test result information 
+        Simple utility to get all user test result data IDs
     """
-    def get_test_results(self):
-        pass
+    def get_all_user_test_result_ids(self, userId: int):
+        testResultDbRecords = self.dbConnector.read_data(
+            query="SELECT id from testResults WHERE userID=%s",
+            vars=(userId,)
+        )
+
+        testIDs : [int] = []
+
+        for res in testResultDbRecords:
+            testIDs.append(int(res[0]))
+
+        return testIDs
+
+    """
+        Fetches an object containing all test and trial related data 
+    """
+    def get_test_results(self, testId: int, userId: int) -> CompleteTestResults:
+        testResultDbRecord = self.dbConnector.read_data(
+            query="SELECT userID, whenGenerated, classification from testResults WHERE id=%s AND userID=%s",
+            vars=(testId,userId,)
+        )
+
+        testRecord=TestResult(
+            id=testId,
+            userId=testResultDbRecord[0][0],
+            whenGenerated=testResultDbRecord[0][1],
+            classification=testResultDbRecord[0][2]
+        )
+
+        gngRecords = self.get_gng_test_results(testId=testId)
+
+        return CompleteTestResults(
+            testResult=testRecord,
+            GngTestResults=gngRecords
+        )
+
 
     """
         TODO Create a new simple reaction time test result row 
     """
     def create_new_srt_test_result(self):
         pass
+
+    def get_gng_test_results(self, testId: int):
+        allResults = self.dbConnector.read_data(
+            query="SELECT id, GoNoGoAndTestOrTrial, ResponseTimeMs, ErrorStatus FROM gngTestResultData WHERE testResultId=%s",
+            vars=(testId,)
+        )
+
+        structuredGngResults: [GngTestResult] = []
+
+        for res in allResults:
+            structuredGngResults.append(
+                GngTestResult(
+                    id=int(res[0]),
+                    testResultId=testId,
+                    GoNoGoAndTestOrTrial=str(res[1]),
+                    ResponseTimeMs=int(res[2]),
+                    ErrorStatus=int(res[3])
+                )
+            )
+
+        return structuredGngResults
+
+    """
+    CREATE TABLE IF NOT EXISTS gngTestResultData(
+        id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        testResultId INT REFERENCES testResults(id), -- link back to entire testing set result
+        GoNoGoAndTestOrTrial VARCHAR(1000) NOT NULL,
+        ResponseTimeMs INT NOT NULL,
+        ErrorStatus INT NOT NULL
+    );
+    """
+    def insert_gng_test_result(self, gngTestResult: GngTestResult):
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO gngTestResultData (testResultId, GoNoGoAndTestOrTrial, ResponseTimeMs, ErrorStatus) VALUES (%s, %s, %s, %s)",
+            vars=(
+                gngTestResult.testResultId,
+                gngTestResult.GoNoGoAndTestOrTrial,
+                gngTestResult.ResponseTimeMs,
+                gngTestResult.ErrorStatus
+            )
+        )

@@ -15,10 +15,30 @@ class TestResult:
     def __init__(self,
          id: int,
          userId: int,
-         whenGeneerated: datetime,
+         whenGenerated: datetime,
          classification: str
     ):
         self.id = id
         self.userId= userId
-        self.whenGenerated=whenGeneerated
+        self.whenGenerated=whenGenerated
         self.classification=classification
+
+    def serialize(self) -> dict:
+        return {
+            "id": self.id,
+            "userId": self.userId,
+            "whenGenerated": self.whenGenerated,
+            "classification": self.classification
+        }
+
+    """
+        Creates a new Gng Test result from a json dictionary provided 
+    """
+    @staticmethod
+    def deserialize_to_object(json: dict):
+        return TestResult(
+            id=json["id"],
+            userId=json["userId"],
+            whenGenerated=json["whenGenerated"],
+            classification=json["classification"]
+        )

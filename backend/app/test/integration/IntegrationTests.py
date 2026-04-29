@@ -8,6 +8,7 @@ from test.integration.db.DBConnectorTests import db_connector_tests
 from test.integration.db.DBQueryFactoryTests import db_query_factory_tests
 from test.integration.controllers.TestControllerTests import test_controller_tests
 from test.integration.controllers.ToggleControllerTests import test_toggle_controller
+from test.integration.controllers.TrialDataControllerTest import trial_data_controller_tests
 
 class IntegrationTests:
 
@@ -18,3 +19,4 @@ class IntegrationTests:
       db_query_factory_tests()
       test_controller_tests()
       test_toggle_controller()
+      trial_data_controller_tests()

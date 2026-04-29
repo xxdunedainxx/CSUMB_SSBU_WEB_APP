@@ -101,20 +101,21 @@ class DBConnector:
         if self.check_connection() == False:
             raise CSUMBDatabaseConnectionError(self.host, self.port)
         else:
-            queryCursor = self.__CONNECTION.cursor()
+            with self.__CONNECTION.cursor() as queryCursor:
+                queryCursor.execute(
+                    query,
+                    vars=vars
+                )
+                # Commit the write
+                if readOrWrite == DBConnector.WRITE:
+                    result = None
+                    if "RETURNING" in query:
+                        result = queryCursor.fetchall()
+                    self.__CONNECTION.commit()
+                    return result
 
-            queryCursor.execute(
-                query,
-                vars=vars
-            )
-
-            # Commit the write
-            if readOrWrite == DBConnector.WRITE:
-                self.__CONNECTION.commit()
-                # TODO - check commits
-                return None
-            else:
-                return queryCursor.fetchall()
+                else:
+                    return queryCursor.fetchall()
 
     """
         Simple helper for reading data from a db 
@@ -129,7 +130,7 @@ class DBConnector:
     """
         Simple helper for writing data to a db 
     """
-    def write_or_update_data(self, query, vars=None) -> None:
+    def write_or_update_data(self, query, vars=None) -> Any:
         return self.execute_query(
             query,
             vars,
