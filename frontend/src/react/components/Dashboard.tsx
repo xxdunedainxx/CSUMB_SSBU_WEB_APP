@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import Setup from './ts/util/Setup'
-import { HttpRequestClient } from './ts/client/HttpRequestClient';
+import Setup from '../ts/util/Setup'
+import { HttpRequestClient } from '../ts/client/HttpRequestClient';
 
 const setup = new Setup();
 

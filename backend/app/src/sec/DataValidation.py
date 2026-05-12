@@ -8,6 +8,9 @@
 
 from email_validator import validate_email, EmailNotValidError
 
+from src.data.db.model.GngTestResult import GngTestResult
+from src.data.db.model.PosnerCueResult import PosnerCueResult
+
 class Email:
     def __init__(self):
         pass
@@ -22,3 +25,18 @@ class Email:
             # print(str(e))
             return False
 
+# TODO
+class DataModelValidation:
+
+
+    @staticmethod
+    def validate_gng_structure(gngRecord: GngTestResult) -> bool:
+        return True
+
+    @staticmethod
+    def validate_posner_structure(posnerRecord: PosnerCueResult) -> bool:
+        return True
+
+    @staticmethod
+    def validate_srt_structure() -> bool:
+        return True

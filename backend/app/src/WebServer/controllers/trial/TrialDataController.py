@@ -4,6 +4,7 @@
   Synopsis: Trial controller for fetching & updating trial records
 """
 from src.Services import Services
+from src.WebServer.decorators.Authorize import authorize
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.PosnerCueResult import PosnerCueResult
 from src.util.LogFactory import LogFactory
@@ -172,7 +173,6 @@ class TrialController:
                 "response": "sadness"
             }, 500
 
-
     """
         Example Curl: curl localhost:80/get_test_result_data/1/1
     """
@@ -195,10 +195,13 @@ class TrialController:
 
     """
         Example curl: curl localhost:80/get_all_test_ids/1
+        With authorize: 
+        curl localhost:80/get_all_test_ids/1 -H "Cookie: session=eyJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoxfQ.agLcTA.4OcH8Ywtr7xHfzJU9xKGlp6UEp0"   
     """
     @staticmethod
     @flask_ref.route('/get_all_test_ids/<int:userId>', methods=['GET'])
     @http_logger
+    @authorize
     def get_user_test_results(userId: int):
         try:
             LogFactory.MAIN_LOG.info("Fetching user test IDs")

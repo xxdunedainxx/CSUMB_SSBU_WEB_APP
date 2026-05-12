@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Login from "../../react/components/Login";
+---
+
+
+<style>
+body {
+font-family: system-ui, sans-serif;
+color: white;
+display: flex;
+height: 100vh;
+align-items: center;
+justify-content: center;
+margin: 0;
+}
+
+.card {
+background: #111827;
+padding: 2rem;
+border-radius: 12px;
+width: 320px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+h1 {
+margin-bottom: 1rem;
+font-size: 1.5rem;
+}
+
+label {
+font-size: 0.9rem;
+display: block;
+margin-top: 1rem;
+margin-bottom: 0.3rem;
+}
+
+input {
+width: 100%;
+padding: 0.6rem;
+border-radius: 8px;
+border: 1px solid #374151;
+background: #0b1220;
+color: white;
+}
+
+button {
+width: 100%;
+margin-top: 1.5rem;
+padding: 0.7rem;
+border: none;
+border-radius: 8px;
+background: #3b82f6;
+color: white;
+cursor: pointer;
+font-weight: 600;
+}
+
+button:hover {
+background: #2563eb;
+}
+
+.error {
+color: #f87171;
+font-size: 0.85rem;
+margin-top: 0.5rem;
+display: none;
+}
+</style>
+
+
+<BaseLayout title="CSUMB SSBU Research Lab" description="CSUMB Research">   
+    <div class="container">
+        <Login client:load />
+    </div>
+</BaseLayout>

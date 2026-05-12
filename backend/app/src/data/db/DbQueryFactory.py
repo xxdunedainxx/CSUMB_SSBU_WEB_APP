@@ -50,10 +50,10 @@ class DbQueryFactory:
          ... Also the emails will likely be encrypted at rest.
     """
     def fetch_user_password_by_email(self, email: str) -> str:
-        return str(self.dbConnector.read_data(
+        return str((self.dbConnector.read_data(
                 query="SELECT password FROM userTable WHERE email=%s",
                 vars=(email,)
-            )[0]
+            )[0][0])
         )
 
     """
@@ -146,7 +146,9 @@ class DbQueryFactory:
         return CompleteTestResults(
             testResult=testRecord,
             GngTestResults=gngRecords,
-            PosnerRecords=posnerRecords
+            PosnerRecords=posnerRecords,
+            SrtRecords=[],
+            TaskSwitchingRecords=[]
         )
 
 

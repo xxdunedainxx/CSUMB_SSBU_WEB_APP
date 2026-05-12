@@ -10,8 +10,33 @@ export class HttpRequestClient {
 
   // General get method 
   private async get<T>(path: string): Promise<T> {
-    const res = await fetch(`${this.baseUrl}${path}`);
+    const res = await fetch(`${this.baseUrl}${path}`, {
+      credentials: "include",
+    });
 
+    if (!res.ok) {
+      // TODO IMPROVE
+      if(res.status == 401){
+        window.location.href = "/login";
+      }
+      else {
+        throw new Error(`API error: ${res.status}`);
+      }
+    }
+
+    return res.json();
+  }
+
+  private async post<T>(path: string, body: string): Promise<T> {
+    const res = await fetch(`${this.baseUrl}${path}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: body,
+    });
+    console.log(res)
     if (!res.ok) {
       throw new Error(`API error: ${res.status}`);
     }
@@ -30,5 +55,12 @@ export class HttpRequestClient {
     return this.get<any>(
       `/get_test_result_data/${userId}/${testId}`
     );
+  }
+
+  login(email: string, password: string){
+      return this.post<any>(
+        '/login',
+        JSON.stringify({ email, password }),
+      );
   }
 }

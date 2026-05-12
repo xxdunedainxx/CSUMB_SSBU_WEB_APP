@@ -1,6 +1,7 @@
 ---
 import TestLayout from '../../layouts/TestLayout.astro';
 import { testMap } from '../../react/ts/data/tests';
+import TestResultListenerComponent from '../../react/components/TestResultListenerComponent';
 
 // Tell Astro which pages to generate at build time
 export function getStaticPaths() {
@@ -17,6 +18,7 @@ if (!testInfo) {
 }
 
 const testUrl = testInfo.file;
+
 ---
 
 <TestLayout 
@@ -30,6 +32,7 @@ const testUrl = testInfo.file;
             src={testUrl}
             title={testInfo.name}
             allow="fullscreen"
+            id="testWindow"
         ></iframe>
     </div>
 
@@ -39,4 +42,5 @@ const testUrl = testInfo.file;
             console.log('Message from test:', event.data);
         });
     </script>
+    <TestResultListenerComponent client:load testCategory={testInfo.id} />
 </TestLayout>

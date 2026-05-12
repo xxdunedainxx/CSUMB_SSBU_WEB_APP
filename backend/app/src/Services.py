@@ -5,6 +5,7 @@
 """
 from src.data.db.DBConnector import DBConnector
 from src.data.db.DbQueryFactory import DbQueryFactory
+from src.sec.Auth import AuthenticationService
 from src.toggle.Toggle import ToggleService
 from src.Configuration import CONF_INSTANCE
 
@@ -17,8 +18,10 @@ class Services:
     logRotation: str = "log_rotator"
     redis: str = 'redis'
     mysql: str = 'mysql'
+
     toggleService: ToggleService = None
     dbQueryFactory: DbQueryFactory = None
+    authService: AuthenticationService = None
     @staticmethod
     def initialize_services():
         Services.toggleService = ToggleService("./toggles.json")
@@ -31,3 +34,4 @@ class Services:
                 port=CONF_INSTANCE.DB["port"]
             )
         )
+        Services.authService = AuthenticationService(dbQueryFactory=Services.dbQueryFactory)

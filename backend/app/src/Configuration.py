@@ -20,7 +20,7 @@ class Configuration:
     "SMTP_PORT"   : 465,
     "FLASK_HOST_BIND" : "0.0.0.0",
     "FLASK_PORT_BIND" : 80,
-    "FLASK_CORS_ORIGIN": "*",
+    "FLASK_CORS_ORIGIN": "http://localhost:4321",
     # "APP_HEALTH_PORT" : 9090,
     # "APP_HEALTH_ONLY_API_TOGGLE" : True,
     "SERVICE_TOGGLES" : {
