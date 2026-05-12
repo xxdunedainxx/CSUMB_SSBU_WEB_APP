@@ -3,14 +3,17 @@
   Date: 2/16/26
   Synopsis: Central class for CRAFTING and EXECUTING DB queries.
 """
+import json
 from datetime import datetime, timezone
 
 from src.data.db.DBConnector import DBConnector
 from src.data.db.model.CompleteTestResults import CompleteTestResults
 from src.data.db.model.GngTestResult import GngTestResult
+from src.data.db.model.PosnerCueResult import PosnerCueResult
 from src.data.db.model.TestResult import TestResult
 from src.data.db.model.User import User
 from src.util.DateTimeUtil import DateTimeUtils
+from src.Configuration import CONF_INSTANCE
 
 """
     Utility class for crafting/executing SQL queries against the DB 
@@ -139,10 +142,11 @@ class DbQueryFactory:
         )
 
         gngRecords = self.get_gng_test_results(testId=testId)
-
+        posnerRecords = self.get_posner_cue_results(testId=testId)
         return CompleteTestResults(
             testResult=testRecord,
-            GngTestResults=gngRecords
+            GngTestResults=gngRecords,
+            PosnerRecords=posnerRecords
         )
 
 
@@ -154,24 +158,53 @@ class DbQueryFactory:
 
     def get_gng_test_results(self, testId: int):
         allResults = self.dbConnector.read_data(
-            query="SELECT id, GoNoGoAndTestOrTrial, ResponseTimeMs, ErrorStatus FROM gngTestResultData WHERE testResultId=%s",
+            query="SELECT id, payload FROM gngTestResultData WHERE testResultId=%s",
             vars=(testId,)
         )
 
         structuredGngResults: [GngTestResult] = []
 
         for res in allResults:
+            jsonData=self.__decrypt_data(bytes(res[1]))
             structuredGngResults.append(
                 GngTestResult(
                     id=int(res[0]),
                     testResultId=testId,
-                    GoNoGoAndTestOrTrial=str(res[1]),
-                    ResponseTimeMs=int(res[2]),
-                    ErrorStatus=int(res[3])
+                    GoNoGoAndTestOrTrial=jsonData["GoNoGoAndTestOrTrial"],
+                    ResponseTimeMs=jsonData["ResponseTimeMs"],
+                    ErrorStatus=jsonData["ErrorStatus"]
                 )
             )
 
         return structuredGngResults
+
+    def get_posner_cue_results(self, testId: int):
+        allResults = self.dbConnector.read_data(
+            query="SELECT id, payload FROM posnerQueueTestResultData WHERE testResultId=%s",
+            vars=(testId,)
+        )
+
+        structuredGngResults: [PosnerCueResult] = []
+
+        for res in allResults:
+            jsonData=self.__decrypt_data(bytes(res[1]))
+            structuredGngResults.append(
+                PosnerCueResult(
+                    id=int(res[0]),
+                    testResultId=testId,
+                    TestOrTraining=jsonData["TestOrTraining"],
+                    CuePosition=jsonData["CuePosition"],
+                    TargetPosition=jsonData["TargetPosition"],
+                    CueValidity=jsonData["CueValidity"],
+                    CuedOrUncued=jsonData["CuedOrUncued"],
+                    CueValidityAsNumber=jsonData["CueValidityAsNumber"],
+                    ResponseTimeMs=jsonData["ResponseTimeMs"],
+                    ResponseStatus=jsonData["ResponseStatus"]
+                )
+            )
+
+        return structuredGngResults
+
 
     """
     CREATE TABLE IF NOT EXISTS gngTestResultData(
@@ -184,11 +217,31 @@ class DbQueryFactory:
     """
     def insert_gng_test_result(self, gngTestResult: GngTestResult):
         return self.dbConnector.write_or_update_data(
-            query="INSERT INTO gngTestResultData (testResultId, GoNoGoAndTestOrTrial, ResponseTimeMs, ErrorStatus) VALUES (%s, %s, %s, %s)",
+            query="INSERT INTO gngTestResultData (testResultId, payload) VALUES (%s, %s)",
             vars=(
-                gngTestResult.testResultId,
-                gngTestResult.GoNoGoAndTestOrTrial,
-                gngTestResult.ResponseTimeMs,
-                gngTestResult.ErrorStatus
+                gngTestResult.testResultId, self.__encrypt_data(gngTestResult.serialize())
             )
         )
+    
+    def insert_posner_test_result(self, posnerTestResult: PosnerCueResult):
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO posnerQueueTestResultData (testResultId, payload) VALUES (%s, %s)",
+            vars=(
+                posnerTestResult.testResultId, self.__encrypt_data(posnerTestResult.serialize())
+            )
+        )
+
+
+    def __encrypt_data(self, jsonData: dict):
+        jsonStr = json.dumps(jsonData)
+        # TODO ENCRYPTION AT REST
+        if CONF_INSTANCE.ENCRYPTED_AT_REST:
+            return ""
+        else:
+            return jsonStr.encode("utf-8")
+
+    def __decrypt_data(self, cipherText: bytes) -> dict:
+        if CONF_INSTANCE.ENCRYPTED_AT_REST:
+            return {}
+        else:
+            return json.loads(cipherText.decode("utf-8"))

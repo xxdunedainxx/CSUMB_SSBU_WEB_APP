@@ -101,21 +101,25 @@ class DBConnector:
         if self.check_connection() == False:
             raise CSUMBDatabaseConnectionError(self.host, self.port)
         else:
-            with self.__CONNECTION.cursor() as queryCursor:
-                queryCursor.execute(
-                    query,
-                    vars=vars
-                )
-                # Commit the write
-                if readOrWrite == DBConnector.WRITE:
-                    result = None
-                    if "RETURNING" in query:
-                        result = queryCursor.fetchall()
-                    self.__CONNECTION.commit()
-                    return result
+            try:
+                with self.__CONNECTION.cursor() as queryCursor:
+                    queryCursor.execute(
+                        query,
+                        vars=vars
+                    )
+                    # Commit the write
+                    if readOrWrite == DBConnector.WRITE:
+                        result = None
+                        if "RETURNING" in query:
+                            result = queryCursor.fetchall()
+                        self.__CONNECTION.commit()
+                        return result
 
-                else:
-                    return queryCursor.fetchall()
+                    else:
+                        return queryCursor.fetchall()
+            except Exception as e:
+                self.__CONNECTION.rollback()
+                raise e
 
     """
         Simple helper for reading data from a db 

@@ -5,6 +5,7 @@
 """
 from src.Services import Services
 from src.data.db.model.GngTestResult import GngTestResult
+from src.data.db.model.PosnerCueResult import PosnerCueResult
 from src.util.LogFactory import LogFactory
 from src.WebServer.decorators.HTTPLogger import http_logger
 from src.WebServer.WebServerInit import WebServerInit
@@ -98,6 +99,79 @@ class TrialController:
             return {
                 "response": "sadness"
             }, 500
+
+    """
+    EXAMPLE: 
+    
+    curl localhost:80/upload_posner_results \ 
+      -X POST \
+      -H "Content-Type: application/json" \
+      -d '{
+        "posnerResults": [
+          {
+            "id": 1,
+            "testResultId": 1,
+            "TestOrTraining": "TEST",
+            "CuePosition": "LEFT",
+            "TargetPosition": "RIGHT",
+            "CueValidity": "VALID",
+            "CuedOrUncued": "CUED",
+            "CueValidityAsNumber": 1,
+            "ResponseTimeMs": 320,
+            "ResponseStatus": 0
+          },
+          {
+            "id": 2,
+            "testResultId": 1,
+            "TestOrTraining": "TEST",
+            "CuePosition": "RIGHT",
+            "TargetPosition": "LEFT",
+            "CueValidity": "INVALID",
+            "CuedOrUncued": "UNCUED",
+            "CueValidityAsNumber": 0,
+            "ResponseTimeMs": 410,
+            "ResponseStatus": 1
+          },
+          {
+            "id": 3,
+            "testResultId": 1,
+            "TestOrTraining": "TEST",
+            "CuePosition": "CENTER",
+            "TargetPosition": "RIGHT",
+            "CueValidity": "NEUTRAL",
+            "CuedOrUncued": "UNCUED",
+            "CueValidityAsNumber": -1,
+            "ResponseTimeMs": 295,
+            "ResponseStatus": 0
+          }
+        ]
+      }'
+
+    """
+    @staticmethod
+    @flask_ref.route('/upload_posner_results', methods=['POST'])
+    @http_logger
+    def upload_posner_results():
+        try:
+            LogFactory.MAIN_LOG.info("Processing posner Test Results")
+
+            # TODO FOR ALL OF THESE RESULT UPLAODS, ENSURE A RECORD FOR THIS TEST RESULT ID DOES NOT EXIST!!
+            results = request.json["posnerResults"]
+
+            for result in results:
+                Services.dbQueryFactory.insert_posner_test_result(
+                    PosnerCueResult.deserialize_to_object(result)
+                )
+
+            return {
+                "response": "records uploaded"
+            }, 200
+        except Exception as e:
+            LogFactory.MAIN_LOG.error(f"Upload gng test results {errorStackTrace(e)}")
+            return {
+                "response": "sadness"
+            }, 500
+
 
     """
         Example Curl: curl localhost:80/get_test_result_data/1/1

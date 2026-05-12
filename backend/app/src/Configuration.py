@@ -31,7 +31,8 @@ class Configuration:
     },
     "REACT_APP" : "http://localhost",
     "PRODUCTION_ENVIRONMENT" : False,
-    "ENVIRONMENT_HOSTNAME" : "localhost"
+    "ENVIRONMENT_HOSTNAME" : "localhost",
+    "ENCRYPTED_AT_REST": False
   }
 
   def __init__(self, confFile: str = './conf.json'):
@@ -74,6 +75,10 @@ class Configuration:
     self.PRODUCTION_ENVIRONMENT: bool = self._get_value("PRODUCTION_ENVIRONMENT")
     # self.ENVIRONMENT_HOSTNAME: bool = self._get_value("ENVIRONMENT_HOSTNAME")
     self.DB: dict = self._get_value("DB")
+    self.ENCRYPTED_AT_REST: bool = self._get_value("ENCRYPTED_AT_REST")
+
+    if self.PRODUCTION_ENVIRONMENT == True and self.ENCRYPTED_AT_REST == False:
+      raise Exception("NEED ENCRYPTION IN PROD")
 
 
   def _get_value(self, key: str):
