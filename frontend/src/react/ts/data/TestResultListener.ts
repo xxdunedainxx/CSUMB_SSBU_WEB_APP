@@ -3,23 +3,6 @@ export class TestResultListener {
 
   constructor(testType: string) {
     this.testType = testType;
-
-    console.log("Register listener")
-    // TODO - iframe fetching 
-    const iframe = document.getElementById("testWindow") as HTMLIFrameElement;
-    const listener = this;
-    const win = iframe.contentWindow as any;
-    console.log("iframe loaded")
-    win.originalShowDataHtml = win.showdata_html;
-
-    win.showdata_html = () => {
-        const outputdata = win.outputdata;
-
-        if(listener.testType == "GoNoGo"){
-            listener.goNoGoToJson(outputdata);
-        }
-        console.log("outputdata inside iframe:", win.outputdata);
-    };
   }
 
   /**

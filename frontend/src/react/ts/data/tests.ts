@@ -20,7 +20,7 @@ const TestInfo: TestInfo[] = [
     },
     {
         id: 'GoNoGo',
-        file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/GoNoGo.html?GoTrials=1&NoGoTrials=1', // TODO - make trial http args configurable for DEV
+        file: 'http://localhost/gngFile?GoTrials=1&NoGoTrials=1', // TODO - make trial http args configurable for DEV
         name: 'Go No GO',
         shortDescription: 'Test your reaction and cognitive ablities', 
         description: 'A test measuring reaction and cognitive skils', //TODO make more descriptive/specific
