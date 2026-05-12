@@ -1,63 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-
+import Dashboard from '../../react/Dashboard';
 const userId = 1;
-
-// 1️⃣ Get all test IDs for this user
-const idsResponse = await fetch(`http://localhost:80/get_all_test_ids/${userId}`);
-const idsData = await idsResponse.json();
-const testIds = idsData.testIds;
-
-// 2️⃣ Fetch all test results in parallel
-const testResults = await Promise.all(
-  testIds.map(async (testId) => {
-    const res = await fetch(
-      `http://localhost:80/get_test_result_data/${userId}/${testId}`
-    );
-    return res.json();
-  })
-);
 ---
-
-<BaseLayout title="CSUMB SSBU Research Lab" description="CSUMB Research">
-  <div class="container">
-    <h1>Dashboard</h1>
-
-    {testResults.map((result) => (
-      <div class="test-card">
-        <h2>Test ID: {result.testResult.id}</h2>
-
-        <p>
-          <strong>Classification:</strong>{" "}
-          {result.testResult.classification}
-        </p>
-
-        <p>
-          <strong>Generated:</strong>{" "}
-          {result.testResult.whenGenerated}
-        </p>
-
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Type</th>
-              <th>Response Time (ms)</th>
-              <th>Error</th>
-            </tr>
-          </thead>
-          <tbody>
-            {result.gngRecords.map((record) => (
-              <tr>
-                <td>{record.id}</td>
-                <td>{record.GoNoGoAndTestOrTrial}</td>
-                <td>{record.ResponseTimeMs}</td>
-                <td>{record.ErrorStatus}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    ))}
-  </div>
+<BaseLayout title="CSUMB SSBU Research Lab" description="CSUMB Research">   
+    <div class="container">
+      <h1>Dashboard</h1>
+      <Dashboard client:load userId={userId} />
+    </div>
 </BaseLayout>
