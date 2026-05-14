@@ -22,7 +22,7 @@ const TestInfo: TestInfo[] = [
     },
     {
         id: 'GoNoGo',
-        file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/GoNoGo.html',
+        file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/GoNoGo.html?outputToCsv=0',
         debugArgs: "GoTrials=1&NoGoTrials=1",
         name: 'Go No GO',
         shortDescription: 'Test your reaction and cognitive ablities', 
@@ -32,7 +32,7 @@ const TestInfo: TestInfo[] = [
     },
     {
         id: 'Posner',
-        file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/Posner.html',
+        file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/Posner.html?outputToCsv=0',
         debugArgs: "totalTrials=1",
         name: 'Posner Queuing Test',
         shortDescription: 'Test your reaction and cognitive ablities', 
@@ -42,7 +42,7 @@ const TestInfo: TestInfo[] = [
     },
     {
         id: 'TaskSwitching',
-        file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/TaskSwitching.html',
+        file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/TaskSwitching.html?outputToCsv=0',
         debugArgs: "totalTrials=1",
         name: 'Task Switching',
         shortDescription: 'Test your reaction and cognitive ablities', 
@@ -52,7 +52,7 @@ const TestInfo: TestInfo[] = [
     },
     {
         id: 'SimpleReactionOnly',
-        file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/SimpleReactionOnly.html',
+        file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/SimpleReactionOnly.html?outputToCsv=0',
         debugArgs: "SimpleReactionTrain=1&SimpleReactionTest=1",
         name: 'Simple Reaction',
         shortDescription: 'Test your reaction time!', 
