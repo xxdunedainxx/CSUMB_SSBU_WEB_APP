@@ -1,6 +1,7 @@
 export interface TestInfo {
     id: string;
     file: string;
+    debugArgs: string;
     name: string;
     shortDescription: string;
     description?: string;
@@ -12,6 +13,7 @@ const TestInfo: TestInfo[] = [
     {
         id: 'HeneveldControlllerParadigm',
         file: 'https://micahheneveld.github.io/Heneveld_Controller_Testing_Paradigm/',
+        debugArgs: "",
         name: 'Heneveld Controller Testing Paradigm',
         shortDescription: 'Test your controller precision and control',
         description: 'A precision test measuring dexterity through reaction and cognitive tests using game controller joysticks',
@@ -20,7 +22,8 @@ const TestInfo: TestInfo[] = [
     },
     {
         id: 'GoNoGo',
-        file: 'http://localhost/gngFile?GoTrials=1&NoGoTrials=1', // TODO - make trial http args configurable for DEV
+        file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/GoNoGo.html',
+        debugArgs: "GoTrials=1&NoGoTrials=1",
         name: 'Go No GO',
         shortDescription: 'Test your reaction and cognitive ablities', 
         description: 'A test measuring reaction and cognitive skils', //TODO make more descriptive/specific
@@ -30,6 +33,7 @@ const TestInfo: TestInfo[] = [
     {
         id: 'Posner',
         file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/Posner.html',
+        debugArgs: "totalTrials=1",
         name: 'Posner Queuing Test',
         shortDescription: 'Test your reaction and cognitive ablities', 
         description: 'Ummmmm, idk really know what this test does', //TODO make more descriptive/specific
@@ -39,6 +43,7 @@ const TestInfo: TestInfo[] = [
     {
         id: 'TaskSwitching',
         file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/TaskSwitching.html',
+        debugArgs: "totalTrials=1",
         name: 'Task Switching',
         shortDescription: 'Test your reaction and cognitive ablities', 
         description: 'Ummmmm, idk really know what this test does', //TODO make more descriptive/specific
@@ -48,6 +53,7 @@ const TestInfo: TestInfo[] = [
     {
         id: 'SimpleReactionOnly',
         file: 'https://xxdunedainxx.github.io/CSUMB_SSBU_Study/site/SimpleReactionOnly.html',
+        debugArgs: "SimpleReactionTrain=1&SimpleReactionTest=1",
         name: 'Simple Reaction',
         shortDescription: 'Test your reaction time!', 
         description: 'Tests your simple reaction time using a spacebar', //TODO make more descriptive/specific

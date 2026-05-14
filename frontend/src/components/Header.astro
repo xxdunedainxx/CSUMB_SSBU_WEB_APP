@@ -1,11 +1,16 @@
 ---
-const siteTitle = ''; //TODO: update this with offical name
+import Setup from '../react/ts/util/Setup'
+const setup = new Setup();
+
+const siteTitle = `CSUMB Research`; //TODO: update this with offical name
+const finalSiteTile = !setup.config.isProd ? `DEV ENV - ${siteTitle}` : siteTitle;
+const VERSION = setup.config.version
 ---
 
 <header class="site-header" role="banner">
     <div class="container header-inner">
-        <a class="site-logo" href="/" aria-label={siteTitle}>
-            <span>{siteTitle}</span>
+        <a class="site-logo" href="/" aria-label={finalSiteTile}>
+            <span>{finalSiteTile}</span>
         </a>
 
         <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,6 +24,7 @@ const siteTitle = ''; //TODO: update this with offical name
                 <li><a href="/dashboard/">Your personal dashboard</a></li>
             </ul>
         </nav>
+        <div>v{VERSION}</div>
     </div>
 
     <script>

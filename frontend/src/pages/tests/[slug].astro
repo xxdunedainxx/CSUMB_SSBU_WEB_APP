@@ -2,6 +2,7 @@
 import TestLayout from '../../layouts/TestLayout.astro';
 import { testMap } from '../../react/ts/data/tests';
 import TestResultListenerComponent from '../../react/components/TestResultListenerComponent';
+import Setup from '../../react/ts/util/Setup'
 
 // Tell Astro which pages to generate at build time
 export function getStaticPaths() {
@@ -17,7 +18,14 @@ if (!testInfo) {
     return Astro.redirect('/404');
 }
 
-const testUrl = testInfo.file;
+const setup = new Setup();
+const baseUrl = testInfo.file;
+
+const finalTestUrl =
+  !setup.config.isProd && testInfo.debugArgs
+    ? `${testInfo.file}?${testInfo.debugArgs}`
+    : baseUrl;
+
 
 ---
 
@@ -29,7 +37,7 @@ const testUrl = testInfo.file;
     <div class="test-iframe-wrapper">
         <iframe 
             class="test-iframe"
-            src={testUrl}
+            src={finalTestUrl}
             title={testInfo.name}
             allow="fullscreen"
             id="testWindow"
