@@ -60,6 +60,12 @@ class FileIO:
     return content
 
   @staticmethod
+  def read_bytes_from_file(path) -> bytes:
+    with open(path, "rb") as f:
+      data = f.read()
+    return data
+
+  @staticmethod
   def generate_byte_file(path, bytes):
     with open(path, 'wb') as file:
       file.write(bytes)
