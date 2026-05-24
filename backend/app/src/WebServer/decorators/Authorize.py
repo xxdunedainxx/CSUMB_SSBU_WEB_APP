@@ -9,6 +9,10 @@ from src.util.LogFactory import LogFactory
 
 LOGGER = LogFactory.get_logger('http')
 
+
+"""
+    Simple decorator for endpoints to auth a request 
+"""
 def authorize(api):
     @wraps(api)
     def authorize(*args, **kwargs):

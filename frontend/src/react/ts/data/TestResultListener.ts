@@ -8,21 +8,21 @@ export class TestResultListener {
   /**
    * Convert CSV-like output into JSON
    */
-  goNoGoToJson(outputData: string) {
+  goNoGoToJson(outputData: string): {} {
     const gngData= outputData
       .trim()
       .split("\n")
       .filter(Boolean)
       .map((line) => {
-        const [name, value1, value2] = line.split(",");
-
+        const [name, ResponseTimeMs, ErrorStatus] = line.split(" ");
         return {
           name: name.replace(/^"|"$/g, ""),
-          value1: Number(value1),
-          value2: Number(value2),
+          ResponseTimeMs: Number(ResponseTimeMs.replace(/^"|"$/g, "")),
+          ErrorStatus: Number(ErrorStatus.replace(/^"|"$/g, "")),
         };
       });
     console.log(gngData)
+    return {gngTestResults: gngData}
   }
 }
 

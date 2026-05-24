@@ -41,7 +41,20 @@ export class HttpRequestClient {
       throw new Error(`API error: ${res.status}`);
     }
 
-    return res.json();
+    const data = await res.json()
+    console.log(data)
+
+    return data;
+  }
+
+  // Upload Gng results
+  uploadGngResults(data: {}){
+    console.log("Upload Gng results")
+    console.log(data)
+    return this.post<any>(
+      '/upload_gng_test_results',
+      JSON.stringify(data)
+    );
   }
 
   // Get test IDs method 
@@ -61,6 +74,26 @@ export class HttpRequestClient {
       return this.post<any>(
         '/login',
         JSON.stringify({ email, password }),
+      );
+  }
+
+  logout(){
+      return this.post<any>(
+        '/logout',
+        "",
+      );
+  }
+
+  me(){
+      return this.get<any>(
+        '/me'
+      );
+  }
+
+  createNewTestId(userId: number, classification: string){
+      return this.post<any>(
+        '/create_new_test_result_entry',
+        JSON.stringify({userId, classification})
       );
   }
 }

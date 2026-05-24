@@ -1,5 +1,6 @@
 ---
 import Setup from '../react/ts/util/Setup'
+import Logout from '../react/components/Logout'
 const setup = new Setup();
 
 const siteTitle = `CSUMB Research`; //TODO: update this with offical name
@@ -22,6 +23,7 @@ const VERSION = setup.config.version
                 <li><a href="/">Home</a></li>
                 <li><a href="/tests/">Cognitive and Reaction Tests</a></li>
                 <li><a href="/dashboard/">Your personal dashboard</a></li>
+                <li><Logout client:load /></li>
             </ul>
         </nav>
         <div>v{VERSION}</div>

@@ -38,7 +38,7 @@ class AuthController:
               session["user_id"] = userRecord.id
               session["email"] = email
 
-              return jsonify({"message": "Logged in"})
+              return jsonify({"message": "Logged in", "user_id": userRecord.id})
 
           return jsonify({"error": "Invalid credentials"}), 401
       except Exception as e:
@@ -50,3 +50,9 @@ class AuthController:
     def logout():
         session.clear()
         return jsonify({"message": "Logged out"})
+
+    @staticmethod
+    @flask_ref.route('/me', methods=['GET'])
+    @http_logger
+    def me():
+        return jsonify({"user_id": session["user_id"]})
