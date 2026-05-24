@@ -16,7 +16,7 @@ export class TestResultListener {
       .map((line) => {
         const [name, ResponseTimeMs, ErrorStatus] = line.split(" ");
         return {
-          name: name.replace(/^"|"$/g, ""),
+          GoNoGoAndTestOrTrial: name.replace(/^"|"$/g, ""),
           ResponseTimeMs: Number(ResponseTimeMs.replace(/^"|"$/g, "")),
           ErrorStatus: Number(ErrorStatus.replace(/^"|"$/g, "")),
         };
