@@ -10,6 +10,8 @@ from test.unit.util.FileIOUnitTests import file_io_unit_tests
 from test.unit.util.test_email import test_emails
 from test.unit.util.DateTimeUtilsTests import date_time_utils_tests
 from test.unit.sec.PIIDataScrubberUnitTests import pii_data_scrubber_tests
+from test.unit.sec.CryptoServiceUnitTests import crypto_service_unit_testing
+
 from test.unit.util.ToggleTests.test_toggles import test_togglers
 from test.unit.data.DataModelUnitTests import data_model_unit_tests
 
@@ -25,3 +27,4 @@ class UnitTests:
     pii_data_scrubber_tests()
     test_togglers()
     data_model_unit_tests()
+    crypto_service_unit_testing()

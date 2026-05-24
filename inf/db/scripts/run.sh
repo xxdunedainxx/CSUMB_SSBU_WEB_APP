@@ -11,15 +11,21 @@ parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 echo $parent_path
 pwd
 
-./scripts/stop.sh
+$parent_path/stop.sh
 
-./scripts/build.sh
+$parent_path/build.sh
 
 cd $ORIGIN
 
 echo "Runniing Postgres Docker container.."
 
-docker run -p 5432:5432 --name csumbdbpg -e POSTGRES_DB=csumb_webapp -e POSTGRES_PASSWORD=my-secret-pw -d csumbdb
+docker volume ls | grep "postgres_data" && echo "Volume exists" || docker volume create postgres_data && echo "created volume"
+
+docker run -p 5432:5432 --name csumbdbpg \
+ -e POSTGRES_DB=csumb_webapp \
+ -e POSTGRES_PASSWORD=my-secret-pw \
+ -v postgres_data:/var/lib/postgresql/data \
+ -d csumbdb
 
 echo "Wait for a sec..."
 sleep 5
