@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Dashboard from '../../react/components/Dashboard';
+// TODO - use 'me' endpoint, hard coded to user 1 right now lol 
+const userId = 1;
+---
+<BaseLayout title="CSUMB SSBU Research Lab" description="CSUMB Research">   
+    <div class="container">
+      <h1>Dashboard</h1>
+      <Dashboard client:load userId={userId} />
+    </div>
+</BaseLayout>

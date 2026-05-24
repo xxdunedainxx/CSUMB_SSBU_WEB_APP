@@ -3,12 +3,17 @@
   Date: 2/16/26
   Synopsis: Central class for CRAFTING and EXECUTING DB queries.
 """
+import json
 from datetime import datetime, timezone
 
 from src.data.db.DBConnector import DBConnector
+from src.data.db.model.CompleteTestResults import CompleteTestResults
+from src.data.db.model.GngTestResult import GngTestResult
+from src.data.db.model.PosnerCueResult import PosnerCueResult
 from src.data.db.model.TestResult import TestResult
 from src.data.db.model.User import User
 from src.util.DateTimeUtil import DateTimeUtils
+from src.Configuration import CONF_INSTANCE
 
 """
     Utility class for crafting/executing SQL queries against the DB 
@@ -45,10 +50,10 @@ class DbQueryFactory:
          ... Also the emails will likely be encrypted at rest.
     """
     def fetch_user_password_by_email(self, email: str) -> str:
-        return str(self.dbConnector.read_data(
+        return str((self.dbConnector.read_data(
                 query="SELECT password FROM userTable WHERE email=%s",
                 vars=(email,)
-            )[0]
+            )[0][0])
         )
 
     """
@@ -63,8 +68,8 @@ class DbQueryFactory:
             lastLogin TIMESTAMPTZ,
     """
     def create_new_user(self, user: User):
-        self.dbConnector.write_or_update_data(
-            query="INSERT INTO userTable (email, password, salt, verified, whenCreated) VALUES (%s, %s, %s, %s, %s)",
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO userTable (email, password, salt, verified, whenCreated) VALUES (%s, %s, %s, %s, %s) RETURNING id",
             vars=(
               user.email,
               user.password,
@@ -78,8 +83,8 @@ class DbQueryFactory:
         Create a new test result object 
     """
     def create_new_test_result(self, testRsult: TestResult):
-        self.dbConnector.write_or_update_data(
-            query="INSERT INTO testResults (userID, whenGenerated, classification) VALUES (%s, %s, %s)",
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO testResults (userID, whenGenerated, classification) VALUES (%s, %s, %s) RETURNING id, userID, whenGenerated, classification",
             vars=(
                 testRsult.userId,
                 DateTimeUtils.get_current_datetime_in_iso_format_str(),
@@ -87,14 +92,158 @@ class DbQueryFactory:
             )
         )
 
+    def create_new_test_result_non_structured(self, userId: str, classification: str) -> TestResult:
+        record= self.dbConnector.write_or_update_data(
+            query="INSERT INTO testResults (userID, whenGenerated, classification) VALUES (%s, %s, %s) RETURNING id, userID, whenGenerated, classification",
+            vars=(
+                userId,
+                DateTimeUtils.get_current_datetime_in_iso_format_str(),
+                classification
+            )
+        )
+
+        return TestResult(
+            id=record[0][0],
+            userId=record[0][1],
+            whenGenerated=record[0][2],
+            classification=record[0][3]
+        )
+
     """
-        TODO Get test result information 
+        Simple utility to get all user test result data IDs
     """
-    def get_test_results(self):
-        pass
+    def get_all_user_test_result_ids(self, userId: int):
+        testResultDbRecords = self.dbConnector.read_data(
+            query="SELECT id from testResults WHERE userID=%s",
+            vars=(userId,)
+        )
+
+        testIDs : [int] = []
+
+        for res in testResultDbRecords:
+            testIDs.append(int(res[0]))
+
+        return testIDs
+
+    """
+        Fetches an object containing all test and trial related data 
+    """
+    def get_test_results(self, testId: int, userId: int) -> CompleteTestResults:
+        testResultDbRecord = self.dbConnector.read_data(
+            query="SELECT userID, whenGenerated, classification from testResults WHERE id=%s AND userID=%s",
+            vars=(testId,userId,)
+        )
+
+        testRecord=TestResult(
+            id=testId,
+            userId=testResultDbRecord[0][0],
+            whenGenerated=testResultDbRecord[0][1],
+            classification=testResultDbRecord[0][2]
+        )
+
+        gngRecords = self.get_gng_test_results(testId=testId)
+        posnerRecords = self.get_posner_cue_results(testId=testId)
+        return CompleteTestResults(
+            testResult=testRecord,
+            GngTestResults=gngRecords,
+            PosnerRecords=posnerRecords,
+            SrtRecords=[],
+            TaskSwitchingRecords=[]
+        )
+
 
     """
         TODO Create a new simple reaction time test result row 
     """
     def create_new_srt_test_result(self):
         pass
+
+    def get_gng_test_results(self, testId: int):
+        allResults = self.dbConnector.read_data(
+            query="SELECT id, payload FROM gngTestResultData WHERE testResultId=%s",
+            vars=(testId,)
+        )
+
+        structuredGngResults: [GngTestResult] = []
+
+        for res in allResults:
+            jsonData=self.__decrypt_data(bytes(res[1]))
+            structuredGngResults.append(
+                GngTestResult(
+                    id=int(res[0]),
+                    testResultId=testId,
+                    GoNoGoAndTestOrTrial=jsonData["GoNoGoAndTestOrTrial"],
+                    ResponseTimeMs=jsonData["ResponseTimeMs"],
+                    ErrorStatus=jsonData["ErrorStatus"]
+                )
+            )
+
+        return structuredGngResults
+
+    def get_posner_cue_results(self, testId: int):
+        allResults = self.dbConnector.read_data(
+            query="SELECT id, payload FROM posnerQueueTestResultData WHERE testResultId=%s",
+            vars=(testId,)
+        )
+
+        structuredGngResults: [PosnerCueResult] = []
+
+        for res in allResults:
+            jsonData=self.__decrypt_data(bytes(res[1]))
+            structuredGngResults.append(
+                PosnerCueResult(
+                    id=int(res[0]),
+                    testResultId=testId,
+                    TestOrTraining=jsonData["TestOrTraining"],
+                    CuePosition=jsonData["CuePosition"],
+                    TargetPosition=jsonData["TargetPosition"],
+                    CueValidity=jsonData["CueValidity"],
+                    CuedOrUncued=jsonData["CuedOrUncued"],
+                    CueValidityAsNumber=jsonData["CueValidityAsNumber"],
+                    ResponseTimeMs=jsonData["ResponseTimeMs"],
+                    ResponseStatus=jsonData["ResponseStatus"]
+                )
+            )
+
+        return structuredGngResults
+
+
+    """
+    CREATE TABLE IF NOT EXISTS gngTestResultData(
+        id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        testResultId INT REFERENCES testResults(id), -- link back to entire testing set result
+        GoNoGoAndTestOrTrial VARCHAR(1000) NOT NULL,
+        ResponseTimeMs INT NOT NULL,
+        ErrorStatus INT NOT NULL
+    );
+    """
+    def insert_gng_test_result(self, gngTestResult: GngTestResult):
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO gngTestResultData (testResultId, payload) VALUES (%s, %s)",
+            vars=(
+                gngTestResult.testResultId, self.__encrypt_data(gngTestResult.serialize())
+            )
+        )
+    
+    def insert_posner_test_result(self, posnerTestResult: PosnerCueResult):
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO posnerQueueTestResultData (testResultId, payload) VALUES (%s, %s)",
+            vars=(
+                posnerTestResult.testResultId, self.__encrypt_data(posnerTestResult.serialize())
+            )
+        )
+
+
+    def __encrypt_data(self, jsonData: dict):
+        jsonStr = json.dumps(jsonData)
+        # TODO ENCRYPTION AT REST
+        if CONF_INSTANCE.ENCRYPTED_AT_REST:
+            return ""
+        else:
+            return jsonStr.encode("utf-8")
+
+    def __decrypt_data(self, cipherText: bytes) -> dict:
+        if CONF_INSTANCE.ENCRYPTED_AT_REST:
+            return {}
+        else:
+            return json.loads(cipherText.decode("utf-8"))

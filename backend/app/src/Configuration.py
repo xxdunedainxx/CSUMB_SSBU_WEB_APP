@@ -11,7 +11,7 @@
 """
 import os
 import json
-from src.Services import ServiceNames
+from src.ServiceNames import ServiceNames
 
 class Configuration:
 
@@ -20,7 +20,7 @@ class Configuration:
     "SMTP_PORT"   : 465,
     "FLASK_HOST_BIND" : "0.0.0.0",
     "FLASK_PORT_BIND" : 80,
-    "FLASK_CORS_ORIGIN": "*",
+    "FLASK_CORS_ORIGIN": "http://localhost:4321",
     # "APP_HEALTH_PORT" : 9090,
     # "APP_HEALTH_ONLY_API_TOGGLE" : True,
     "SERVICE_TOGGLES" : {
@@ -31,7 +31,8 @@ class Configuration:
     },
     "REACT_APP" : "http://localhost",
     "PRODUCTION_ENVIRONMENT" : False,
-    "ENVIRONMENT_HOSTNAME" : "localhost"
+    "ENVIRONMENT_HOSTNAME" : "localhost",
+    "ENCRYPTED_AT_REST": False
   }
 
   def __init__(self, confFile: str = './conf.json'):
@@ -73,6 +74,11 @@ class Configuration:
     self.SERVICE_TOGGLES: dict = self._get_value("SERVICE_TOGGLES")
     self.PRODUCTION_ENVIRONMENT: bool = self._get_value("PRODUCTION_ENVIRONMENT")
     # self.ENVIRONMENT_HOSTNAME: bool = self._get_value("ENVIRONMENT_HOSTNAME")
+    self.DB: dict = self._get_value("DB")
+    self.ENCRYPTED_AT_REST: bool = self._get_value("ENCRYPTED_AT_REST")
+
+    if self.PRODUCTION_ENVIRONMENT == True and self.ENCRYPTED_AT_REST == False:
+      raise Exception("NEED ENCRYPTION IN PROD")
 
 
   def _get_value(self, key: str):

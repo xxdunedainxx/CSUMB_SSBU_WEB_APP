@@ -1,11 +1,17 @@
 ---
-const siteTitle = ''; //TODO: update this with offical name
+import Setup from '../react/ts/util/Setup'
+import Logout from '../react/components/Logout'
+const setup = new Setup();
+
+const siteTitle = `CSUMB Research`; //TODO: update this with offical name
+const finalSiteTile = !setup.config.isProd ? `DEV ENV - ${siteTitle}` : siteTitle;
+const VERSION = setup.config.version
 ---
 
 <header class="site-header" role="banner">
     <div class="container header-inner">
-        <a class="site-logo" href="/" aria-label={siteTitle}>
-            <span>{siteTitle}</span>
+        <a class="site-logo" href="/" aria-label={finalSiteTile}>
+            <span>{finalSiteTile}</span>
         </a>
 
         <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,8 +22,11 @@ const siteTitle = ''; //TODO: update this with offical name
             <ul class="nav-list">
                 <li><a href="/">Home</a></li>
                 <li><a href="/tests/">Cognitive and Reaction Tests</a></li>
+                <li><a href="/dashboard/">Your personal dashboard</a></li>
+                <li><Logout client:load /></li>
             </ul>
         </nav>
+        <div>v{VERSION}</div>
     </div>
 
     <script>

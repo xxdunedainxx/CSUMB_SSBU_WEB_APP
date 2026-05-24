@@ -8,7 +8,7 @@ from src.WebServer.decorators.HTTPLogger import http_logger
 from src.WebServer.WebServerInit import WebServerInit
 from src.util.ErrorFactory import errorStackTrace
 
-from flask import Flask
+from flask import Flask, send_from_directory
 
 flask_ref: Flask = WebServerInit.flask
 
@@ -31,3 +31,8 @@ class TestController:
       return {
         "response" : "sadness"
       }, 500
+
+  @staticmethod
+  @flask_ref.route('/gngFile', methods=['GET'])
+  def go_no_go():
+    return send_from_directory("/Users/zachmcfadden/Desktop", "goNoGo.html")

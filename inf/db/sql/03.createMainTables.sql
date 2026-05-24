@@ -24,19 +24,26 @@ CREATE TABLE IF NOT EXISTS controllerTestResultData();
 CREATE TABLE IF NOT EXISTS srtTestResultData(
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     testResultId INT REFERENCES testResults(id), -- link back to entire testing set result
-    TestOrTrial VARCHAR(100) NOT NULL,
-    TrainingOrReal INT NOT NULL,
-    NumberOfChoices INT NOT NULL,
-    timeBetweenResponseAndNextTrial INT NOT NULL,
-    XCoordinateTargetStim INT NOT NULL,
-    ResponseTimeMS INT NOT NULL,
-    StatusOfAnswer INT NOT NULL
+    payload BYTEA NOT NULL
 );
 
--- TODO
-CREATE TABLE IF NOT EXISTS gngTestResultData();
-CREATE TABLE IF NOT EXISTS taskSwitchingTestResultData();
-CREATE TABLE IF NOT EXISTS posnerQueueTestResultData();
+CREATE TABLE IF NOT EXISTS gngTestResultData(
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    testResultId INT REFERENCES testResults(id), -- link back to entire testing set result
+    payload BYTEA NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS taskSwitchingTestResultData(
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    testResultId INT REFERENCES testResults(id), -- link back to entire testing set result
+    payload BYTEA NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS posnerQueueTestResultData(
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    testResultId INT REFERENCES testResults(id), -- link back to entire testing set result
+    payload BYTEA NOT NULL
+);
 
 -- TODO Feedback table
 CREATE TABLE IF NOT EXISTS feedback();
