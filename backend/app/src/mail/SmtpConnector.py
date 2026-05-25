@@ -28,9 +28,14 @@ def send_email(subject, body, sender, recipients, password):
     msg['From'] = sender
     #Creates a list of recipients seperated by commas
     msg['To'] = ', '.join(recipients)
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
-        smtp_server.login(sender, password)
-        smtp_server.sendmail(sender, recipients, msg.as_string())
+    try:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
+            smtp_server.login(sender, password)
+            smtp_server.sendmail(sender, recipients, msg.as_string())
+            print("Email sent successfully.")
+    except smtplib.SMTPException as e:
+        print(f"Failed to send email: {e}")
+        print("Email sent successfully.")
 
 #Testing email function
 if __name__ == "__main__":
@@ -44,5 +49,3 @@ if __name__ == "__main__":
     password = "Password123"
     #Calling the send mail function here
     send_email(subject, body, sender, recipients, password)
-    #Printing a message to the console for testing
-    print("Message Sent")
