@@ -27,7 +27,7 @@ export default function TestResultListenerComponent({
 
   function finalize(){
     alert("Test done! Redirecting..")
-    window.location.href = "/dashboard/"
+    // window.location.href = "/dashboard/"
   }
 
   useEffect(() => {
@@ -65,6 +65,21 @@ export default function TestResultListenerComponent({
             // 3. Upload results (attach IDs if needed)
             await client.uploadGngResults({
               gngTestResults
+            });
+          } else if(testCategory == "Posner") {
+            console.log("Posner upload")
+            const dataToUpload = listener.posnerToJson(event.data.payload);
+            console.log(dataToUpload)
+            const posnerResults = (dataToUpload as any).posnerResults.map((item: any) => ({
+              ...item,
+              testResultId: testId,
+              id: -1,
+            }));
+            
+            console.log(posnerResults)
+            // 3. Upload results (attach IDs if needed)
+            await client.uploadPosnerResults({
+              posnerResults
             });
           } else {
             console.log("UNKNOWN TEST TYPE");

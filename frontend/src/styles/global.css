@@ -375,3 +375,87 @@ body.test-page main#main {
 		grid-template-columns: 1fr;
 	}
 }
+
+
+/* Dashboard layout */
+.dashboard {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: #f1f3f5;
+}
+
+/* Card */
+.test-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #dcdfe4;
+}
+
+/* Header */
+.test-card h2 {
+  margin-bottom: 12px;
+  color: #2d2d2d;
+}
+
+/* Metadata */
+.meta {
+  margin-bottom: 20px;
+}
+
+.meta p {
+  margin: 4px 0;
+  color: #555;
+}
+
+/* Table container */
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+/* Table */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+  font-size: 14px;
+  background: #fafafa;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Header */
+.styled-table thead {
+  background-color: #5f6368;
+  color: #f5f5f5;
+}
+
+.styled-table th {
+  padding: 14px 16px;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Cells */
+.styled-table td {
+  padding: 12px 16px;
+  text-align: center;
+  border-bottom: 1px solid #d6d6d6;
+  color: #333;
+}
+
+/* Alternating rows */
+.styled-table tbody tr:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+/* Hover */
+.styled-table tbody tr:hover {
+  background-color: #e2e2e2;
+  transition: background-color 0.15s ease;
+}
