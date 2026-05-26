@@ -21,4 +21,5 @@ ${PYTHON_INTERPRETER} -m pip install flask
 ${PYTHON_INTERPRETER} -m pip install flask-cors
 ${PYTHON_INTERPRETER} -m pip install psycopg2
 ${PYTHON_INTERPRETER} -m pip install email-validator
+${PYTHON_INTERPRETER} -m pip install redis
 ${PYTHON_INTERPRETER} -m pip install cryptography

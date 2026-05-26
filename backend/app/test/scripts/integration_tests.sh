@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 #########
 #
@@ -15,6 +15,7 @@ export UNIT_TESTING_ENABLED=false
 
 ALL_ON_ONE_MACHINE_ARG="${1:-NO}"
 PYTHON_INTERPRETER="${2:-python3}"
+APP_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../../" && pwd)"
 
 function postGresSetup(){
   back=$(pwd)
@@ -63,8 +64,6 @@ function cleanup(){
   echo "Cleanup complete"
 }
 
-
-
 echo "'ALL_ON_ONE_MACHINE_ARG': $ALL_ON_ONE_MACHINE_ARG"
 
 if [[ $ALL_ON_ONE_MACHINE_ARG == "YES" ]];then
@@ -73,6 +72,11 @@ if [[ $ALL_ON_ONE_MACHINE_ARG == "YES" ]];then
   echo "Wait 5 seconds for dependencies to come up..."
   sleep 5
 fi
+
+echo "Setting up Redis for testing"
+bash "${APP_ROOT}/inf/redis/scripts/redis_setup.sh"
+
+trap 'bash "${APP_ROOT}/inf/redis/scripts/redis_teardown.sh"' EXIT
 
 echo "Using python interpreter $PYTHON_INTERPRETER"
 
