@@ -5,5 +5,12 @@
   "SMTP_PASSWORD" : "app-password",
   "REDIS_HOST"    : "localhost",
   "REDIS_PORT"    : "6379",
-  "MAILER_TOGGLE" : true
+  "MAILER_TOGGLE" : true,
+  "DB": {
+    "host": "localhost",
+    "db": "csumb_webapp",
+    "username" : "postgres",
+    "password": "my-secret-pw",
+    "port": 5432
+  }
 }

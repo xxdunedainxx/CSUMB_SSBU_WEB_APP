@@ -21,12 +21,15 @@ class WebServerInit:
     LogFactory.MAIN_LOG.info('Start flask API')
     CORS (
       WebServerInit.flask,
+      supports_credentials=True,
       resources={
         r"/*" : {
           "origins": CONF_INSTANCE.FLASK_CORS_ORIGIN
         }
       }
     )
+
+    WebServerInit.flask.secret_key = "REPLACE_ME"
 
   @staticmethod
   def configure_cors():

@@ -1,6 +1,8 @@
 ---
 import TestLayout from '../../layouts/TestLayout.astro';
-import { testMap } from '../../data/tests';
+import { testMap } from '../../react/ts/data/tests';
+import TestResultListenerComponent from '../../react/components/TestResultListenerComponent';
+import Setup from '../../react/ts/util/Setup'
 
 // Tell Astro which pages to generate at build time
 export function getStaticPaths() {
@@ -16,7 +18,15 @@ if (!testInfo) {
     return Astro.redirect('/404');
 }
 
-const testUrl = testInfo.file;
+const setup = new Setup();
+const baseUrl = testInfo.file;
+
+const finalTestUrl =
+  !setup.config.isProd && testInfo.debugArgs
+    ? `${testInfo.file}&${testInfo.debugArgs}`
+    : baseUrl;
+
+
 ---
 
 <TestLayout 
@@ -24,15 +34,12 @@ const testUrl = testInfo.file;
     description={testInfo.description}
     testName={testInfo.name}
 >
-    <div class="test-iframe-wrapper">
-        <iframe 
-            class="test-iframe"
-            src={testUrl}
-            title={testInfo.name}
-            allow="fullscreen"
-        ></iframe>
-    </div>
-
+    <TestResultListenerComponent
+        client:load
+        testCategory={testInfo.id}
+        iframeSrc={finalTestUrl}
+        testName={testInfo.name}
+    />
     <script slot="scripts">
         // Optional: Listen for messages from iframe (for test completion, scores, etc.)
         window.addEventListener('message', (event) => {

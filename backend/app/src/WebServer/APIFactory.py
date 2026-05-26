@@ -19,8 +19,13 @@ class APIFactory:
     def prep_controllers(self):
         from src.WebServer.controllers.test.TestController import TestController
         from src.WebServer.controllers.toggle.ToggleController import ToggleController
+        from src.WebServer.controllers.trial.TrialDataController import TrialController
+        from src.WebServer.controllers.auth.AuthController import AuthController
+
         self.test_controller: TestController = TestController()
         self.toggle_controller: ToggleController = ToggleController()
+        self.trial_controller: TrialController = TrialController()
+        self.auth_controller: AuthController = AuthController()
 
 
     def run(self, port: int = CONF_INSTANCE.FLASK_PORT_BIND):
