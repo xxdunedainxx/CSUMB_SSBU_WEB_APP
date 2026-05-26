@@ -47,6 +47,17 @@ export class HttpRequestClient {
     return data;
   }
 
+
+  // Upload Posner
+  uploadPosnerResults(data: {}){
+    console.log("Upload Posner results")
+    console.log(data)
+    return this.post<any>(
+      '/upload_posner_results',
+      JSON.stringify(data)
+    );
+  }
+
   // Upload Gng results
   uploadGngResults(data: {}){
     console.log("Upload Gng results")
