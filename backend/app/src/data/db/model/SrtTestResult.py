@@ -45,7 +45,7 @@ class SrtTestResult:
         }
 
     """
-        Creates a new Gng Test result from a json dictionary provided 
+        Creates a new Simple Reaction Test result from a json dictionary provided 
     """
     @staticmethod
     def deserialize_to_object(json: dict):

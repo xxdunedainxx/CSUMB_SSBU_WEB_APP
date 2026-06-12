@@ -10,6 +10,7 @@ from src.data.db.DBConnector import DBConnector
 from src.data.db.model.CompleteTestResults import CompleteTestResults
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.PosnerCueResult import PosnerCueResult
+from src.data.db.model.SrtTestResult import SrtTestResult
 from src.data.db.model.TestResult import TestResult
 from src.data.db.model.User import User
 from src.util.DateTimeUtil import DateTimeUtils
@@ -143,11 +144,12 @@ class DbQueryFactory:
 
         gngRecords = self.get_gng_test_results(testId=testId)
         posnerRecords = self.get_posner_cue_results(testId=testId)
+        srtRecords = self.get_srt_results(testId=testId)
         return CompleteTestResults(
             testResult=testRecord,
             GngTestResults=gngRecords,
             PosnerRecords=posnerRecords,
-            SrtRecords=[],
+            SrtRecords=[srtRecords],
             TaskSwitchingRecords=[]
         )
 
@@ -155,8 +157,11 @@ class DbQueryFactory:
     """
         TODO Create a new simple reaction time test result row 
     """
-    def create_new_srt_test_result(self):
-        pass
+    def create_new_srt_test_result(self, srt: SrtTestResult):
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO srtTestResultData (testResultId, payload) VALUES (%s, %s)",
+            vars=(,)
+        )
 
     def get_gng_test_results(self, testId: int):
         allResults = self.dbConnector.read_data(
@@ -207,6 +212,13 @@ class DbQueryFactory:
 
         return structuredGngResults
 
+    def get_srt_results(self, testId: int):
+        allResults = self.dbConnector.read_data(
+            query="SELECT id, payload FROM srtTestResultData WHERE testResultId=%s",
+            vars=(testId,)
+        )
+
+
 
     """
     CREATE TABLE IF NOT EXISTS gngTestResultData(
@@ -233,6 +245,13 @@ class DbQueryFactory:
             )
         )
 
+    def insert_srt_test_result(self, SrtResult: SrtTestResult):
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO srtTestResultData (testResultId, payload) VALUES (%s, %s)",
+            vars=(
+                SrtResult.testResultId, self.__encrypt_data(SrtResult.serialize())
+            )
+        )
 
     def __encrypt_data(self, jsonData: dict):
         jsonStr = json.dumps(jsonData)

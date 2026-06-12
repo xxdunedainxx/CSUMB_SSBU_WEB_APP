@@ -7,6 +7,7 @@ from src.Services import Services
 from src.WebServer.decorators.Authorize import authorize
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.PosnerCueResult import PosnerCueResult
+from src.data.db.model.SrtTestResult import SrtTestResult
 from src.util.LogFactory import LogFactory
 from src.WebServer.decorators.HTTPLogger import http_logger
 from src.WebServer.WebServerInit import WebServerInit
@@ -88,7 +89,7 @@ class TrialController:
             results = request.json["gngTestResults"]
 
             for result in results:
-                Services.dbQueryFactory.insert_gng_test_result(
+                Services.dbQueryFactory.insert_srt_test_result(
                     GngTestResult.deserialize_to_object(result)
                 )
 
@@ -171,6 +172,32 @@ class TrialController:
             LogFactory.MAIN_LOG.error(f"Upload gng test results {errorStackTrace(e)}")
             return {
                 "response": "sadness"
+            }, 500
+
+        """
+        Example: 
+        """
+
+    @staticmethod
+    @flask_ref.route('/upload_srt_results', methods=['POST'])
+    @http_logger
+    def upload_srt_results():
+        try:
+            LogFactory.MAIN_LOG.info("Processing Simple Reaction Test Results")
+            results = request.json["srtResults"]
+
+            for result in results:
+                Services.dbQueryFactory.insert_srt_test_result(
+                    SrtTestResult.deserialize_to_object(result)
+                )
+
+                return {
+                    "response": "SRT records uploaded"
+                }, 200
+        except Exception as e:
+            LogFactory.MAIN_LOG.error(f"Upload srt test results {errorStackTrace(e)}")
+            return {
+                "response": "Did not work"
             }, 500
 
     """
