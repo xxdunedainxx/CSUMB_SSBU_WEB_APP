@@ -174,9 +174,37 @@ class TrialController:
                 "response": "sadness"
             }, 500
 
-        """
+        '''
         Example: 
-        """
+        curl -X POST \ https://localhost:80/upload_srt_results \ -H "Content-Type: application/json" \ -d '{
+            "srtResults": [
+                {
+                    "id": 1,
+                    "testResultId": 1,
+                    "TestOrTraining": "dlsimple_training",
+                    "TrainingOrReal": 1,
+                    "timeBetweenResponseAndNextTrial": 1361,
+                    "XCoordinateTargetStim": 0,
+                    "ResponseTimeMs": 446,
+                    "StatusOfAnswer": 1,
+                    "NumberOfChoices": 1 
+                },
+                
+                {
+                    "id": 1,
+                    "testResultId": 1,
+                    "TestOrTraining": "dlsimple_real",
+                    "TrainingOrReal": 0,
+                    "timeBetweenResponseAndNextTrial": 2063,
+                    "XCoordinateTargetStim": 0,
+                    "ResponseTimeMs": 285,
+                    "StatusOfAnswer": 1,
+                    "NumberOfChoices": 1 
+                }
+                
+            ]
+        }'
+        '''
 
     @staticmethod
     @flask_ref.route('/upload_srt_results', methods=['POST'])
@@ -191,7 +219,7 @@ class TrialController:
                     SrtTestResult.deserialize_to_object(result)
                 )
 
-                return {
+            return {
                     "response": "SRT records uploaded"
                 }, 200
         except Exception as e:

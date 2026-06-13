@@ -149,7 +149,7 @@ class DbQueryFactory:
             testResult=testRecord,
             GngTestResults=gngRecords,
             PosnerRecords=posnerRecords,
-            SrtRecords=[srtRecords],
+            SrtRecords=srtRecords,
             TaskSwitchingRecords=[]
         )
 
@@ -158,10 +158,7 @@ class DbQueryFactory:
         TODO Create a new simple reaction time test result row 
     """
     def create_new_srt_test_result(self, srt: SrtTestResult):
-        return self.dbConnector.write_or_update_data(
-            query="INSERT INTO srtTestResultData (testResultId, payload) VALUES (%s, %s)",
-            vars=(,)
-        )
+        pass
 
     def get_gng_test_results(self, testId: int):
         allResults = self.dbConnector.read_data(
@@ -191,11 +188,11 @@ class DbQueryFactory:
             vars=(testId,)
         )
 
-        structuredGngResults: [PosnerCueResult] = []
+        structuredPosnerResults: [PosnerCueResult] = []
 
         for res in allResults:
             jsonData=self.__decrypt_data(bytes(res[1]))
-            structuredGngResults.append(
+            structuredPosnerResults.append(
                 PosnerCueResult(
                     id=int(res[0]),
                     testResultId=testId,
@@ -210,13 +207,36 @@ class DbQueryFactory:
                 )
             )
 
-        return structuredGngResults
+        return structuredPosnerResults
 
     def get_srt_results(self, testId: int):
         allResults = self.dbConnector.read_data(
             query="SELECT id, payload FROM srtTestResultData WHERE testResultId=%s",
             vars=(testId,)
         )
+
+        # list of srt result objects
+        structured_srt: [SrtTestResult] = []
+
+        for result in allResults:
+            # takes database row and converts it to a dictionary
+            jsonObj = self.__decrypt_data(bytes(result[1]))
+            # abstraction
+            structured_srt.append(
+                SrtTestResult(
+                    id=int(result[0]),
+                    testResultId=jsonObj["testResultId"],
+                    TestOrTraining=jsonObj["TestOrTraining"],
+                    TrainingOrReal=jsonObj["TrainingOrReal"],
+                    NumberOfChoices=jsonObj["NumberOfChoices"],
+                    timeBetweenResponseAndNextTrial=jsonObj["timeBetweenResponseAndNextTrial"],
+                    XCoordinateTargetStim=jsonObj["XCoordinateTargetStim"],
+                    ResponseTimeMs=jsonObj["ResponseTimeMs"],
+                    StatusOfAnswer=jsonObj["StatusOfAnswer"],
+
+                )
+            )
+        return structured_srt
 
 
 
