@@ -10,6 +10,7 @@ from src.data.db.DBConnector import DBConnector
 from src.data.db.model.CompleteTestResults import CompleteTestResults
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.PosnerCueResult import PosnerCueResult
+from src.data.db.model.ControllerTestResult import ControllerTestResult
 from src.data.db.model.TestResult import TestResult
 from src.data.db.model.User import User
 from src.util.DateTimeUtil import DateTimeUtils
@@ -143,12 +144,14 @@ class DbQueryFactory:
 
         gngRecords = self.get_gng_test_results(testId=testId)
         posnerRecords = self.get_posner_cue_results(testId=testId)
+        controllerRecords = self.get_controller_test_results(testId=testId)
         return CompleteTestResults(
             testResult=testRecord,
             GngTestResults=gngRecords,
             PosnerRecords=posnerRecords,
             SrtRecords=[],
-            TaskSwitchingRecords=[]
+            TaskSwitchingRecords=[],
+            ControllerRecords=controllerRecords
         )
 
 
@@ -206,6 +209,27 @@ class DbQueryFactory:
             )
 
         return structuredGngResults
+    
+    def get_controller_test_results(self, testId: int):
+        allResults = self.dbConnector.read_data(
+            query="SELECT id, resultType, payload FROM controllerTestResultData WHERE testResultId=%s",
+            vars=(testId,)
+        )
+
+        structuredControllerResults: [ControllerTestResult] = []
+
+        for res in allResults:
+            jsonData=self.__decrypt_data(bytes(res[2]))
+            structuredControllerResults.append(
+                ControllerTestResult(
+                    id=int(res[0]),
+                    testResultId=testId,
+                    resultType=str(res[1]),
+                    payload=jsonData
+                )
+            )
+
+        return structuredControllerResults
 
 
     """
@@ -230,6 +254,16 @@ class DbQueryFactory:
             query="INSERT INTO posnerQueueTestResultData (testResultId, payload) VALUES (%s, %s)",
             vars=(
                 posnerTestResult.testResultId, self.__encrypt_data(posnerTestResult.serialize())
+            )
+        )
+    
+    def insert_controller_test_result(self, controllerTestResult: ControllerTestResult):
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO controllerTestResultData (testResultId, resultType, payload) VALUES (%s, %s, %s)",
+            vars=(
+                controllerTestResult.testResultId,
+                controllerTestResult.resultType,
+                self.__encrypt_data(controllerTestResult.payload)
             )
         )
 

@@ -19,7 +19,12 @@ CREATE TABLE IF NOT EXISTS testResults (
 );
 
 -- Each may be in their own table
-CREATE TABLE IF NOT EXISTS controllerTestResultData();
+CREATE TABLE IF NOT EXISTS controllerTestResultData(
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    testResultId INT REFERENCES testResults(id), -- link back to entire testing set result
+    resultType VARCHAR(100) NOT NULL,
+    payload BYTEA NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS srtTestResultData(
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

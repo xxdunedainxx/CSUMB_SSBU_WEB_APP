@@ -7,6 +7,7 @@ from src.Services import Services
 from src.WebServer.decorators.Authorize import authorize
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.PosnerCueResult import PosnerCueResult
+from src.data.db.model.ControllerTestResult import ControllerTestResult
 from src.util.LogFactory import LogFactory
 from src.WebServer.decorators.HTTPLogger import http_logger
 from src.WebServer.WebServerInit import WebServerInit
@@ -169,6 +170,29 @@ class TrialController:
             }, 200
         except Exception as e:
             LogFactory.MAIN_LOG.error(f"Upload gng test results {errorStackTrace(e)}")
+            return {
+                "response": "sadness"
+            }, 500
+        
+    @staticmethod
+    @flask_ref.route('/upload_controller_test_results', methods=['POST'])
+    @http_logger
+    def upload_controller_test_results():
+        try:
+            LogFactory.MAIN_LOG.info("Processing controller Test Results")
+
+            results = request.json["controllerResults"]
+
+            for result in results:
+                Services.dbQueryFactory.insert_controller_test_result(
+                    ControllerTestResult.deserialize_to_object(result)
+                )
+
+            return {
+                "response": "records uploaded"
+            }, 200
+        except Exception as e:
+            LogFactory.MAIN_LOG.error(f"Upload controller test results {errorStackTrace(e)}")
             return {
                 "response": "sadness"
             }, 500
