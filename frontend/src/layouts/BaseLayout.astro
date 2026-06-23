@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import '../styles/fonts.css';
 import Configuration from '../react/ts/util/Configuration';
 
 
@@ -10,14 +11,15 @@ const {
     description = 'Test and track your cognitive and reaction ablities!',
     lang = 'en',
     url = '',
-    twitter = ''
+    twitter = '',
+    theme = 'dark'
 } = Astro.props;
 
 
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} class={`theme-${theme}`}>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

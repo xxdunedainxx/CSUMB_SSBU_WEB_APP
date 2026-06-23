@@ -209,3 +209,10 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# =========================================================
+# Esports research redesign — large source media
+# Only the curated subset under frontend/public/research-assets/
+# is committed. The 200 MB+ source asset folder is NOT.
+# =========================================================
+/Esports-Research-Website-Assets/

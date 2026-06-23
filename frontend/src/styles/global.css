@@ -38,6 +38,25 @@ body {
 	--accent-cyan: #72d4ff;
 	--accent-gold: #ffc857;
 
+	/* Secondary surface color per redesign spec (dark mode) */
+	--secondary: #28282b;
+
+	/* Glass surface tokens (resolve per-theme below) */
+	--glass-bg: rgba(18, 32, 48, 0.45);
+	--glass-border: rgba(125, 173, 223, 0.18);
+	--glass-blur: 16px;
+	--glass-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+
+	/* Header / footer surface (adapted per theme) */
+	--chrome-bg: rgba(8, 18, 30, 0.78);
+	--chrome-border: rgba(255, 255, 255, 0.06);
+
+	/* Page background (used by themed pages) */
+	--page-bg:
+		radial-gradient(circle at top left, rgba(78, 163, 255, 0.12), transparent 30%),
+		radial-gradient(circle at top right, rgba(114, 212, 255, 0.08), transparent 25%),
+		linear-gradient(to bottom, #071018, #0b1624);
+
 	--shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.45);
 	--shadow-md: 0 4px 18px rgba(0, 0, 0, 0.3);
 
@@ -45,6 +64,174 @@ body {
 	--radius-lg: 22px;
 
 	--transition: 180ms ease;
+}
+
+/* =========================================================
+   LIGHT THEME  (Research page — museum-case / airy)
+   Per redesign spec: warm neutral gradient + deep studio shadows.
+========================================================= */
+
+/* =========================================================
+   CINEMATIC THEME  (Landing + Research — shared dark palette)
+   Minimal neutrals, no bright accent glows.
+========================================================= */
+
+html.theme-cinematic {
+	--bg-primary: #0a0a0b;
+	--bg-secondary: #121214;
+	--bg-card: rgba(24, 24, 26, 0.88);
+
+	--surface-1: #141416;
+	--surface-2: #1c1c1f;
+	--surface-3: #28282b;
+
+	--border: rgba(255, 255, 255, 0.08);
+
+	--text-primary: #ececee;
+	--text-secondary: #a8a8ad;
+	--text-muted: #6e6e73;
+
+	--accent-blue: #9a9a9f;
+	--accent-cyan: #b0b0b5;
+	--accent-gold: #8a8a8f;
+
+	--secondary: #28282b;
+
+	--glass-bg: rgba(20, 20, 22, 0.55);
+	--glass-border: rgba(255, 255, 255, 0.06);
+	--glass-blur: 14px;
+	--glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+
+	--chrome-bg: rgba(10, 10, 11, 0.85);
+	--chrome-border: rgba(255, 255, 255, 0.05);
+
+	--page-bg:
+		radial-gradient(ellipse at 50% 0%, rgba(40, 40, 43, 0.35) 0%, transparent 55%),
+		radial-gradient(ellipse at 50% 100%, rgba(0, 0, 0, 0.4) 0%, transparent 50%),
+		linear-gradient(to bottom, #0a0a0b, #0e0e10 50%, #0a0a0b);
+
+	--shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
+	--shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+html.theme-cinematic .site-logo {
+	color: var(--text-primary);
+}
+
+html.theme-cinematic .site-logo:hover {
+	color: var(--text-primary);
+	text-shadow: none;
+}
+
+html.theme-cinematic .nav-list a:hover {
+	color: var(--text-primary);
+}
+
+html.theme-cinematic .nav-list a::after {
+	background: var(--text-muted);
+}
+
+html.theme-cinematic .hamburger,
+html.theme-cinematic .hamburger::before,
+html.theme-cinematic .hamburger::after {
+	background: var(--text-primary);
+}
+
+html.theme-cinematic .btn-primary {
+	background: var(--surface-3);
+	color: var(--text-primary);
+	box-shadow: var(--shadow-md);
+	border: 1px solid var(--border);
+}
+
+html.theme-cinematic .btn-primary:hover {
+	background: #323235;
+	box-shadow: var(--shadow-lg);
+	transform: translateY(-2px);
+}
+
+html.theme-cinematic .btn-secondary {
+	background: transparent;
+	color: var(--text-secondary);
+	border: 1px solid var(--border);
+}
+
+html.theme-cinematic .btn-secondary:hover {
+	background: rgba(255, 255, 255, 0.04);
+	border-color: rgba(255, 255, 255, 0.14);
+	color: var(--text-primary);
+}
+
+html.theme-cinematic .social a:hover {
+	color: var(--text-secondary);
+}
+
+html.theme-cinematic ::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.15);
+}
+
+html.theme-cinematic ::-webkit-scrollbar-thumb:hover {
+	background: rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 900px) {
+	html.theme-cinematic .primary-nav {
+		background: rgba(10, 10, 11, 0.98);
+	}
+}
+
+html.theme-cinematic .text-gradient {
+	background: linear-gradient(100deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+html.theme-cinematic .glass.research-explainer__card::before {
+	opacity: 0.35;
+}
+
+html.theme-light {
+	--bg-primary: #E4E3DF;
+	--bg-secondary: #D6D5D1;
+	--bg-card: rgba(255, 255, 255, 0.62);
+
+	--surface-1: #EDECE8;
+	--surface-2: #E2E1DD;
+	--surface-3: #D6D5D1;
+
+	--border: rgba(116, 115, 113, 0.22);
+
+	--text-primary: #2A2A2C;
+	--text-secondary: #4A4A4D;
+	--text-muted: #747371;
+
+	--accent-blue: #3b6fb0;
+	--accent-cyan: #2f8fb3;
+	--accent-gold: #b8862f;
+
+	/* Secondary surface color per redesign spec (light mode) */
+	--secondary: #28282b;
+
+	--glass-bg: rgba(255, 255, 255, 0.45);
+	--glass-border: rgba(255, 255, 255, 0.55);
+	--glass-blur: 18px;
+	--glass-shadow: 0 20px 50px rgba(116, 115, 113, 0.28);
+
+	--chrome-bg: rgba(228, 227, 223, 0.72);
+	--chrome-border: rgba(116, 115, 113, 0.16);
+
+	/*
+	  Exact background from the redesign spec:
+	  center #E4E3DF (brightest), top corners #D6D5D1 (vignette),
+	  bottom corners #CBCAC6 (deepest falloff), #747371 core shadow.
+	*/
+	--page-bg:
+		radial-gradient(circle at 50% 42%, #E4E3DF 0%, #E4E3DF 18%, rgba(214,213,209,0.6) 60%, rgba(203,202,198,0.85) 100%),
+		linear-gradient(to bottom, #D6D5D1 0%, #E4E3DF 35%, #CBCAC6 100%);
+
+	--shadow-lg: 0 18px 50px rgba(116, 115, 113, 0.30);
+	--shadow-md: 0 6px 22px rgba(116, 115, 113, 0.22);
 }
 
 /* =========================================================
@@ -60,10 +247,8 @@ body {
 		"Segoe UI",
 		sans-serif;
 
-	background:
-		radial-gradient(circle at top left, rgba(78, 163, 255, 0.12), transparent 30%),
-		radial-gradient(circle at top right, rgba(114, 212, 255, 0.08), transparent 25%),
-		linear-gradient(to bottom, #071018, #0b1624);
+	background: var(--page-bg);
+	background-attachment: fixed;
 
 	color: var(--text-primary);
 
@@ -100,9 +285,9 @@ main {
 
 	backdrop-filter: blur(14px);
 
-	background: rgba(8, 18, 30, 0.78);
+	background: var(--chrome-bg);
 
-	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+	border-bottom: 1px solid var(--chrome-border);
 
 	box-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
 
@@ -571,14 +756,9 @@ main {
 
 	padding: 2rem 0;
 
-	background:
-		linear-gradient(
-			to bottom,
-			rgba(5, 10, 18, 0.9),
-			rgba(4, 8, 14, 1)
-		);
+	background: var(--chrome-bg);
 
-	border-top: 1px solid rgba(255,255,255,0.06);
+	border-top: 1px solid var(--chrome-border);
 }
 
 .footer-inner {
@@ -987,4 +1167,84 @@ body.test-page main#main {
 	padding: 0;
 
 	border-radius: 12px;
+}
+
+/* =========================================================
+   GLASSMORPHISM UTILITY  (used across the redesign)
+   Resolves per-theme via --glass-* tokens.
+========================================================= */
+
+.glass {
+	background: var(--glass-bg);
+	border: 1px solid var(--glass-border);
+
+	border-radius: var(--radius-lg);
+
+	backdrop-filter: blur(var(--glass-blur));
+	-webkit-backdrop-filter: blur(var(--glass-blur));
+
+	box-shadow: var(--glass-shadow);
+
+	/* Subtle top highlight for that premium product feel */
+	position: relative;
+	overflow: hidden;
+}
+
+.glass::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+
+	background:
+		linear-gradient(
+			160deg,
+			rgba(255, 255, 255, 0.18),
+			transparent 40%
+		);
+
+	pointer-events: none;
+}
+
+/* Secondary-surface card tinted with the redesign #28282b accent */
+.glass-secondary {
+	background:
+		linear-gradient(
+			145deg,
+			rgba(40, 40, 43, 0.92),
+			rgba(20, 20, 22, 0.92)
+		);
+
+	border: 1px solid rgba(255, 255, 255, 0.08);
+
+	color: #f5f6f8;
+
+	border-radius: var(--radius-lg);
+	box-shadow: var(--glass-shadow);
+}
+
+/* Accent text gradient + glow used for hero / display copy */
+.text-gradient {
+	background: linear-gradient(
+		100deg,
+		var(--text-primary) 0%,
+		var(--accent-cyan) 100%
+	);
+
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	color: transparent;
+}
+
+.glow-soft {
+	filter: drop-shadow(0 0 18px rgba(114, 212, 255, 0.25));
+}
+
+/* Hide native scrollbar for in-page horizontal strips where needed */
+.no-scrollbar {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
 }
