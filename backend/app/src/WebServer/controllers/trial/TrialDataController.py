@@ -174,6 +174,46 @@ class TrialController:
                 "response": "sadness"
             }, 500
         
+    """
+    curl localhost:80/upload_controller_test_results \
+  -XPOST \
+  -H "Content-Type: application/json" \
+  -d '{"controllerResults": [
+    {
+      "id": -1,
+      "testResultId": 1,
+      "resultType": "combined",
+      "payload": {
+        "left": {
+          "generated": "2026-06-15T17:31:06.759Z",
+          "settings": { "stick": "left", "targetCount": 16 },
+          "trials": [ { "time": "2026-06-15T17:29:59.450Z", "hit_type": "oob" } ]
+        },
+        "right": {
+          "generated": "2026-06-15T17:32:08.673Z",
+          "settings": { "stick": "right", "targetCount": 16 },
+          "trials": [ { "time": "2026-06-15T17:32:10.000Z", "hit_type": "target" } ]
+        },
+        "dual": {
+          "generated": "2026-06-15T17:33:47.025Z",
+          "app_version": "prototype-4-dual",
+          "trials": [
+            {
+              "time": "2026-06-15T17:32:17.589Z",
+              "left": { "hit_type": "target", "target_hit": true },
+              "right": { "hit_type": "boundary", "target_hit": true },
+              "wrong_cursor_first": false
+            }
+          ]
+        },
+        "metadata": {
+          "generated": "2026-06-15T17:33:49.157Z",
+          "app_version": "prototype-4-combined"
+        }
+      }
+    }
+  ]}'
+    """
     @staticmethod
     @flask_ref.route('/upload_controller_test_results', methods=['POST'])
     @http_logger
