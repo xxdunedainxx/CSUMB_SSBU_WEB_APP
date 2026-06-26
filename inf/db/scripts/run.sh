@@ -1,6 +1,6 @@
 #!/bin/bash
 # Dev runner for DB
-# Example usage: ./inf/db/scripts/run.sh
+# Example usage: cd inf/db && bash scripts/run.sh
 # This script will clean up any existing containers and run a new one
 
 ORIGIN=$(pwd)
@@ -8,16 +8,16 @@ ORIGIN=$(pwd)
 echo "Build container, if needed"
 
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-echo $parent_path
-pwd
+db_path=$( cd "$parent_path/.." ; pwd -P )
 
-$parent_path/stop.sh
+bash "$parent_path/stop.sh"
 
-$parent_path/build.sh
+cd "$db_path"
+bash "$parent_path/build.sh"
 
-cd $ORIGIN
+cd "$ORIGIN"
 
-echo "Runniing Postgres Docker container.."
+echo "Running Postgres Docker container.."
 
 docker volume ls | grep "postgres_data" && echo "Volume exists" || docker volume create postgres_data && echo "created volume"
 
