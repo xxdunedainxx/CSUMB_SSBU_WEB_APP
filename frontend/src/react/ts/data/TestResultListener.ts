@@ -72,6 +72,29 @@ export class TestResultListener {
 
     return { posnerResults: posnerData };
     }
+
+    srtToJson(outputData: string): {} {
+    console.log("RAW SRT OUTPUT:", outputData);
+    const srtData = outputData
+        .trim()
+        .split("\n")
+        .filter(Boolean)
+        .map((line) => {
+             const [TestOrTraining, TrainingOrReal, NumberOfChoices, TimeBetweenResponseAndNextTrial, XCoordinateTargetStim,
+      ResponseTimeMs, StatusOfAnswer] = line.split(" ");
+            return {
+                TestOrTraining,
+                TrainingOrReal: Number(TrainingOrReal.replace(/^"|"$/g, "")),
+                NumberOfChoices: Number(NumberOfChoices.replace(/^"|"$/g, "")),
+                TimeBetweenResponseAndNextTrial: Number(TimeBetweenResponseAndNextTrial.replace(/^"|"$/g, "")),
+                XCoordinateTargetStim: Number(XCoordinateTargetStim.replace(/^"|"$/g, "")),
+                ResponseTimeMs: Number(ResponseTimeMs.replace(/^"|"$/g, "")),
+                StatusOfAnswer: Number(StatusOfAnswer.replace(/^"|"$/g, ""))
+            };
+        });
+
+      return {srtTestResults: srtData}
+}
 }
 
 export default TestResultListener;

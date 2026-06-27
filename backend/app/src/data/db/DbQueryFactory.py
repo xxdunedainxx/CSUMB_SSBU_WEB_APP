@@ -229,7 +229,7 @@ class DbQueryFactory:
                     TestOrTraining=jsonObj["TestOrTraining"],
                     TrainingOrReal=jsonObj["TrainingOrReal"],
                     NumberOfChoices=jsonObj["NumberOfChoices"],
-                    timeBetweenResponseAndNextTrial=jsonObj["timeBetweenResponseAndNextTrial"],
+                    TimeBetweenResponseAndNextTrial=jsonObj["TimeBetweenResponseAndNextTrial"],
                     XCoordinateTargetStim=jsonObj["XCoordinateTargetStim"],
                     ResponseTimeMs=jsonObj["ResponseTimeMs"],
                     StatusOfAnswer=jsonObj["StatusOfAnswer"],

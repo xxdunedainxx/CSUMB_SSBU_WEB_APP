@@ -81,6 +81,14 @@ export default function TestResultListenerComponent({
             await client.uploadPosnerResults({
               posnerResults
             });
+          } else if (testCategory == "SimpleReactionOnly"){
+            console.log("SRT Upload");
+            const dataToUpload = listener.srtToJson(event.data.payload);
+            console.log(dataToUpload);
+            const srtResults = (dataToUpload as any).srtTestResults.map((item: any) => ({
+              ...item, testResultId: testId, id: -1
+            }));
+            await client.uploadSrtResults({srtResults});
           } else {
             console.log("UNKNOWN TEST TYPE");
           }
