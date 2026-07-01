@@ -128,6 +128,41 @@ export default function Dashboard({ userId }: { userId: number }) {
               </table>
             </div>
           )}
+
+          {result.srtRecords != null && (
+            <div className="table-wrapper">
+              <table className="styled-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Test/Train</th>
+                    <th>Training/Real</th>
+                    <th>Time between response and next trial</th>
+                    <th>X-Coordinate target stim</th>
+                    <th>Response Time</th>
+                    <th>Response Status</th>
+                    <th>Number of Choices</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {result.srtRecords.map((record: any) => (
+                    <tr key={record.id}>
+                      <td>{record.id}</td>
+                      <td>{record.TestOrTraining}</td>
+                      <td>{record.TrainingOrReal}</td>
+                      <td>{record.TimeBetweenResponseAndNextTrial}</td>
+                      <td>{record.XCoordinateTargetStim}</td>
+                      <td>{record.ResponseTimeMs}</td>
+                      <td>{record.StatusOfAnswer}</td>
+                      <td>{record.NumberOfChoices}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
         </div>
       ))}
     </div>

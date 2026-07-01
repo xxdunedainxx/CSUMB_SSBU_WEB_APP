@@ -24,7 +24,6 @@ docker volume ls | grep "postgres_data" && echo "Volume exists" || docker volume
 docker run -p 5432:5432 --name csumbdbpg \
  -e POSTGRES_DB=csumb_webapp \
  -e POSTGRES_PASSWORD=my-secret-pw \
- -v postgres_data:/var/lib/postgresql/data \
  -d csumbdb
 
 echo "Wait for a sec..."
