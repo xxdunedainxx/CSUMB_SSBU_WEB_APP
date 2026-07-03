@@ -11,6 +11,7 @@ from src.WebServer.WebServerInit import WebServerInit
 from src.util.ErrorFactory import errorStackTrace
 
 from flask import Flask, request, session, jsonify
+from src.WebServer.decorators.Authorize import authorize
 
 flask_ref: Flask = WebServerInit.flask
 
@@ -37,7 +38,7 @@ class AuthController:
               userRecord=Services.dbQueryFactory.fetch_user_by_email(email=email)
               session["user_id"] = userRecord.id
               session["email"] = email
-
+              session.permanent = True
               return jsonify({"message": "Logged in", "user_id": userRecord.id})
 
           return jsonify({"error": "Invalid credentials"}), 401
@@ -47,6 +48,7 @@ class AuthController:
     @staticmethod
     @flask_ref.route('/logout', methods=['POST'])
     @http_logger
+    @authorize
     def logout():
         session.clear()
         return jsonify({"message": "Logged out"})
@@ -54,5 +56,6 @@ class AuthController:
     @staticmethod
     @flask_ref.route('/me', methods=['GET'])
     @http_logger
+    @authorize
     def me():
         return jsonify({"user_id": session["user_id"]})

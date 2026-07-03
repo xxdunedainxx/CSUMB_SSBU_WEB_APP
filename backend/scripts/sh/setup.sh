@@ -15,7 +15,6 @@ fi
 
 echo $PYTHON_INTERPRETER
 
-#${PYTHON_INTERPRETER} -m pip install -U --force-reinstall pip
 ${PYTHON_INTERPRETER} -m pip install requests
 ${PYTHON_INTERPRETER} -m pip install flask
 ${PYTHON_INTERPRETER} -m pip install flask-cors
@@ -23,3 +22,5 @@ ${PYTHON_INTERPRETER} -m pip install psycopg2
 ${PYTHON_INTERPRETER} -m pip install email-validator
 ${PYTHON_INTERPRETER} -m pip install redis
 ${PYTHON_INTERPRETER} -m pip install cryptography
+${PYTHON_INTERPRETER} -m pip install schedule
+${PYTHON_INTERPRETER} -m pip install limits

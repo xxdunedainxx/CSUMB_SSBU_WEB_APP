@@ -11,6 +11,7 @@ from src.util.LogFactory import LogFactory
 from src.WebServer.decorators.HTTPLogger import http_logger
 from src.WebServer.WebServerInit import WebServerInit
 from src.util.ErrorFactory import errorStackTrace
+from src.sec.DataValidation import DataModelValidation
 
 from flask import Flask, request
 
@@ -29,6 +30,7 @@ class TrialController:
     @staticmethod
     @flask_ref.route('/create_new_test_result_entry', methods=['POST'])
     @http_logger
+    @authorize
     def create_new_test_result_entry():
         try:
             userId = request.json["userId"]
@@ -81,16 +83,25 @@ class TrialController:
     @staticmethod
     @flask_ref.route('/upload_gng_test_results', methods=['POST'])
     @http_logger
+    @authorize
     def upload_gng_test_results():
         try:
             LogFactory.MAIN_LOG.info("Processing Gng Test Results")
 
             results = request.json["gngTestResults"]
+            structuredResults: [GngTestResult] = []
 
             for result in results:
-                Services.dbQueryFactory.insert_gng_test_result(
-                    GngTestResult.deserialize_to_object(result)
-                )
+                structuredResult = GngTestResult.deserialize_to_object(result)
+                if DataModelValidation.validate_gng_structure(structuredResult):
+                    structuredResults.append(structuredResult)
+                else:
+                    return {
+                        "response": "invalid gng response given"
+                    }, 400
+
+            for r in structuredResults:
+                Services.dbQueryFactory.insert_gng_test_result(r)
 
             return {
                 "response": "records uploaded"
@@ -152,6 +163,7 @@ class TrialController:
     @staticmethod
     @flask_ref.route('/upload_posner_results', methods=['POST'])
     @http_logger
+    @authorize
     def upload_posner_results():
         try:
             LogFactory.MAIN_LOG.info("Processing posner Test Results")
@@ -179,6 +191,7 @@ class TrialController:
     @staticmethod
     @flask_ref.route('/get_test_result_data/<int:userId>/<int:testId>', methods=['GET'])
     @http_logger
+    @authorize
     def get_test_result_data(userId: int, testId: int):
         try:
             LogFactory.MAIN_LOG.info("Fetching test result data")

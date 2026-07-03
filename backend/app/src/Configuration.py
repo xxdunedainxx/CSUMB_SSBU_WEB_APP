@@ -18,25 +18,35 @@ class Configuration:
   DEFAULT_VALUES : dict = {
     "SMTP_SERVER" : "smtp.gmail.com",
     "SMTP_PORT"   : 465,
+    "MAIL_JOB_EMAILS_PER_JOB": 20,
+    "MAIL_JOB_INTERVAL_MINUTES": 1,
     "FLASK_HOST_BIND" : "0.0.0.0",
     "FLASK_PORT_BIND" : 80,
+    "GLOBAL_RATE_LIMIT_PER_MIN": 100,
+    "APP_HEALTH_PORT" : 8080,
     "FLASK_CORS_ORIGIN": "http://localhost:4321",
-    # "APP_HEALTH_PORT" : 9090,
+    "AUTH_BYPASS": True,
     # "APP_HEALTH_ONLY_API_TOGGLE" : True,
     "SERVICE_TOGGLES" : {
-      ServiceNames.mail : False,
-      ServiceNames.apiServer : False,
+      ServiceNames.mail : True,
+      ServiceNames.apiServer : True,
       ServiceNames.logRotation: False,
-      ServiceNames.redis: False
+      ServiceNames.redis: True,
+      ServiceNames.db: True
     },
     "REACT_APP" : "http://localhost",
     "PRODUCTION_ENVIRONMENT" : False,
-    "ENVIRONMENT_HOSTNAME" : "localhost",
-    "ENCRYPTED_AT_REST": False
+    "ENVIRONMENT_HOSTNAME" : "http://localhost",
+    "ENCRYPTED_AT_REST": False,
+    "REDIS_HOST": "localhost",
+    "REDIS_PORT": 6379,
+    "DEPLOY_EMAIL_LIST": [],
+    "SESSION_KEY": "REPLACE_ME",
+    "SESSION_EXPIRE_MINUTES" : 30
   }
 
-  def __init__(self, confFile: str = './conf.json'):
-    self.VERSION='1.3.0'
+  def __init__(self, confFile: str = './conf-prod.json'):
+    self.VERSION='0.1'
     self._init_conf(confFile)
     self._init_values()
 
@@ -54,14 +64,15 @@ class Configuration:
 
   def _init_values(self):
     # SMTP CONFIGS
-    # self.SMTP_SERVER: str = self._get_value("SMTP_SERVER")
-    # self.SMTP_PORT: int = self._get_value("SMTP_PORT")
-    # self.SMTP_USERNAME: str = self._get_value("SMTP_USERNAME")
-    # self.SMTP_PASSWORD: str = self._get_value("SMTP_PASSWORD")
+    self.SMTP_SERVER: str = self._get_value("SMTP_SERVER")
+    self.SMTP_PORT: int = self._get_value("SMTP_PORT")
+    self.SMTP_USERNAME: str = self._get_value("SMTP_USERNAME")
+    self.SMTP_PASSWORD: str = self._get_value("SMTP_PASSWORD")
+    self.DEPLOY_EMAIL_LIST: [str] = self._get_value("DEPLOY_EMAIL_LIST")
 
     # Redis Configs
-    # self.REDIS_HOST: str = self._get_value("REDIS_HOST")
-    # self.REDIS_PORT: int = self._get_value("REDIS_PORT")
+    self.REDIS_HOST: str = self._get_value("REDIS_HOST")
+    self.REDIS_PORT: int = self._get_value("REDIS_PORT")
     # self.MAILER_TOGGLE: bool = self._get_value("MAILER_TOGGLE")
 
     # Flask configurations
@@ -76,6 +87,16 @@ class Configuration:
     # self.ENVIRONMENT_HOSTNAME: bool = self._get_value("ENVIRONMENT_HOSTNAME")
     self.DB: dict = self._get_value("DB")
     self.ENCRYPTED_AT_REST: bool = self._get_value("ENCRYPTED_AT_REST")
+    self.APP_HEALTH_PORT: int = self._get_value("APP_HEALTH_PORT")
+    self.ENVIRONMENT_HOSTNAME: bool = self._get_value("ENVIRONMENT_HOSTNAME")
+    self.MAIL_JOB_EMAILS_PER_JOB: int = self._get_value("MAIL_JOB_EMAILS_PER_JOB")
+    self.MAIL_JOB_INTERVAL_MINUTES: int = self._get_value("MAIL_JOB_INTERVAL_MINUTES")
+    # For development, will bypass auth for debugging purposes. will always be skipped if PROD
+    self.AUTH_BYPASS: bool = self._get_value("AUTH_BYPASS")
+    self.GLOBAL_RATE_LIMIT_PER_MIN: int = self._get_value("GLOBAL_RATE_LIMIT_PER_MIN")
+    self.SESSION_KEY: str = self._get_value("SESSION_KEY")
+    self.SESSION_EXPIRE_MINUTES: int = self._get_value("SESSION_EXPIRE_MINUTES")
+
 
     if self.PRODUCTION_ENVIRONMENT == True and self.ENCRYPTED_AT_REST == False:
       raise Exception("NEED ENCRYPTION IN PROD")
@@ -98,4 +119,7 @@ class Configuration:
   def __parse_conf_file_value(self, key: str):
     return self.CONF[key]
 
-CONF_INSTANCE = Configuration()
+if "CONF_FILE" in os.environ.keys():
+  CONF_INSTANCE = Configuration(os.environ.get("CONF_FILE"))
+else:
+  CONF_INSTANCE = Configuration()

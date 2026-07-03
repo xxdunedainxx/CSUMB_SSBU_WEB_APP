@@ -59,6 +59,12 @@ class DBConnector:
         )
 
     """
+        TODO - IMPROVE CHECK CONNECTION 
+    """
+    def ping(self) -> bool:
+        return self.check_connection()
+
+    """
         Initializes a connection with target DB 
     """
     def __initiate_connection(self, host: str, databaseName: str, username: str, password: str, port: int):

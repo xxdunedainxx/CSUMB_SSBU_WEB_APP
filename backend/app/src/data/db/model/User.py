@@ -22,7 +22,8 @@ class User:
          salt: str,
          verified: bool,
          whenCreated: datetime.datetime,
-         lastLogin: datetime.datetime
+         lastLogin: datetime.datetime,
+         registrationToken: str = ""
     ):
         self.id = id
         self.email = email
@@ -31,3 +32,4 @@ class User:
         self.verified = verified
         self.whenCreated = whenCreated
         self.lastLogin = lastLogin
+        self.registrationToken = registrationToken

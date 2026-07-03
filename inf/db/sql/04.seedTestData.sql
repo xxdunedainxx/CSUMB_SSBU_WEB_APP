@@ -6,12 +6,14 @@ INSERT INTO userTable (
     salt,
     verified,
     whenCreated,
-    lastLogin
+    lastLogin,
+    registrationToken
 ) VALUES (
     'user@example.com',
     'password', -- note this will be a hash alter
     'randSalt',
-    false,
+    true,
     NOW(),
-    NOW()
+    NOW(),
+    'test'
 );

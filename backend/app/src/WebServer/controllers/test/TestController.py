@@ -31,8 +31,3 @@ class TestController:
       return {
         "response" : "sadness"
       }, 500
-
-  @staticmethod
-  @flask_ref.route('/gngFile', methods=['GET'])
-  def go_no_go():
-    return send_from_directory("/Users/zachmcfadden/Desktop", "goNoGo.html")

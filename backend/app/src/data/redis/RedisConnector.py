@@ -1,6 +1,7 @@
 # Redis connector, used for queues like email queues
 import redis
-
+from src.util.LogFactory import LogFactory
+from src.util.ErrorFactory import errorStackTrace
 
 class RedisConnector:
 	def __init__(self, host='localhost', port=6379, db=0):
@@ -17,6 +18,7 @@ class RedisConnector:
 		return self.client.delete(key)
 
 	def enqueue(self, queue_name, value):
+		LogFactory.MAIN_LOG.info(f"[Queueing {queue_name}]: {value}")
 		return self.client.lpush(queue_name, value)
 
 	def dequeue(self, queue_name):
@@ -38,3 +40,14 @@ class RedisConnector:
 	def close(self):
 		# Close the connection
 		self.client.close()
+
+	def health_check(self) -> bool:
+		try:
+			self.client.ping()
+			return True
+		except ConnectionError as e:
+			LogFactory.MAIN_LOG.error(f"Redis Health check failed with a connection error.. {errorStackTrace(e)}")
+			return False
+		except Exception as e:
+			LogFactory.MAIN_LOG.error(f"Redis Health check failed {errorStackTrace(e)}")
+			return False

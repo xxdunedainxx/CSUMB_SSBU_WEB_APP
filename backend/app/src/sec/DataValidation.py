@@ -10,6 +10,8 @@ from email_validator import validate_email, EmailNotValidError
 
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.PosnerCueResult import PosnerCueResult
+from src.data.db.model.SrtTestResult import SrtTestResult
+from src.data.db.model.TaskSwitchingResult import TaskSwitchingResults
 
 class Email:
     def __init__(self):
@@ -25,9 +27,8 @@ class Email:
             # print(str(e))
             return False
 
-# TODO
+# TODO -
 class DataModelValidation:
-
 
     @staticmethod
     def validate_gng_structure(gngRecord: GngTestResult) -> bool:
@@ -38,5 +39,9 @@ class DataModelValidation:
         return True
 
     @staticmethod
-    def validate_srt_structure() -> bool:
+    def validate_srt_structure(srtRecord: SrtTestResult) -> bool:
+        return True
+
+    @staticmethod
+    def validatetask_switch_structure(taskSwitchRecord: TaskSwitchingResults) -> bool:
         return True

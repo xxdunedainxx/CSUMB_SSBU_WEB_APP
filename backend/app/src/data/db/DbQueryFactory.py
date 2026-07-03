@@ -23,6 +23,43 @@ class DbQueryFactory:
     def __init__(self, dbConnector: DBConnector):
         self.dbConnector = dbConnector
 
+    def check_health(self) -> bool:
+        return self.dbConnector.ping()
+
+    def check_account_exists(self, email: str) -> bool:
+        try:
+            return self.fetch_user_by_email(email).email == email
+        except Exception as e:
+            return False
+
+    def check_registration_token(self, token: str) -> bool:
+        try:
+            record = self.dbConnector.read_data(
+                query="SELECT registrationToken FROM userTable WHERE registrationToken=%s",
+                vars=(token,)
+            )
+            return len(record[0]) > 0
+        except Exception as e:
+            return False
+
+    def is_account_verified(self, email: str) -> str:
+        return bool((self.dbConnector.read_data(
+                query="SELECT verified FROM userTable WHERE email=%s",
+                vars=(email,)
+            )[0][0]))
+
+    def store_feedback(self, feedback: str) -> str:
+        self.dbConnector.write_or_update_data(
+            query="INSERT INTO feedback (feedback) VALUES (%s) RETURNING id",
+            vars=(feedback,)
+        )
+
+    def verify_account(self, token):
+        self.dbConnector.write_or_update_data(
+            query="UPDATE userTable SET verified=%s WHERE registrationToken=%s",
+            vars=(True, token,)
+        )
+
     """
         Fetch a user by email 
     """
@@ -69,13 +106,14 @@ class DbQueryFactory:
     """
     def create_new_user(self, user: User):
         return self.dbConnector.write_or_update_data(
-            query="INSERT INTO userTable (email, password, salt, verified, whenCreated) VALUES (%s, %s, %s, %s, %s) RETURNING id",
+            query="INSERT INTO userTable (email, password, salt, verified, whenCreated, registrationToken) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
             vars=(
               user.email,
               user.password,
               user.salt,
               False,
-              DateTimeUtils.get_current_datetime_in_iso_format_str()
+              DateTimeUtils.get_current_datetime_in_iso_format_str(),
+              user.registrationToken
             )
         )
 
