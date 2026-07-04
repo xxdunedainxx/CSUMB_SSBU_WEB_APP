@@ -7,6 +7,7 @@ from src.Services import Services
 from src.WebServer.decorators.Authorize import authorize
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.PosnerCueResult import PosnerCueResult
+from src.data.db.model.SrtTestResult import SrtTestResult
 from src.util.LogFactory import LogFactory
 from src.WebServer.decorators.HTTPLogger import http_logger
 from src.WebServer.WebServerInit import WebServerInit
@@ -183,6 +184,75 @@ class TrialController:
             LogFactory.MAIN_LOG.error(f"Upload gng test results {errorStackTrace(e)}")
             return {
                 "response": "sadness"
+            }, 500
+
+        """
+        Example: 
+        curl -X POST https://localhost:80/upload_srt_results \
+        -H "Content-Type: application/json" \
+        -d '{
+          "srtResults": [
+            {
+              "id": 1,
+              "testResultId": 1,
+              "TestOrTraining": "dlsimple_training",
+              "TrainingOrReal": 1,
+              "NumberOfChoices": 1,
+              "timeBetweenResponseAndNextTrial": 1361,
+              "XCoordinateTargetStim": 0,
+              "ResponseTimeMs": 466,
+              "StatusOfAnswer": 1
+            },
+        
+            {
+              "id": 2,
+              "testResultId": 1,
+              "TestOrTraining": "dlsimple_training",
+              "TrainingOrReal": 1,
+              "NumberOfChoices": 1,
+              "timeBetweenResponseAndNextTrial": 2705,
+              "XCoordinateTargetStim": 0,
+              "ResponseTimeMs": 264,
+              "StatusOfAnswer": 1
+            },
+        
+            {
+              "id": 3,
+              "testResultId": 1,
+              "TestOrTraining": "dlsimple_training",
+              "TrainingOrReal": 1,
+              "NumberOfChoices": 1,
+              "timeBetweenResponseAndNextTrial": 1486,
+              "XCoordinateTargetStim": 0,
+              "ResponseTimeMs": 335,
+              "StatusOfAnswer": 1
+            }
+        
+            // ... remaining trials ...
+          ]
+        }'
+        """
+
+    @staticmethod
+    @flask_ref.route('/upload_srt_results', methods=['POST'])
+    @http_logger
+    def upload_srt_results():
+        try:
+            LogFactory.MAIN_LOG.info("Processing Simple Reaction Test Results")
+            results = request.json["srtResults"]
+
+            for result in results:
+                Services.dbQueryFactory.insert_srt_test_result(
+                    SrtTestResult.deserialize_to_object(result)
+                )
+
+            return {
+                    "response": "SRT records uploaded"
+                }, 200
+        except Exception as e:
+            LogFactory.MAIN_LOG.error(f"Upload srt test results {errorStackTrace(e)}")
+            return {
+                "response": "Did not work"
             }, 500
 
     """

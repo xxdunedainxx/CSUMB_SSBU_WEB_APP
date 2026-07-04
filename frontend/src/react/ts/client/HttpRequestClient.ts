@@ -68,6 +68,15 @@ export class HttpRequestClient {
     );
   }
 
+  uploadSrtResults(data: {}) {
+    console.log("Upload SRT Results");
+    console.log(data);
+    return this.post<any>(
+        '/upload_srt_results',
+        JSON.stringify(data)
+    );
+  }
+
   // Get test IDs method 
   getAllTestIds(userId: number) {
     return this.get<{ testIds: number[] }>(
