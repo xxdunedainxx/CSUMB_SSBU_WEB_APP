@@ -2,7 +2,7 @@
 const { test } = Astro.props;
 ---
 
-<a class="card-link" href={`/tests/${test.id}`} aria-labelledby={`title-${test.id}`}>
+<a class="card-link" href={`${test.id}/`} aria-labelledby={`title-${test.id}`}>
     <article class="app-card">
         <div class="card-media">
             <img src={test.icon} alt={test.name + " icon"} width="96" height="96" loading="lazy" />

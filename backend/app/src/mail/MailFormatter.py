@@ -6,6 +6,7 @@
 
 import os
 from src.util.FileIO import FileIO
+from src.Configuration import CONF_INSTANCE
 
 class MailTypes:
   FEEDBACK: str = "FEEDBACK"
@@ -19,7 +20,7 @@ class MailTypes:
 """
 class MailFormatter:
 
-  TEMPLATE_DIR=f"src{os.sep}Mail{os.sep}html_templates"
+  TEMPLATE_DIR=f"src{os.sep}mail{os.sep}html_templates"
 
   def __init__(self):
     pass
@@ -40,7 +41,7 @@ class FeedbackEmail(MailFormatter):
 
   def formatted_html(self) -> str:
     cwd=os.getcwd()
-    html_content = FileIO.read_file_content_to_string(f"{os.getcwd()}{os.sep}{MailFormatter.TEMPLATE_DIR}{os.sep}{self.template}") # open(f"{MailFormatter.TEMPLATE_DIR}{os.sep}{self.template}").read()
+    html_content = FileIO.read_file_content_to_string(f"./{MailFormatter.TEMPLATE_DIR}{os.sep}{self.template}") # open(f"{MailFormatter.TEMPLATE_DIR}{os.sep}{self.template}").read()
     html_content = html_content.replace(
       "$FEEDBACK",
       self.feedback
@@ -58,7 +59,7 @@ class DeploymentFormatter(MailFormatter):
 
   def formatted_html(self) -> str:
     cwd=os.getcwd()
-    html_content = FileIO.read_file_content_to_string(f"{os.getcwd()}{os.sep}{MailFormatter.TEMPLATE_DIR}{os.sep}{self.template}") # open(f"{MailFormatter.TEMPLATE_DIR}{os.sep}{self.template}").read()
+    html_content = FileIO.read_file_content_to_string(f"./{MailFormatter.TEMPLATE_DIR}{os.sep}{self.template}") # open(f"{MailFormatter.TEMPLATE_DIR}{os.sep}{self.template}").read()
     html_content = html_content.replace(
       "$SERVICE_INFO",
       self.service_info
@@ -83,7 +84,7 @@ class VerifyEmailFormatter(MailFormatter):
 
   def formatted_html(self) -> str:
     cwd=os.getcwd()
-    html_content = FileIO.read_file_content_to_string(f"{os.getcwd()}{os.sep}{MailFormatter.TEMPLATE_DIR}{os.sep}{self.template}") # open(f"{MailFormatter.TEMPLATE_DIR}{os.sep}{self.template}").read()
+    html_content = FileIO.read_file_content_to_string(f"./{MailFormatter.TEMPLATE_DIR}{os.sep}{self.template}") # open(f"{MailFormatter.TEMPLATE_DIR}{os.sep}{self.template}").read()
     html_content = html_content.replace(
       "$VERIFY",
       self.emailData["verifyLink"]

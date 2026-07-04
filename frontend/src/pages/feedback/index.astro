@@ -1,8 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Login from "../../react/components/Login";
+import Feedback from "../../react/components/Feedback";
 ---
-
 
 <style>
 body {
@@ -69,9 +68,8 @@ display: none;
 </style>
 
 
-<BaseLayout title="CSUMB SSBU Research Lab" description="CSUMB Research">   
+<BaseLayout title="CSUMB SSBU Research Lab" description="CSUMB Research">
     <div class="container">
-        <Login client:load />
-        <a href="/ui/register/">Don't have an account? Create one here!</a>
+        <Feedback client:load />
     </div>
 </BaseLayout>

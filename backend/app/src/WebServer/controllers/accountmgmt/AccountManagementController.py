@@ -32,7 +32,8 @@ class AccountManagementController:
 
   @staticmethod
   def __construct_verify_link(verificationToken: str) -> str:
-    return f"{CONF_INSTANCE.ENVIRONMENT_HOSTNAME}/verify/{verificationToken}"
+    # http://localhost:4321/verify?verificationToken=5W4IW127188BO0B41535DAXP75X93O5AO1RZ8OYSNTK5XSS9O2
+    return f"{CONF_INSTANCE.REACT_APP}verify/?verificationToken={verificationToken}"
 
   """
     Invalid email req example: curl -XPOST localhost:80/register -d '{"email": "zrmmaster92", "password": "test"}' -H "Content-Type: application/json"

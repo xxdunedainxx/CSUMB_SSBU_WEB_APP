@@ -12,6 +12,7 @@
 import os
 import json
 from src.ServiceNames import ServiceNames
+from pathlib import Path
 
 class Configuration:
 
@@ -34,7 +35,7 @@ class Configuration:
       ServiceNames.redis: True,
       ServiceNames.db: True
     },
-    "REACT_APP" : "http://localhost",
+    "REACT_APP" : "http://localhost/ui/",
     "PRODUCTION_ENVIRONMENT" : False,
     "ENVIRONMENT_HOSTNAME" : "http://localhost",
     "ENCRYPTED_AT_REST": False,
@@ -42,7 +43,9 @@ class Configuration:
     "REDIS_PORT": 6379,
     "DEPLOY_EMAIL_LIST": [],
     "SESSION_KEY": "REPLACE_ME",
-    "SESSION_EXPIRE_MINUTES" : 30
+    "SESSION_EXPIRE_MINUTES" : 30,
+    "STARTUP_DEPENDENCIES_RETRY_COUNT": 10,
+    "STARTUP_DEPENDENCY_SLEEP_SECONDS": 10
   }
 
   def __init__(self, confFile: str = './conf-prod.json'):
@@ -96,6 +99,10 @@ class Configuration:
     self.GLOBAL_RATE_LIMIT_PER_MIN: int = self._get_value("GLOBAL_RATE_LIMIT_PER_MIN")
     self.SESSION_KEY: str = self._get_value("SESSION_KEY")
     self.SESSION_EXPIRE_MINUTES: int = self._get_value("SESSION_EXPIRE_MINUTES")
+    self.REACT_APP: str = self._get_value("REACT_APP")
+    self.BASE_DIR = Path(__file__).resolve().parent
+    self.STARTUP_DEPENDENCIES_RETRY_COUNT: int = self._get_value("STARTUP_DEPENDENCIES_RETRY_COUNT")
+    self.STARTUP_DEPENDENCY_SLEEP_SECONDS: int = self._get_value("STARTUP_DEPENDENCY_SLEEP_SECONDS")
 
 
     if self.PRODUCTION_ENVIRONMENT == True and self.ENCRYPTED_AT_REST == False:
@@ -119,7 +126,5 @@ class Configuration:
   def __parse_conf_file_value(self, key: str):
     return self.CONF[key]
 
-if "CONF_FILE" in os.environ.keys():
-  CONF_INSTANCE = Configuration(os.environ.get("CONF_FILE"))
-else:
-  CONF_INSTANCE = Configuration()
+
+CONF_INSTANCE = Configuration()

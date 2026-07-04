@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Dashboard from '../../react/components/Dashboard';
+import AccountVerify from "../../react/components/AccountVerify";
+---
+<BaseLayout title="CSUMB SSBU Research Lab" description="CSUMB Research">
+    <div class="container">
+      <h1>Account Verification</h1>
+      <AccountVerify client:load />
+    </div>
+</BaseLayout>

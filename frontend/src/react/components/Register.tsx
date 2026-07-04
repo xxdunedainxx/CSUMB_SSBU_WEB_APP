@@ -2,7 +2,7 @@ import { useState } from "react";
 import { HttpRequestClient } from "../ts/client/HttpRequestClient";
 import Setup from "../ts/util/Setup";
 
-type LoginResponse = {
+type RegisterResponse = {
   message?: string;
   error?: string;
 };
@@ -16,7 +16,7 @@ export const client = new HttpRequestClient(
 );
 
 
-export default function Login() {
+export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,9 +28,10 @@ export default function Login() {
     setError(null);
 
     try {
-      const res = await client.login(email, password);
+      const res = await client.register(email, password);
       // Redirect after successful login
-      window.location.href = "/ui/dashboard/";
+      alert("Look out for a verifcation email to complete setup!")
+      // window.location.href = "/login";
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -40,7 +41,7 @@ export default function Login() {
 
   return (
     <div style={{ maxWidth: 400, margin: "0 auto" }}>
-      <h2>Login</h2>
+      <h2>Create an account!</h2>
 
       <form onSubmit={handleSubmit}>
         <div>
@@ -66,7 +67,7 @@ export default function Login() {
         {error && <p style={{ color: "red" }}>{error}</p>}
 
         <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Registering....." : "Register"}
         </button>
       </form>
     </div>

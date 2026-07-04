@@ -6,7 +6,8 @@ const setup = new Setup();
 
 export const client = new HttpRequestClient(
   setup.config.remoteHost,
-  setup.config.remoteHostPort
+  setup.config.remoteHostPort,
+  setup.config.remoteHostPath
 );
 
 type TestResult = any;
@@ -16,7 +17,7 @@ type TestResult = any;
  * @param param0 
  * @returns 
  */
-export default function Dashboard({ userId }: { userId: number }) {
+export default function Dashboard() {
   const [results, setResults] = useState<TestResult[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +29,8 @@ export default function Dashboard({ userId }: { userId: number }) {
     async function load() {
       try {
         console.log("load data");
-
+        const me = await client.me();
+        const userId = me.user_id;
         const idsData = await client.getAllTestIds(userId);
         const testIds = idsData.testIds;
 
@@ -45,7 +47,7 @@ export default function Dashboard({ userId }: { userId: number }) {
     }
 
     load();
-  }, [client, userId]);
+  }, [client]);
 
   if (loading) return <p>Loading...</p>;
 

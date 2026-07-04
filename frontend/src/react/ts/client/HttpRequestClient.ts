@@ -4,8 +4,8 @@
 export class HttpRequestClient {
   private baseUrl: string;
 
-  constructor(host: string, port: number = 80) {
-    this.baseUrl = `http://${host}:${port}`;
+  constructor(host: string, port: number = 80, hostRoute = "") {
+    this.baseUrl = `http://${host}:${port}${hostRoute}`;
   }
 
   // General get method 
@@ -17,7 +17,7 @@ export class HttpRequestClient {
     if (!res.ok) {
       // TODO IMPROVE
       if(res.status == 401){
-        window.location.href = "/login";
+        window.location.href = "/ui/login/";
       }
       else {
         throw new Error(`API error: ${res.status}`);
@@ -85,6 +85,27 @@ export class HttpRequestClient {
       return this.post<any>(
         '/login',
         JSON.stringify({ email, password }),
+      );
+  }
+
+  register(email: string, password: string){
+      return this.post<any>(
+        '/register',
+        JSON.stringify({ email, password }),
+      );
+  }
+
+  feedback(feedback: string){
+      return this.post<any>(
+        '/feedback',
+        JSON.stringify({ feedback }),
+      );
+  }
+
+
+  verifyAccount(verificationToken){
+      return this.get<any>(
+        `/verify/${verificationToken}`,
       );
   }
 

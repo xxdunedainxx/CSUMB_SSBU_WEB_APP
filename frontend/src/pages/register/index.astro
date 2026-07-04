@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Login from "../../react/components/Login";
+import Register from "../../react/components/Register";
 ---
 
 
@@ -69,9 +69,8 @@ display: none;
 </style>
 
 
-<BaseLayout title="CSUMB SSBU Research Lab" description="CSUMB Research">   
+<BaseLayout title="CSUMB SSBU Research Lab" description="CSUMB Research">
     <div class="container">
-        <Login client:load />
-        <a href="/ui/register/">Don't have an account? Create one here!</a>
+        <Register client:load />
     </div>
 </BaseLayout>

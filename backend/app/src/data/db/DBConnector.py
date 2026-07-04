@@ -7,8 +7,11 @@
 from typing import Any
 
 import psycopg2
+import time
 
 from src.util.LogFactory import LogFactory
+from src.Configuration import CONF_INSTANCE
+from src.util.ErrorFactory import errorStackTrace
 
 """
     Exception thrown for db connection issues 
@@ -68,21 +71,27 @@ class DBConnector:
         Initializes a connection with target DB 
     """
     def __initiate_connection(self, host: str, databaseName: str, username: str, password: str, port: int):
-        LogFactory.MAIN_LOG.info(f"Initializing DB connection with '{host}:{port}'")
-        self.__CONNECTION = psycopg2.connect(
-            host=host,
-            dbname=databaseName,
-            user=username,
-            password=password,
-            port=port
-        )
+        for i in range(CONF_INSTANCE.STARTUP_DEPENDENCIES_RETRY_COUNT):
+            try:
+                LogFactory.MAIN_LOG.info(f"Initializing DB connection with '{host}:{port}'")
+                self.__CONNECTION = psycopg2.connect(
+                    host=host,
+                    dbname=databaseName,
+                    user=username,
+                    password=password,
+                    port=port
+                )
 
-        if self.check_connection() == False:
-            raise CSUMBDatabaseConnectionError(host, port)
-        else:
-            LogFactory.MAIN_LOG.info(f"Connection with '{host}:{port}', successful!")
-            self.host = host
-            self.port = port
+                if self.check_connection() == False:
+                    raise CSUMBDatabaseConnectionError(host, port)
+                else:
+                    LogFactory.MAIN_LOG.info(f"Connection with '{host}:{port}', successful!")
+                    self.host = host
+                    self.port = port
+                    break
+            except Exception as e:
+                LogFactory.MAIN_LOG.error(f"Connection failed: {errorStackTrace(e)}. Sleep for {str(CONF_INSTANCE.STARTUP_DEPENDENCY_SLEEP_SECONDS)} seconds and try again..")
+                time.sleep(CONF_INSTANCE.STARTUP_DEPENDENCY_SLEEP_SECONDS)
 
     """
         Check if the database connection is currently available. 
