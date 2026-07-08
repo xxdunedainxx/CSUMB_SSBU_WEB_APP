@@ -13,9 +13,9 @@ import { prefersReducedMotion } from './SmoothScroll.client';
 
 const BASE_SPEED = 40;
 const MAX_SPEED = 320;
-const WHEEL_GAIN = 1.05;
-const PAGE_SCROLL_GAIN = 0.55;
-/** How quickly excess speed bleeds back toward base (liquid feel). */
+const WHEEL_GAIN = 3.15;
+const PAGE_SCROLL_GAIN = 1.65;
+/** How quickly speed springs back toward base drift (liquid feel). */
 const SPRING = 0.038;
 
 export default function Gx3Carousel() {
@@ -99,8 +99,7 @@ export default function Gx3Carousel() {
 
 		const boostVelocity = (delta: number) => {
 			if (expandedRef.current || delta === 0) return;
-			velocityRef.current = Math.min(MAX_SPEED, velocityRef.current + delta);
-			if (velocityRef.current < BASE_SPEED) velocityRef.current = BASE_SPEED;
+			velocityRef.current = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, velocityRef.current + delta));
 		};
 
 		const onViewportWheel = (e: WheelEvent) => {
@@ -180,7 +179,6 @@ export default function Gx3Carousel() {
 		<section ref={sectionRef} className="gx3" aria-labelledby="gx3-title">
 			<div className="gx3__head">
 				<h2 id="gx3-title">Research at GX3</h2>
-				<p className="gx3__hint">Scroll · click to enlarge</p>
 			</div>
 			<div ref={viewportRef} className="gx3__viewport">
 				<div ref={trackRef} className="gx3__track">

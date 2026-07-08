@@ -12,14 +12,15 @@ const {
     lang = 'en',
     url = '',
     twitter = '',
-    theme = 'dark'
+    theme = 'dark',
+    ambientScroll = false,
 } = Astro.props;
 
 
 ---
 
 <!doctype html>
-<html lang={lang} class={`theme-${theme}`}>
+<html lang={lang} class={`theme-${theme}`} data-ambient={ambientScroll ? 'on' : undefined}>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -34,6 +35,7 @@ const {
         <link rel="icon" href="/favicon.ico" />
     </head>
     <body>
+        {ambientScroll ? <div class="cinematic-ambient" aria-hidden="true"></div> : null}
         <Header />
 
         <main id="main" class="site-container" role="main">

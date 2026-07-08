@@ -17,8 +17,17 @@ gsap.registerPlugin(ScrollTrigger);
 
 let activeLenis: Lenis | null = null;
 
-export function getLenis(): Lenis | null {
-	return activeLenis;
+export function getScrollY(): number {
+	if (activeLenis) return activeLenis.scroll;
+	return window.scrollY || document.documentElement.scrollTop;
+}
+
+export function scrollToY(target: number, duration = 0.45): void {
+	if (activeLenis) {
+		activeLenis.scrollTo(target, { duration, easing: (t: number) => 1 - Math.pow(1 - t, 3) });
+		return;
+	}
+	window.scrollTo({ top: target, behavior: 'smooth' });
 }
 
 export function prefersReducedMotion(): boolean {
@@ -52,6 +61,25 @@ export function initSmoothScroll(): Lenis | null {
 	activeLenis = lenis;
 
 	lenis.on('scroll', ScrollTrigger.update);
+
+	ScrollTrigger.scrollerProxy(document.documentElement, {
+		scrollTop(value) {
+			if (arguments.length) {
+				lenis.scrollTo(value, { immediate: true });
+			}
+			return lenis.scroll;
+		},
+		getBoundingClientRect() {
+			return {
+				top: 0,
+				left: 0,
+				width: window.innerWidth,
+				height: window.innerHeight,
+			};
+		},
+	});
+
+	ScrollTrigger.addEventListener('refresh', () => lenis.resize());
 
 	gsap.ticker.add((time: number) => {
 		lenis.raf(time * 1000);

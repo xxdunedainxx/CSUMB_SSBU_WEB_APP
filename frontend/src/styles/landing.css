@@ -19,21 +19,36 @@
 }
 
 .hero__bg {
-	position: absolute;
-	inset: -10%;
-	z-index: 0;
-
-	background:
-		radial-gradient(circle at 30% 25%, rgba(40, 40, 43, 0.45), transparent 45%),
-		radial-gradient(circle at 70% 70%, rgba(20, 20, 22, 0.6), transparent 50%);
-
-	filter: blur(12px);
-	animation: heroDrift 22s ease-in-out infinite alternate;
+	display: none;
 }
 
-@keyframes heroDrift {
-	from { transform: translate3d(-1%, -0.5%, 0) scale(1.03); }
-	to   { transform: translate3d(1%, 0.5%, 0) scale(1.06); }
+/* Full-page ambient gradient — visible when scroll is idle (see CinematicAmbient.client.ts) */
+.cinematic-ambient {
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+
+	opacity: 0;
+	transition: opacity 0.85s ease;
+
+	background:
+		radial-gradient(ellipse at 50% 0%, rgba(40, 40, 43, 0.42) 0%, transparent 55%),
+		radial-gradient(ellipse at 50% 100%, rgba(0, 0, 0, 0.38) 0%, transparent 50%),
+		radial-gradient(circle at 30% 25%, rgba(40, 40, 43, 0.35), transparent 45%),
+		radial-gradient(circle at 70% 70%, rgba(20, 20, 22, 0.5), transparent 50%),
+		linear-gradient(to bottom, #0a0a0b, #121214 42%, #0d0d0f 68%, #0a0a0b);
+
+	filter: blur(0);
+}
+
+html.theme-cinematic[data-ambient='on'] .cinematic-ambient {
+	opacity: 1;
+}
+
+html.theme-cinematic[data-ambient] .site-container {
+	position: relative;
+	z-index: 1;
 }
 
 .hero__content {
@@ -224,7 +239,7 @@
 	border-radius: 0;
 	overflow: hidden;
 
-	background: #000;
+	background: var(--stage-bg, #0a0a0b);
 
 	box-shadow: none;
 	border: none;
@@ -248,7 +263,7 @@
 }
 
 .test-stage__poster {
-	background: #000 center / cover no-repeat;
+	background: var(--stage-bg, #0a0a0b) center / cover no-repeat;
 }
 
 .test-stage__loading {
@@ -262,6 +277,13 @@
 .test-stage__rail {
 	display: flex;
 	gap: 0.45rem;
+	opacity: 1;
+	transition: opacity 280ms ease, visibility 280ms ease;
+}
+
+.test-stage[data-visual-mode='transition'] .test-stage__rail {
+	opacity: 0;
+	visibility: hidden;
 }
 
 .test-stage__dot {

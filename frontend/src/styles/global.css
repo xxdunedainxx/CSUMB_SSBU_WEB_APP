@@ -105,10 +105,9 @@ html.theme-cinematic {
 	--chrome-bg: rgba(10, 10, 11, 0.85);
 	--chrome-border: rgba(255, 255, 255, 0.05);
 
-	--page-bg:
-		radial-gradient(ellipse at 50% 0%, rgba(40, 40, 43, 0.35) 0%, transparent 55%),
-		radial-gradient(ellipse at 50% 100%, rgba(0, 0, 0, 0.4) 0%, transparent 50%),
-		linear-gradient(to bottom, #0a0a0b, #0e0e10 50%, #0a0a0b);
+	/* Flat page + stage fill — matches transition frame letterboxing */
+	--stage-bg: #0a0a0b;
+	--page-bg: #0a0a0b;
 
 	--shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
 	--shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
@@ -187,8 +186,13 @@ html.theme-cinematic .text-gradient {
 	-webkit-text-fill-color: transparent;
 }
 
-html.theme-cinematic .glass.research-explainer__card::before {
+html.theme-cinematic .research-explainer__card::before {
 	opacity: 0.35;
+}
+
+html.theme-cinematic h1,
+html.theme-cinematic .tests-menu {
+	font-family: var(--font-body);
 }
 
 html.theme-light {

@@ -5,8 +5,8 @@
  * section. Text is verbatim from the redesign brief; asset paths
  * point at the curated subset under /research-assets/tests/.
  *
- * Frame sequences are 31 frames each (Transition-In / Transition-Out).
- * Heneveld has no media yet → staticImage placeholder only.
+ * Transition sequences use ezgif-frame assets (18f IN; OUT varies).
+ * Heneveld uses static placeholder + borrowed Posner transitions.
  * -------------------------------------------------------------
  */
 
@@ -24,9 +24,9 @@ export interface StudyTestAssets {
 	videoMp4?: string;
 	/** Poster / first-frame shown before video plays or as fallback. */
 	poster?: string;
-	/** 31 transition-IN frame URLs (null when no frame media exists). */
+	/** Transition-IN frame URLs (null when no frame media exists). */
 	inFrames: string[] | null;
-	/** 31 transition-OUT frame URLs (null when no frame media exists). */
+	/** Transition-OUT frame URLs (null when no frame media exists). */
 	outFrames: string[] | null;
 	/** Static placeholder image (used in place of video + frames). */
 	staticImage?: string;
@@ -42,12 +42,17 @@ export interface StudyTest {
 	assets: StudyTestAssets;
 }
 
-/** Build N zero-padded frame URLs: prefix-001.jpg ... prefix-NNN.jpg */
-function frames(base: string, n: number): string[] {
-	return Array.from({ length: n }, (_, i) => `${base}-${String(i + 1).padStart(3, '0')}.jpg`);
+/** Build N zero-padded ezgif frame URLs: dir/ezgif-frame-001.jpg … N */
+function ezgifFrames(dir: string, n: number): string[] {
+	return Array.from(
+		{ length: n },
+		(_, i) => `${dir}/ezgif-frame-${String(i + 1).padStart(3, '0')}.jpg`,
+	);
 }
 
-const TEST_FRAMES = 31;
+export const TRANSITION_IN_FRAMES = 18;
+/** Reference frame count for scroll-snap math on the landing stage. */
+export const TRANSITION_SNAP_FRAMES = TRANSITION_IN_FRAMES;
 
 export const STUDY_TESTS: StudyTest[] = [
 	{
@@ -60,8 +65,8 @@ export const STUDY_TESTS: StudyTest[] = [
 			videoWebm: '/research-assets/tests/rt/raw/Reaction-Time-EX.webm',
 			videoMp4: '/research-assets/tests/rt/raw/Reaction-Time-EX.mp4',
 			poster: '/research-assets/tests/rt/raw/first-frame.png',
-			inFrames: frames('/research-assets/tests/rt/in/frame', TEST_FRAMES),
-			outFrames: frames('/research-assets/tests/rt/out/frame', TEST_FRAMES),
+			inFrames: ezgifFrames('/research-assets/tests/rt/reaction-in', TRANSITION_IN_FRAMES),
+			outFrames: ezgifFrames('/research-assets/tests/rt/reaction-out', 14),
 		},
 	},
 	{
@@ -74,8 +79,8 @@ export const STUDY_TESTS: StudyTest[] = [
 			videoWebm: '/research-assets/tests/gonogo/raw/Go-NoGo-EX.webm',
 			videoMp4: '/research-assets/tests/gonogo/raw/Go-NoGo-EX.mp4',
 			poster: '/research-assets/tests/gonogo/raw/first-frame.png',
-			inFrames: frames('/research-assets/tests/gonogo/in/frame', TEST_FRAMES),
-			outFrames: frames('/research-assets/tests/gonogo/out/frame', TEST_FRAMES),
+			inFrames: ezgifFrames('/research-assets/tests/gonogo/gonogo-in', TRANSITION_IN_FRAMES),
+			outFrames: ezgifFrames('/research-assets/tests/gonogo/gonogo-out', 14),
 		},
 	},
 	{
@@ -88,8 +93,8 @@ export const STUDY_TESTS: StudyTest[] = [
 			videoWebm: '/research-assets/tests/taskswitching/raw/Task-Switching-EX.webm',
 			videoMp4: '/research-assets/tests/taskswitching/raw/Task-Switching-EX.mp4',
 			poster: '/research-assets/tests/taskswitching/raw/first-frame.png',
-			inFrames: frames('/research-assets/tests/taskswitching/in/frame', TEST_FRAMES),
-			outFrames: frames('/research-assets/tests/taskswitching/out/frame', TEST_FRAMES),
+			inFrames: ezgifFrames('/research-assets/tests/taskswitching/task-in', TRANSITION_IN_FRAMES),
+			outFrames: ezgifFrames('/research-assets/tests/taskswitching/task-out', 15),
 		},
 	},
 	{
@@ -102,8 +107,8 @@ export const STUDY_TESTS: StudyTest[] = [
 			videoWebm: '/research-assets/tests/posner/raw/Posner-Cueing-EX.webm',
 			videoMp4: '/research-assets/tests/posner/raw/Posner-Cueing-EX.mp4',
 			poster: '/research-assets/tests/posner/raw/first-frame.png',
-			inFrames: frames('/research-assets/tests/posner/in/frame', TEST_FRAMES),
-			outFrames: frames('/research-assets/tests/posner/out/frame', TEST_FRAMES),
+			inFrames: ezgifFrames('/research-assets/tests/posner/posner-in', TRANSITION_IN_FRAMES),
+			outFrames: ezgifFrames('/research-assets/tests/posner/posner-out', 14),
 		},
 	},
 	{
@@ -113,10 +118,9 @@ export const STUDY_TESTS: StudyTest[] = [
 		description:
 			'Previous tests measure cognitive and reaction time using tests conducted on a mouse and keyboard, while many esports players employ handheld controllers to actually compete. Often, reaction time alone is not enough; precision is required to meet desired outcomes.',
 		assets: {
-			// Content currently missing — static placeholder; borrow Posner transitions for scroll alignment.
 			staticImage: '/research-assets/tests/heneveld/placeholder.png',
-			inFrames: frames('/research-assets/tests/posner/in/frame', TEST_FRAMES),
-			outFrames: frames('/research-assets/tests/posner/out/frame', TEST_FRAMES),
+			inFrames: ezgifFrames('/research-assets/tests/posner/posner-in', TRANSITION_IN_FRAMES),
+			outFrames: ezgifFrames('/research-assets/tests/posner/posner-out', 14),
 		},
 	},
 ];
@@ -127,10 +131,14 @@ export const GX3_PHOTOS = Array.from(
 	(_, i) => `/research-assets/genesis/${String(i + 1).padStart(3, '0')}.jpg`,
 );
 
-/** Box-open hero frames (180). */
+/** Research hero — trimmed sequence (frames 40–140, 101 total). */
+export const HERO_FRAME_START = 40;
+export const HERO_FRAME_COUNT = 101;
+
 export const HERO_FRAMES = Array.from(
-	{ length: 180 },
-	(_, i) => `/research-assets/new-hero/ezgif-frame-${String(i + 1).padStart(3, '0')}.jpg`,
+	{ length: HERO_FRAME_COUNT },
+	(_, i) =>
+		`/research-assets/new-hero/ezgif-frame-${String(HERO_FRAME_START + i).padStart(3, '0')}.jpg`,
 );
 
 export default STUDY_TESTS;

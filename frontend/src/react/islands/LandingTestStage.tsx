@@ -8,17 +8,20 @@
  *   • Leaving toward next → scrub OUT(i) then IN(i+1)
  */
 import { useEffect, useRef, useState } from 'react';
-import { STUDY_TESTS } from '../../data/studyTests';
+import { STUDY_TESTS, TRANSITION_SNAP_FRAMES } from '../../data/studyTests';
 import {
 	initSmoothScroll,
 	ScrollTrigger,
 	prefersReducedMotion,
+	getScrollY,
+	scrollToY,
 } from './SmoothScroll.client';
+import { initCinematicAmbient, destroyCinematicAmbient } from './CinematicAmbient.client';
 import { preloadFrames, drawFrame } from './frameLoader';
 
-const FRAME_COUNT = 31;
+const FRAME_COUNT = TRANSITION_SNAP_FRAMES;
 /** Snap when within this many transition frames of a hold point. */
-const SNAP_FRAME_THRESHOLD = 10;
+const SNAP_FRAME_THRESHOLD = 17;
 
 function clamp01(v: number) {
 	return Math.max(0, Math.min(1, v));
@@ -49,9 +52,9 @@ export default function LandingTestStage() {
 		const poster = posterRef.current;
 		if (!section || !canvas || !video || !poster) return;
 
-		initSmoothScroll();
-
+		const lenis = initSmoothScroll();
 		const reduced = prefersReducedMotion();
+		if (!reduced) initCinematicAmbient(lenis);
 		const tests = STUDY_TESTS;
 		const N = tests.length;
 
@@ -66,6 +69,8 @@ export default function LandingTestStage() {
 
 		let cleanup = () => {};
 		let holdScrollYs: number[] = [];
+		let snapTimer = 0;
+		let snapping = false;
 
 		const recomputeHolds = () => {
 			holdScrollYs = panelRefs.current
@@ -91,15 +96,21 @@ export default function LandingTestStage() {
 
 			let active = -1;
 
+			const setVisualMode = (mode: 'hold' | 'transition') => {
+				section.dataset.visualMode = mode;
+			};
+
 			const hideAll = () => {
 				canvas.style.opacity = '0';
 				video.style.opacity = '0';
 				poster.style.opacity = '0';
+				setVisualMode('transition');
 			};
 
 			const showTest = (i: number) => {
 				const t = tests[i];
 				if (!t) return;
+				setVisualMode('hold');
 				if (active !== i) {
 					active = i;
 					setActiveIndex(i);
@@ -136,6 +147,7 @@ export default function LandingTestStage() {
 			};
 
 			const scrub = (i: number, kind: 'out' | 'in', frac: number) => {
+				setVisualMode('transition');
 				const framesForTest = perTestFrames[i];
 				if (!framesForTest) return;
 				const t = tests[i];
@@ -162,11 +174,61 @@ export default function LandingTestStage() {
 
 			const triggers: ScrollTrigger[] = [];
 
+			const getSnapTarget = (scrollY: number): number | null => {
+				recomputeHolds();
+				if (holdScrollYs.length === 0) return null;
+
+				const sectionTop = holdScrollYs[0] - window.innerHeight;
+				const sectionEnd = holdScrollYs[holdScrollYs.length - 1] + window.innerHeight;
+				if (scrollY < sectionTop || scrollY > sectionEnd) return null;
+
+				let best: number | null = null;
+				let bestDist = Infinity;
+
+				for (let i = 0; i < holdScrollYs.length; i++) {
+					const hold = holdScrollYs[i];
+					const dist = Math.abs(scrollY - hold);
+					const next = holdScrollYs[i + 1];
+					const prev = holdScrollYs[i - 1];
+					const halfGap = next != null
+						? (next - hold) / 2
+						: prev != null
+							? (hold - prev) / 2
+							: window.innerHeight * 0.5;
+					const threshold = Math.max(
+						halfGap * (SNAP_FRAME_THRESHOLD / FRAME_COUNT),
+						window.innerHeight * 0.18,
+					);
+
+					if (dist <= threshold && dist < bestDist) {
+						bestDist = dist;
+						best = hold;
+					}
+				}
+
+				return best;
+			};
+
+			const scheduleSnap = () => {
+				if (snapping) return;
+				clearTimeout(snapTimer);
+				snapTimer = window.setTimeout(() => {
+					const y = getScrollY();
+					const target = getSnapTarget(y);
+					if (target === null || Math.abs(target - y) < 4) return;
+					snapping = true;
+					scrollToY(target, 0.55);
+					window.setTimeout(() => {
+						snapping = false;
+					}, 580);
+				}, 130);
+			};
+
 			const updateFromScroll = (scrollY: number) => {
 				recomputeHolds();
 				if (holdScrollYs.length < N) return;
 
-				const holdBand = window.innerHeight * 0.06;
+				const holdBand = window.innerHeight * 0.1;
 
 				for (let i = 0; i < N; i++) {
 					if (Math.abs(scrollY - holdScrollYs[i]) <= holdBand) {
@@ -226,65 +288,28 @@ export default function LandingTestStage() {
 				triggers.push(t);
 			});
 
-			// Snap to nearest hold when within 10-frame threshold of a transition.
+			const onScrollSnap = () => scheduleSnap();
 			if (!reduced) {
-				const snapTrigger = ScrollTrigger.create({
-					start: 0,
-					end: 'max',
-					snap: {
-						snapTo: (scrollY: number) => {
-							recomputeHolds();
-							if (holdScrollYs.length === 0) return scrollY;
-
-							const sectionTop = holdScrollYs[0] - window.innerHeight;
-							const sectionEnd = holdScrollYs[holdScrollYs.length - 1] + window.innerHeight;
-							if (scrollY < sectionTop || scrollY > sectionEnd) {
-								return scrollY;
-							}
-
-							let nearest = scrollY;
-							let nearestDist = Infinity;
-
-							for (let i = 0; i < holdScrollYs.length; i++) {
-								const hold = holdScrollYs[i];
-								const dist = Math.abs(scrollY - hold);
-								const next = holdScrollYs[i + 1];
-								const prev = holdScrollYs[i - 1];
-								const halfGap = next != null
-									? (next - hold) / 2
-									: prev != null
-										? (hold - prev) / 2
-										: window.innerHeight * 0.5;
-								const threshold = halfGap * (SNAP_FRAME_THRESHOLD / FRAME_COUNT);
-
-								if (dist <= threshold && dist < nearestDist) {
-									nearestDist = dist;
-									nearest = hold;
-								}
-							}
-
-							return nearest;
-						},
-						duration: { min: 0.2, max: 0.5 },
-						delay: 0.08,
-						ease: 'power2.inOut',
-					},
-				});
-				triggers.push(snapTrigger);
+				if (lenis) lenis.on('scroll', onScrollSnap);
+				else window.addEventListener('scroll', onScrollSnap, { passive: true });
 			}
 
 			const onRefresh = () => {
 				recomputeHolds();
-				updateFromScroll(master.scroll());
+				updateFromScroll(getScrollY());
 			};
 			ScrollTrigger.addEventListener('refresh', onRefresh);
 			recomputeHolds();
 			ScrollTrigger.refresh();
-			updateFromScroll(window.scrollY || document.documentElement.scrollTop);
+			updateFromScroll(getScrollY());
 
 			cleanup = () => {
+				clearTimeout(snapTimer);
+				if (lenis) lenis.off('scroll', onScrollSnap);
+				else window.removeEventListener('scroll', onScrollSnap);
 				ScrollTrigger.removeEventListener('refresh', onRefresh);
 				triggers.forEach((t) => t.kill());
+				destroyCinematicAmbient();
 			};
 
 			if (reduced) {
@@ -297,7 +322,7 @@ export default function LandingTestStage() {
 	}, []);
 
 	return (
-		<section ref={sectionRef} className="test-stage" aria-label="The study's tests">
+	<section ref={sectionRef} className="test-stage" data-visual-mode="transition" aria-label="The study's tests">
 			<div className="test-stage__text">
 				{STUDY_TESTS.map((t, i) => (
 					<article

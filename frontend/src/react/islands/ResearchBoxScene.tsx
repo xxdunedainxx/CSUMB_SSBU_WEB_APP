@@ -2,7 +2,7 @@
  * ResearchBoxScene.tsx
  * -------------------------------------------------------------
  * The cinematic hero of the Research page. A sticky canvas plays the
- * 180-frame "cardboard box opens → items fall out" sequence, scrubbed
+ * 101-frame "cardboard box opens → items fall out" sequence, scrubbed
  * 1:1 by scroll progress (GSAP ScrollTrigger, scrub). A soft radial
  * light bloom intensifies as the box opens; a vignette frames it.
  *
@@ -45,7 +45,7 @@ export default function ResearchBoxScene({ scrollSpan = 3 }: Props) {
 		let cleanup = () => {};
 
 		(async () => {
-			// Preload all 180 frames, drawing frame 0 as soon as it's ready.
+			// Preload hero frames, drawing frame 0 as soon as it's ready.
 			const images = await preloadFrames(HERO_FRAMES, (p) =>
 				setProgress(p.loaded / p.total),
 			);
