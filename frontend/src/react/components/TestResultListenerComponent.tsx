@@ -89,7 +89,16 @@ export default function TestResultListenerComponent({
               ...item, testResultId: testId, id: -1
             }));
             await client.uploadSrtResults({srtResults});
-          } else {
+          } else if (testCategory == "TaskSwitching") {
+            console.log("Task switch upload");
+            const dataToUpload = listener.taskSwitchToJson(event.data.payload);
+            const taskSwitchingResults = (dataToUpload as any).taskSwitchingResults.map((item: any) => ({
+              ...item, testResultId: testId, id: -1
+            }));
+            await client.uploadTaskSwitchingResults({
+              taskSwitchingResults
+            });
+          }else {
             console.log("UNKNOWN TEST TYPE");
           }
 
