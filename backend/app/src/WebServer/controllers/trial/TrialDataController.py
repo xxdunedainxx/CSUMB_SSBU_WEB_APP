@@ -8,6 +8,7 @@ from src.WebServer.decorators.Authorize import authorize
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.PosnerCueResult import PosnerCueResult
 from src.data.db.model.SrtTestResult import SrtTestResult
+from src.data.db.model.TaskSwitchingResult import TaskSwitchingResults
 from src.util.LogFactory import LogFactory
 from src.WebServer.decorators.HTTPLogger import http_logger
 from src.WebServer.WebServerInit import WebServerInit
@@ -239,6 +240,69 @@ class TrialController:
                 }, 200
         except Exception as e:
             LogFactory.MAIN_LOG.error(f"Upload srt test results {errorStackTrace(e)}")
+            return {
+                "response": "Did not work"
+            }, 500
+
+    """
+    Example:
+
+    curl -X POST http://localhost:80/upload_task_switching_results \
+    -H "Content-Type: application/json" \
+    -d '{
+      "taskSwitchingResults": [
+        {
+          "id": 1,
+          "testResultId": 1,
+          "TaskSwitchTypeAndTestOrTrial": "mixed_test",
+          "position": 1,
+          "taskType": 1,
+          "letterStimulus": "A",
+          "numberStimulus": 4,
+          "typeOfBlock": 0,
+          "taskSwitchOrTaskRepeat": 1,
+          "status": 1,
+          "ResponseTimeMs": 512,
+          "totalTimeMs": 640
+        },
+
+        {
+          "id": 2,
+          "testResultId": 1,
+          "TaskSwitchTypeAndTestOrTrial": "mixed_test",
+          "position": 3,
+          "taskType": 2,
+          "letterStimulus": "B",
+          "numberStimulus": 7,
+          "typeOfBlock": 0,
+          "taskSwitchOrTaskRepeat": 0,
+          "status": 1,
+          "ResponseTimeMs": 388,
+          "totalTimeMs": 455
+        }
+
+        // ... remaining trials ...
+      ]
+    }'
+    """
+    @staticmethod
+    @flask_ref.route('/upload_task_switching_results', methods=['POST'])
+    @http_logger
+    def upload_task_switching_results():
+        try:
+            LogFactory.MAIN_LOG.info("Processing Task Switching Test Results")
+            results = request.json["taskSwitchingResults"]
+
+            for result in results:
+                Services.dbQueryFactory.insert_task_switching_result(
+                    TaskSwitchingResults.deserialize_to_object(result)
+                )
+
+            return {
+                "response": "Task switching records uploaded"
+            }, 200
+        except Exception as e:
+            LogFactory.MAIN_LOG.error(f"Upload task switching results {errorStackTrace(e)}")
             return {
                 "response": "Did not work"
             }, 500
