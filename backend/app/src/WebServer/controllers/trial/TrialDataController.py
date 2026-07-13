@@ -12,6 +12,7 @@ from src.util.LogFactory import LogFactory
 from src.WebServer.decorators.HTTPLogger import http_logger
 from src.WebServer.WebServerInit import WebServerInit
 from src.util.ErrorFactory import errorStackTrace
+from src.sec.DataValidation import DataModelValidation
 
 from flask import Flask, request
 
@@ -82,16 +83,24 @@ class TrialController:
     @staticmethod
     @flask_ref.route('/upload_gng_test_results', methods=['POST'])
     @http_logger
+    @authorize
     def upload_gng_test_results():
         try:
             LogFactory.MAIN_LOG.info("Processing Gng Test Results")
 
             results = request.json["gngTestResults"]
+            structuredResults: [GngTestResult] = []
 
             for result in results:
-                Services.dbQueryFactory.insert_srt_test_result(
-                    GngTestResult.deserialize_to_object(result)
-                )
+                structuredResult = GngTestResult.deserialize_to_object(result)
+                if not DataModelValidation.validate_gng_structure(structuredResult):
+                    return {
+                        "response": "invalid gng response given"
+                    }, 400
+                structuredResults.append(structuredResult)
+
+            for r in structuredResults:
+                Services.dbQueryFactory.insert_gng_test_result(r)
 
             return {
                 "response": "records uploaded"
@@ -159,11 +168,18 @@ class TrialController:
 
             # TODO FOR ALL OF THESE RESULT UPLAODS, ENSURE A RECORD FOR THIS TEST RESULT ID DOES NOT EXIST!!
             results = request.json["posnerResults"]
+            structuredResults: [PosnerCueResult] = []
 
             for result in results:
-                Services.dbQueryFactory.insert_posner_test_result(
-                    PosnerCueResult.deserialize_to_object(result)
-                )
+                structuredResult = PosnerCueResult.deserialize_to_object(result)
+                if not DataModelValidation.validate_posner_structure(structuredResult):
+                    return {
+                        "response": "invalid posner response given"
+                    }, 400
+                structuredResults.append(structuredResult)
+
+            for r in structuredResults:
+                Services.dbQueryFactory.insert_posner_test_result(r)
 
             return {
                 "response": "records uploaded"
@@ -228,11 +244,18 @@ class TrialController:
         try:
             LogFactory.MAIN_LOG.info("Processing Simple Reaction Test Results")
             results = request.json["srtResults"]
+            structuredResults: [SrtTestResult] = []
 
             for result in results:
-                Services.dbQueryFactory.insert_srt_test_result(
-                    SrtTestResult.deserialize_to_object(result)
-                )
+                structuredResult = SrtTestResult.deserialize_to_object(result)
+                if not DataModelValidation.validate_srt_structure(structuredResult):
+                    return {
+                        "response": "invalid srt response given"
+                    }, 400
+                structuredResults.append(structuredResult)
+
+            for r in structuredResults:
+                Services.dbQueryFactory.insert_srt_test_result(r)
 
             return {
                     "response": "SRT records uploaded"
