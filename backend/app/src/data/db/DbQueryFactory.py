@@ -11,6 +11,7 @@ from src.data.db.model.CompleteTestResults import CompleteTestResults
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.PosnerCueResult import PosnerCueResult
 from src.data.db.model.SrtTestResult import SrtTestResult
+from src.data.db.model.TaskSwitchingResult import TaskSwitchingResults
 from src.data.db.model.TestResult import TestResult
 from src.data.db.model.User import User
 from src.util.DateTimeUtil import DateTimeUtils
@@ -145,12 +146,13 @@ class DbQueryFactory:
         gngRecords = self.get_gng_test_results(testId=testId)
         posnerRecords = self.get_posner_cue_results(testId=testId)
         srtRecords = self.get_srt_results(testId=testId)
+        taskRecords = self.get_task_switching_results(testId=testId)
         return CompleteTestResults(
             testResult=testRecord,
             GngTestResults=gngRecords,
             PosnerRecords=posnerRecords,
             SrtRecords=srtRecords,
-            TaskSwitchingRecords=[]
+            TaskSwitchingRecords=taskRecords
         )
 
 
@@ -238,7 +240,37 @@ class DbQueryFactory:
             )
         return structured_srt
 
+    def get_task_switching_results(self, testId: int):
+        allResults = self.dbConnector.read_data(
+            query="SELECT id, payload FROM taskSwitchingTestResultData WHERE testResultId=%s",
+            vars=(testId,)
+        )
 
+        # list of task switching result objects
+        structured_taskSwitching: [TaskSwitchingResults] = []
+
+        for result in allResults:
+            # takes database row and converts it to a dictionary
+            jsonObj = self.__decrypt_data(bytes(result[1]))
+            # abstraction
+            structured_taskSwitching.append(
+                TaskSwitchingResults(
+                    id=int(result[0]),
+                    testResultId=jsonObj["testResultId"],
+                    TaskSwitchTypeAndTestOrTrial=jsonObj["TaskSwitchTypeAndTestOrTrial"],
+                    position=jsonObj["position"],
+                    taskType=jsonObj["taskType"],
+                    numberStimulus=jsonObj["numberStimulus"],
+                    letterStimulus=jsonObj["letterStimulus"],
+                    typeOfBlock=jsonObj["typeOfBlock"],
+                    taskSwitchOrTaskRepeat=jsonObj["taskSwitchOrTaskRepeat"],
+                    status=jsonObj["status"],
+                    ResponseTimeMs=jsonObj["ResponseTimeMs"],
+                    totalTimeMs=jsonObj["totalTimeMs"]
+
+                )
+            )
+        return structured_taskSwitching
 
     """
     CREATE TABLE IF NOT EXISTS gngTestResultData(
@@ -270,6 +302,14 @@ class DbQueryFactory:
             query="INSERT INTO srtTestResultData (testResultId, payload) VALUES (%s, %s)",
             vars=(
                 SrtResult.testResultId, self.__encrypt_data(SrtResult.serialize())
+            )
+        )
+
+    def insert_task_switching_result(self, task: TaskSwitchingResults):
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO taskSwitchingTestResultData (testResultId, payload) VALUES (%s, %s)",
+            vars=(
+                task.testResultId, self.__encrypt_data(task.serialize())
             )
         )
 
