@@ -1,17 +1,41 @@
 # Authentication service
 from src.data.db.DbQueryFactory import DbQueryFactory
+from src.Configuration import CONF_INSTANCE
+from flask import request
 
 """
-    TODO - IMPROVE AUTH!    
 """
 class AuthenticationService:
 
     def __init__(self, dbQueryFactory: DbQueryFactory):
         self.dbQueryFactory = dbQueryFactory
 
-    def authenticate(self, email, password) -> bool:
-        pw = self.dbQueryFactory.fetch_user_password_by_email(email)
-        return pw == password
+    def __bypass_auth(self) -> bool:
+        return CONF_INSTANCE.AUTH_BYPASS and CONF_INSTANCE.PRODUCTION_ENVIRONMENT == False
 
-    def authorize(self, userId, resource) -> bool:
+    def authenticate(self, email, password) -> bool:
+        if self.__bypass_auth():
+            return True
+
+        pw = self.dbQueryFactory.fetch_user_password_by_email(email)
+        verified = self.dbQueryFactory.is_account_verified(email)
+        return verified and pw == password
+
+    def authorize(self, session, endpoint, requestArgs) -> bool:
+        return ("user_id" not in session  == False) and self.__endpoint_authorization_check(session, endpoint, requestArgs)
+
+    # TODO - Need to implement access controls here. Check if user has access to a given endpoint
+    def __endpoint_authorization_check(self, session, endpoint, requestArgs):
+        return self.__trial_data_auth_check(session, endpoint, requestArgs)
+
+    def __trial_data_auth_check(self,session, endpoint, requestArgs):
+        if endpoint == "get_test_result_data" or endpoint == "get_all_test_ids":
+            return session["user_id"] == requestArgs["userId"]
+        elif endpoint == "create_new_test_result_entry":
+            return session["user_id"] == request.json["userId"]
+        #  TODO -- ALL TESTS uploads SHOULD HAVE AUTH
+        else:
+            return True
+
+    def __default_auth_check(self) -> bool:
         return True

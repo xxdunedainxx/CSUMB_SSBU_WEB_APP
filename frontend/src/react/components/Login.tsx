@@ -11,7 +11,8 @@ const setup = new Setup();
 
 export const client = new HttpRequestClient(
   setup.config.remoteHost,
-  setup.config.remoteHostPort
+  setup.config.remoteHostPort,
+  setup.config.remoteHostPath
 );
 
 
@@ -29,7 +30,7 @@ export default function Login() {
     try {
       const res = await client.login(email, password);
       // Redirect after successful login
-      window.location.href = "/dashboard";
+      window.location.href = "/ui/dashboard/";
     } catch (err: any) {
       setError(err.message);
     } finally {

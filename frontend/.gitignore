@@ -3,6 +3,8 @@ dist/
 # generated types
 .astro/
 
+docker/tmp
+
 # dependencies
 node_modules/
 

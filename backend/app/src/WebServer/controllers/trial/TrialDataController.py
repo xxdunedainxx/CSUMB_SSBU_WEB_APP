@@ -32,6 +32,7 @@ class TrialController:
     @staticmethod
     @flask_ref.route('/create_new_test_result_entry', methods=['POST'])
     @http_logger
+    @authorize
     def create_new_test_result_entry():
         try:
             userId = request.json["userId"]
@@ -163,6 +164,7 @@ class TrialController:
     @staticmethod
     @flask_ref.route('/upload_posner_results', methods=['POST'])
     @http_logger
+    @authorize
     def upload_posner_results():
         try:
             LogFactory.MAIN_LOG.info("Processing posner Test Results")
@@ -336,6 +338,7 @@ class TrialController:
     @staticmethod
     @flask_ref.route('/get_test_result_data/<int:userId>/<int:testId>', methods=['GET'])
     @http_logger
+    @authorize
     def get_test_result_data(userId: int, testId: int):
         try:
             LogFactory.MAIN_LOG.info("Fetching test result data")

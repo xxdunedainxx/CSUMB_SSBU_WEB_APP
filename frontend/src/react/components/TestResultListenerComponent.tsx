@@ -19,7 +19,8 @@ export default function TestResultListenerComponent({
   
   const client = new HttpRequestClient(
     setup.config.remoteHost,
-    setup.config.remoteHostPort
+    setup.config.remoteHostPort,
+    setup.config.remoteHostPath
   );
   
 

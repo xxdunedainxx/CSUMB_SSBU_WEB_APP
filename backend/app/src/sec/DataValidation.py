@@ -30,9 +30,8 @@ class Email:
             # print(str(e))
             return False
 
-# TODO
+# TODO -
 class DataModelValidation:
-
 
     @staticmethod
     def validate_gng_structure(gngRecord: GngTestResult) -> bool:

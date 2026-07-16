@@ -3,6 +3,8 @@ CREATE TABLE IF NOT EXISTS userTable (
     email VARCHAR(1000) NOT NULL,
     password VARCHAR(1000) NOT NULL,
     salt VARCHAR(100) NOT NULL,
+    registrationToken VARCHAR(100) NOT NULL,
+    resetPasswordToken VARCHAR(100) DEFAULT 'N/A',
     verified BOOLEAN NOT NULL,
     whenCreated TIMESTAMPTZ,
     lastLogin TIMESTAMPTZ
@@ -45,5 +47,7 @@ CREATE TABLE IF NOT EXISTS posnerQueueTestResultData(
     payload BYTEA NOT NULL
 );
 
--- TODO Feedback table
-CREATE TABLE IF NOT EXISTS feedback();
+CREATE TABLE IF NOT EXISTS feedback(
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    feedback VARCHAR(1000) NOT NULL
+);

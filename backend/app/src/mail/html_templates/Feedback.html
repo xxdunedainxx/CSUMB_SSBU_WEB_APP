@@ -1,0 +1,40 @@
+<html>
+  <head>
+      <style>
+          .mainDoc {
+              margin: auto;
+              width: 50%;
+              border: 3px solid black;
+              padding: 10px;
+              text-align: center;
+              font-size: xx-large;
+            }
+
+          .topOfHeader  {
+            color: #1c3894;
+          }
+
+          @media only screen and (max-width: 700px) {
+            .mainDoc {
+              margin: auto;
+              width: 100%;
+              border: 3px solid green;
+              padding: 10px;
+              text-align: center;
+              font-size: medium;
+            }
+        }
+      </style>
+  </head>
+  <body>
+    <div class="mainDoc">
+        <p>
+            <div class="topOfHeader">
+                <h1>User Feedback</h1>
+            </div>
+            Feedback info below:<br />
+            <b>Message</b>: $FEEDBACK<br />
+        </p>
+    </div>
+  </body>
+</html>

@@ -14,22 +14,3 @@ docker rm -f "${CONTAINER_NAME}" >/dev/null 2>&1 || true
 
 echo "Building Redis integration image..."
 docker build -t "${IMAGE_NAME}" -f "${APP_ROOT}/inf/redis/Dockerfile" "${APP_ROOT}"
-
-echo "Starting Redis integration container..."
-docker run -d \
-  --name "${CONTAINER_NAME}" \
-  -p "${HOST_PORT}:${CONTAINER_PORT}" \
-  --restart=no \
-  "${IMAGE_NAME}"
-
-echo "Waiting for Redis to be ready..."
-for i in {1..10}; do
-  if docker exec "${CONTAINER_NAME}" redis-cli ping | grep -q PONG; then
-    echo "Redis is ready."
-    exit 0
-  fi
-  sleep 1
-done
-
-echo "Redis did not become ready in time."
-exit 1

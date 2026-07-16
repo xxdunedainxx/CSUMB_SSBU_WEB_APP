@@ -17,7 +17,7 @@ const TestInfo: TestInfo[] = [
         name: 'Heneveld Controller Testing Paradigm',
         shortDescription: 'Test your controller precision and control',
         description: 'A precision test measuring dexterity through reaction and cognitive tests using game controller joysticks',
-        icon: '/cognitive_dexterity_tests/joystick-image.png',
+        icon: '/ui/cognitive_dexterity_tests/joystick-image.png',
         tags: ['dexterity', 'reaction', 'cognitive']
     },
     {
@@ -27,7 +27,7 @@ const TestInfo: TestInfo[] = [
         name: 'Go No GO',
         shortDescription: 'Test your reaction and cognitive ablities', 
         description: 'A test measuring reaction and cognitive skils', //TODO make more descriptive/specific
-        icon: '/cognitive_dexterity_tests/tempary-app-image.png',
+        icon: '/ui/cognitive_dexterity_tests/tempary-app-image.png',
         tags: ['reaction', 'cognitive']
     },
     {
@@ -37,7 +37,7 @@ const TestInfo: TestInfo[] = [
         name: 'Posner Queuing Test',
         shortDescription: 'Test your reaction and cognitive ablities', 
         description: 'Ummmmm, idk really know what this test does', //TODO make more descriptive/specific
-        icon: '/cognitive_dexterity_tests/tempary-app-image.png',
+        icon: '/ui/cognitive_dexterity_tests/tempary-app-image.png',
         tags: ['reaction', 'cognitive']
     },
     {
@@ -47,7 +47,7 @@ const TestInfo: TestInfo[] = [
         name: 'Task Switching',
         shortDescription: 'Test your reaction and cognitive ablities', 
         description: 'Ummmmm, idk really know what this test does', //TODO make more descriptive/specific
-        icon: '/cognitive_dexterity_tests/tempary-app-image.png',
+        icon: '/ui/cognitive_dexterity_tests/tempary-app-image.png',
         tags: ['reaction', 'cognitive']
     },
     {
@@ -57,7 +57,7 @@ const TestInfo: TestInfo[] = [
         name: 'Simple Reaction',
         shortDescription: 'Test your reaction time!', 
         description: 'Tests your simple reaction time using a spacebar', //TODO make more descriptive/specific
-        icon: '/cognitive_dexterity_tests/tempary-app-image.png',
+        icon: '/ui/cognitive_dexterity_tests/tempary-app-image.png',
         tags: ['reaction']
     }
 ];

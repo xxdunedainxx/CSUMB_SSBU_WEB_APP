@@ -19,8 +19,6 @@ cd $ORIGIN
 
 echo "Runniing Postgres Docker container.."
 
-docker volume ls | grep "postgres_data" && echo "Volume exists" || docker volume create postgres_data && echo "created volume"
-
 docker run -p 5432:5432 --name csumbdbpg \
  -e POSTGRES_DB=csumb_webapp \
  -e POSTGRES_PASSWORD=my-secret-pw \
