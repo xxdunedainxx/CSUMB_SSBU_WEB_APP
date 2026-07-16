@@ -95,6 +95,41 @@ export class TestResultListener {
 
       return {srtTestResults: srtData}
 }
+    taskSwitchToJson(outputData: string): {} {
+        console.log("RAW TASK SWITCHING RESULT OUTPUT:", outputData);
+        const taskData = outputData
+            .trim()
+            .split("\n")
+            .filter(Boolean)
+            .map((line) => {
+                const [
+                    TaskSwitchTypeAndTestOrTrial,
+                    position,
+                    taskType,
+                    letterStimulus,
+                    numberStimulus,
+                    typeOfBlock,
+                    taskSwitchOrTaskRepeat,
+                    status,
+                    ResponseTimeMs,
+                    totalTimeMs
+                ] = line.split(" ");
+               return {
+                   TaskSwitchTypeAndTestOrTrial: TaskSwitchTypeAndTestOrTrial.replace(/^"|"$/g, ""),
+                   position: Number(position.replace(/^"|"$/g, "")),
+                   taskType: Number(taskType.replace(/^"|"$/g, "")),
+                   letterStimulus: letterStimulus.replace(/^"|"$/g, ""),
+                   numberStimulus: Number(numberStimulus.replace(/^"|"$/g, "")),
+                   typeOfBlock: Number(typeOfBlock.replace(/^"|"$/g, "")),
+                   taskSwitchOrTaskRepeat: Number(taskSwitchOrTaskRepeat.replace(/^"|"$/g, "")),
+                   status: Number(status.replace(/^"|"$/g, "")),
+                   ResponseTimeMs: Number(ResponseTimeMs.replace(/^"|"$/g, "")),
+                   totalTimeMs: Number(totalTimeMs.replace(/^"|"$/g, ""))
+               };
+            });
+
+        return {taskSwitchingResults: taskData};
+    }
 }
 
 export default TestResultListener;

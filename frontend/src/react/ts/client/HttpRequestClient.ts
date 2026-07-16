@@ -77,7 +77,16 @@ export class HttpRequestClient {
     );
   }
 
-  // Get test IDs method 
+  uploadTaskSwitchingResults(data: {}) {
+    console.log("Upload Task Switching Results");
+    console.log(data);
+    return this.post<any>(
+        '/upload_task_switching_results',
+        JSON.stringify(data)
+    );
+  }
+
+  // Get test IDs method
   getAllTestIds(userId: number) {
     return this.get<{ testIds: number[] }>(
       `/get_all_test_ids/${userId}`

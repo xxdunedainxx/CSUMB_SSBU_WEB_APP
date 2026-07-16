@@ -6,12 +6,15 @@
 """
 
 
+from inspect import signature
+
 from email_validator import validate_email, EmailNotValidError
 
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.PosnerCueResult import PosnerCueResult
 from src.data.db.model.SrtTestResult import SrtTestResult
 from src.data.db.model.TaskSwitchingResult import TaskSwitchingResults
+
 
 class Email:
     def __init__(self):
@@ -32,16 +35,27 @@ class DataModelValidation:
 
     @staticmethod
     def validate_gng_structure(gngRecord: GngTestResult) -> bool:
-        return True
+        # checks if test structure is correct
+        expected_fields = list(signature(GngTestResult.__init__).parameters)[1:]
+        actual_fields = list(vars(gngRecord).keys())
+        return sorted(actual_fields) == sorted(expected_fields)
 
     @staticmethod
     def validate_posner_structure(posnerRecord: PosnerCueResult) -> bool:
-        return True
+        # checks if test structure is correct
+        expected_fields = list(signature(PosnerCueResult.__init__).parameters)[1:]
+        actual_fields = list(vars(posnerRecord).keys())
+        return sorted(actual_fields) == sorted(expected_fields)
 
     @staticmethod
     def validate_srt_structure(srtRecord: SrtTestResult) -> bool:
-        return True
+        # checks if test structure is correct
+        expected_fields = list(signature(SrtTestResult.__init__).parameters)[1:]
+        actual_fields = list(vars(srtRecord).keys())
+        return sorted(actual_fields) == sorted(expected_fields)
 
     @staticmethod
-    def validatetask_switch_structure(taskSwitchRecord: TaskSwitchingResults) -> bool:
-        return True
+    def validate_taskSwitching_structure(task: TaskSwitchingResults) -> bool:
+        expected_fields = list(signature(TaskSwitchingResults.__init__).parameters)[1:]
+        actual_fields = list(vars(task).keys())
+        return sorted(actual_fields) == sorted(expected_fields)

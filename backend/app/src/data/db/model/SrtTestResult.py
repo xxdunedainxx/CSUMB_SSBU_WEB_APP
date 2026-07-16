@@ -14,7 +14,7 @@ class SrtTestResult:
                  id: int,
                  testResultId: int,
                  TestOrTraining: str,
-                 TrainingOrReal: str,
+                 TrainingOrReal: int,
                  NumberOfChoices: int,
                  TimeBetweenResponseAndNextTrial: int,
                  XCoordinateTargetStim: int,
@@ -24,7 +24,7 @@ class SrtTestResult:
         self.id: int = id
         self.testResultId: int = testResultId
         self.TestOrTraining: str = TestOrTraining
-        self.TrainingOrReal: str = TrainingOrReal
+        self.TrainingOrReal: int = TrainingOrReal
         self.TimeBetweenResponseAndNextTrial: int = TimeBetweenResponseAndNextTrial
         self.XCoordinateTargetStim: int = XCoordinateTargetStim
         self.ResponseTimeMs: int = ResponseTimeMs
