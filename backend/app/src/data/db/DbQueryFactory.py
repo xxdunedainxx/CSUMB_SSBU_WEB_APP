@@ -10,6 +10,7 @@ from src.data.db.DBConnector import DBConnector
 from src.data.db.model.CompleteTestResults import CompleteTestResults
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.PosnerCueResult import PosnerCueResult
+from src.data.db.model.ServerInfo import ServerInfo
 from src.data.db.model.SrtTestResult import SrtTestResult
 from src.data.db.model.TaskSwitchingResult import TaskSwitchingResults
 from src.data.db.model.TestResult import TestResult
@@ -199,6 +200,59 @@ class DbQueryFactory:
     """
     def create_new_srt_test_result(self, srt: SrtTestResult):
         pass
+
+    """
+        Returns a list of all user ids 
+    """
+    def get_all_user_ids(self) -> [int]:
+        allUserIds=self.dbConnector.read_data(
+            query="SELECT id FROM userTable",
+            vars=()
+        )
+        ids=[]
+        for res in allUserIds:
+            ids.append(int(res[1]))
+
+        return ids
+
+    def get_server_info(self) -> ServerInfo:
+        serverInfo=self.dbConnector.read_data(
+            query="SELECT id, lastMetricsUpdate FROM serverInfo WHERE id=%s",
+            vars=(1,)
+        )
+
+        return ServerInfo(
+            id=int(serverInfo[0][0]),
+            lastMetricsUpdate=DateTimeUtils.convert_pg_time_to_iso(str(serverInfo[0][1])),
+        )
+
+    def get_test_results_since_server_time(self, serverInfo: ServerInfo):
+        tests=self.dbConnector.read_data(
+            query="SELECT * FROM testResults WHERE whenGenerated > %s",
+            vars=(serverInfo.lastMetricsUpdate,)
+        )
+
+        testInfo = []
+
+        for res in tests:
+            testInfo.append(
+                {
+                    "id": int(res[0]),
+                    "userID": int(res[1]),
+                    "whenGenerated": DateTimeUtils.convert_pg_time_to_iso(str(res[2])),
+                    "classification": str(res[3])
+                }
+            )
+
+        return testInfo
+
+
+
+    def update_server_info(self, serverInfo: ServerInfo):
+        self.dbConnector.write_or_update_data(
+            query="UPDATE serverInfo SET lastMetricsUpdate=%s WHERE id=%s",
+            vars=(serverInfo.lastMetricsUpdate, serverInfo.id)
+        )
 
     def get_gng_test_results(self, testId: int):
         allResults = self.dbConnector.read_data(

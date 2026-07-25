@@ -13,6 +13,8 @@ from src.Services import Services
 from src.util.ErrorFactory import errorStackTrace
 from src.WebServer.controllers.monitor.AppHealthUtil import AppHealthStatusUtil
 from .Setup import Setup
+from .threading.jobs.MetricsJob import MetricsJob
+
 
 class App:
 
@@ -26,6 +28,7 @@ class App:
     self.init_app_health()
     self.init_api_thread()
     self.init_smtp_mailer_job()
+    self.init_metrics_job()
     if CONF_INSTANCE.PRODUCTION_ENVIRONMENT:
       self.email_on_production_deployment()
 
@@ -80,3 +83,15 @@ class App:
     )
 
     self.smtp_mailer_worker.run()
+
+  def init_metrics_job(self):
+    LogFactory.MAIN_LOG.info("Init metrics Job")
+
+    self.metrics_worker: WorkerPool = WorkerPool(
+      poolName=Services.metrics,
+      size=1,
+      poolType="default",
+      targetMethod=MetricsJob.metrics_job
+    )
+
+    self.metrics_worker.run()

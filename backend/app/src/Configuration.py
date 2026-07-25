@@ -21,6 +21,7 @@ class Configuration:
     "SMTP_PORT"   : 465,
     "MAIL_JOB_EMAILS_PER_JOB": 20,
     "MAIL_JOB_INTERVAL_MINUTES": 1,
+    "METRICS_JOB_INTERVAL_MINUTES": 1,
     "FLASK_HOST_BIND" : "0.0.0.0",
     "FLASK_PORT_BIND" : 80,
     "GLOBAL_RATE_LIMIT_PER_MIN": 100,
@@ -33,7 +34,8 @@ class Configuration:
       ServiceNames.apiServer : True,
       ServiceNames.logRotation: False,
       ServiceNames.redis: True,
-      ServiceNames.db: True
+      ServiceNames.db: True,
+      ServiceNames.metricsJob: True
     },
     "REACT_APP" : "http://localhost/ui/",
     "PRODUCTION_ENVIRONMENT" : False,
@@ -94,6 +96,7 @@ class Configuration:
     self.ENVIRONMENT_HOSTNAME: bool = self._get_value("ENVIRONMENT_HOSTNAME")
     self.MAIL_JOB_EMAILS_PER_JOB: int = self._get_value("MAIL_JOB_EMAILS_PER_JOB")
     self.MAIL_JOB_INTERVAL_MINUTES: int = self._get_value("MAIL_JOB_INTERVAL_MINUTES")
+    self.METRICS_JOB_INTERVAL_MINUTES: int = self._get_value("METRICS_JOB_INTERVAL_MINUTES")
     # For development, will bypass auth for debugging purposes. will always be skipped if PROD
     self.AUTH_BYPASS: bool = self._get_value("AUTH_BYPASS")
     self.GLOBAL_RATE_LIMIT_PER_MIN: int = self._get_value("GLOBAL_RATE_LIMIT_PER_MIN")

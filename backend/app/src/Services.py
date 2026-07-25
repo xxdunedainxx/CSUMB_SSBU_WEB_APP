@@ -21,6 +21,7 @@ class Services:
     logRotation: str = ServiceNames.logRotation
     redis: str = ServiceNames.redis
     db: str = ServiceNames.db
+    metrics: str=ServiceNames.metricsJob
 
     toggleService: ToggleService = None
     dbQueryFactory: DbQueryFactory = None

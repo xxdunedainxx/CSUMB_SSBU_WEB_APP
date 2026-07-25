@@ -51,3 +51,23 @@ CREATE TABLE IF NOT EXISTS feedback(
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     feedback VARCHAR(1000) NOT NULL
 );
+
+-- High level metrics for user visualization
+CREATE TABLE IF NOT EXISTS userMetrics(
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    userID INT REFERENCES userTable(id),
+    lastUpdate TIMESTAMPTZ,
+    -- Encrypted metrics data, most likely a json blob
+    payload BYTEA NOT NULL
+);
+
+--- General table for tracking server state
+CREATE TABLE IF NOT EXISTS serverInfo (
+    id INT PRIMARY KEY,
+    lastMetricsUpdate TIMESTAMPTZ
+);
+
+INSERT INTO serverInfo (id, lastMetricsUpdate)
+VALUES (1, NOW())
+ON CONFLICT (id) DO NOTHING;
+
