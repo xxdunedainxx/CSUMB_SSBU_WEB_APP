@@ -13,6 +13,7 @@ from src.Services import Services
 from src.util.ErrorFactory import errorStackTrace
 from src.WebServer.controllers.monitor.AppHealthUtil import AppHealthStatusUtil
 from .Setup import Setup
+from .data.db.DevServerDatabaseSeed import DevServerDatabaseSeed
 from .threading.jobs.MetricsJob import MetricsJob
 
 
@@ -25,6 +26,7 @@ class App:
 
   def run(self):
     Setup.setup()
+    DevServerDatabaseSeed.seed_db()
     self.init_app_health()
     self.init_api_thread()
     self.init_smtp_mailer_job()

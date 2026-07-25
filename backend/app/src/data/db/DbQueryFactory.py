@@ -195,11 +195,19 @@ class DbQueryFactory:
         )
 
 
-    """
-        TODO Create a new simple reaction time test result row 
-    """
-    def create_new_srt_test_result(self, srt: SrtTestResult):
-        pass
+    def get_test_result_info(self, id: int) -> TestResult:
+        res=self.dbConnector.read_data(
+            query="SELECT userID, whenGenerated, classification FROM testResults where id=%s",
+            vars=(id,)
+        )
+
+        return TestResult(
+            id=id,
+            userId=int(res[0][0]),
+            whenGenerated=DateTimeUtils.convert_pg_time_to_iso(str(res[0][1])),
+            classification=str(res[0][2])
+        )
+
 
     """
         Returns a list of all user ids 
@@ -226,7 +234,7 @@ class DbQueryFactory:
             lastMetricsUpdate=DateTimeUtils.convert_pg_time_to_iso(str(serverInfo[0][1])),
         )
 
-    def get_test_results_since_server_time(self, serverInfo: ServerInfo):
+    def get_test_results_since_server_time(self, serverInfo: ServerInfo) -> [TestResult]:
         tests=self.dbConnector.read_data(
             query="SELECT * FROM testResults WHERE whenGenerated > %s",
             vars=(serverInfo.lastMetricsUpdate,)
@@ -236,12 +244,12 @@ class DbQueryFactory:
 
         for res in tests:
             testInfo.append(
-                {
-                    "id": int(res[0]),
-                    "userID": int(res[1]),
-                    "whenGenerated": DateTimeUtils.convert_pg_time_to_iso(str(res[2])),
-                    "classification": str(res[3])
-                }
+                TestResult(
+                    id= int(res[0]),
+                    userId=int(res[1]),
+                    whenGenerated=DateTimeUtils.convert_pg_time_to_iso(str(res[2])),
+                    classification=str(res[3])
+                )
             )
 
         return testInfo

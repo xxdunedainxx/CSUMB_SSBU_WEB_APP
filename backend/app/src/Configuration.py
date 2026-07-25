@@ -24,7 +24,7 @@ class Configuration:
     "METRICS_JOB_INTERVAL_MINUTES": 1,
     "FLASK_HOST_BIND" : "0.0.0.0",
     "FLASK_PORT_BIND" : 80,
-    "GLOBAL_RATE_LIMIT_PER_MIN": 100,
+    "GLOBAL_RATE_LIMIT_PER_MIN": 10000,
     "APP_HEALTH_PORT" : 8080,
     "FLASK_CORS_ORIGIN": "http://localhost:4321",
     "AUTH_BYPASS": True,

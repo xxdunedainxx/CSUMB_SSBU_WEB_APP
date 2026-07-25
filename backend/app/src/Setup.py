@@ -6,6 +6,7 @@
 from .Services import Services
 from .util.LogFactory import LogFactory
 from .Configuration import CONF_INSTANCE
+from .data.db.DevServerDatabaseSeed import DevServerDatabaseSeed
 
 class Setup:
     def __init__(self):
@@ -17,3 +18,6 @@ class Setup:
         LogFactory.main_log()
         LogFactory.MAIN_LOG.info(f"Executing Application Setup!")
         Services.initialize_services()
+        # This will only seed data if this is a non-prod env
+
+

@@ -25,6 +25,19 @@ class MetricsJob:
     Cron.execute_jobs()
 
   @staticmethod
+  def compute_user_metrics(userId: int):
+    LogFactory.MAIN_LOG.info(f"Re-computing user metrics for {userId}")
+
+    # TODO --
+    # Check if their metrics exist, if not create a placeholder metrics entry
+
+    # Get all Gng, posner, task switching, srt, and controller related data
+
+    # Calculate: Impulsivity score, reaction time score, multi-tasking score, attention score
+
+    # Update metrics in the db
+
+  @staticmethod
   def update_metrics() -> {}:
     LogFactory.MAIN_LOG.info(f"Metrics Job check")
 
@@ -35,7 +48,17 @@ class MetricsJob:
 
     if len(tests) > 0:
       LogFactory.MAIN_LOG.info("NEW TEST RECORDS TO COMPUTE")
-      # TODO compute metrics here
+      usersComputed=[]
+      for test in tests:
+        LogFactory.MAIN_LOG.info(f"Check test {test}")
+
+        if test.userId in usersComputed:
+          LogFactory.MAIN_LOG.info("Skip user, already computed metrics")
+        else:
+          usersComputed.append(test.userId)
+          MetricsJob.compute_user_metrics(test.userId)
+
+
 
     serverInfo.lastMetricsUpdate = datetime.datetime.now()
 
