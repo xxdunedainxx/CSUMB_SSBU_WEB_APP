@@ -117,7 +117,7 @@ class DevServerDatabaseSeed:
         LogFactory.MAIN_LOG.info("Seed gng Results")
 
         for j in range(5):
-            testResult: TestResult = DevServerDatabaseSeed.create_new_test_result("gng")
+            testResult: TestResult = DevServerDatabaseSeed.create_new_test_result(TestResult.GNG_TYPE)
 
             for i in range(2):
                 Services.dbQueryFactory.insert_gng_test_result(
@@ -141,7 +141,7 @@ class DevServerDatabaseSeed:
     def seed_posner_results():
         LogFactory.MAIN_LOG.info("Seed posner Results")
         for z in range(10):
-            testResult: TestResult = DevServerDatabaseSeed.create_new_test_result("posner")
+            testResult: TestResult = DevServerDatabaseSeed.create_new_test_result(TestResult.POSNER_TYPE)
             for j in range(7):
                 Services.dbQueryFactory.insert_posner_test_result(
                     DevServerDatabaseSeed.create_random_posner_result(
@@ -182,7 +182,7 @@ class DevServerDatabaseSeed:
     def seed_srt_results():
         LogFactory.MAIN_LOG.info("Seed SRT Results")
         for z in range(10):
-            testResult: TestResult = DevServerDatabaseSeed.create_new_test_result("srt")
+            testResult: TestResult = DevServerDatabaseSeed.create_new_test_result(TestResult.SRT)
 
             for i in range(10):
                 Services.dbQueryFactory.insert_srt_test_result(DevServerDatabaseSeed.create_random_srt_result(

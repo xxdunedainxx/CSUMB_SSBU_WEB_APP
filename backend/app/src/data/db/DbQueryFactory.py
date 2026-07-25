@@ -15,8 +15,10 @@ from src.data.db.model.SrtTestResult import SrtTestResult
 from src.data.db.model.TaskSwitchingResult import TaskSwitchingResults
 from src.data.db.model.TestResult import TestResult
 from src.data.db.model.User import User
+from src.data.db.model.UserMetrics import UserMetrics
 from src.util.DateTimeUtil import DateTimeUtils
 from src.Configuration import CONF_INSTANCE
+from src.util.LogFactory import LogFactory
 
 """
     Utility class for crafting/executing SQL queries against the DB 
@@ -234,6 +236,40 @@ class DbQueryFactory:
             lastMetricsUpdate=DateTimeUtils.convert_pg_time_to_iso(str(serverInfo[0][1])),
         )
 
+    """
+        id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        userID INT REFERENCES userTable(id),
+        lastUpdate TIMESTAMPTZ,
+        -- Encrypted metrics data, most likely a json blob
+        payload BYTEA NOT NULL
+    """
+    def get_user_metrics(self, userId: int ) -> UserMetrics:
+        metrics = self.dbConnector.read_data(
+            query="SELECT id, lastUpdate, payload FROM userMetrics where userID=%s",
+            vars=(userId,)
+        )
+
+        if metrics:
+            LogFactory.MAIN_LOG.info(f"Existing metrics: {metrics[0]}")
+            return UserMetrics(
+                id=int(metrics[0][0]),
+                userId=userId,
+                lastUpdate=DateTimeUtils.convert_pg_time_to_iso(str(metrics[0][1])),
+                payload=self.__decrypt_data(bytes(metrics[0][2]))
+            )
+        else:
+            return None
+
+    def create_user_metrics(self, metrics: UserMetrics):
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO userMetrics (userID, lastUpdate,payload) VALUES (%s, %s, %s)",
+            vars=(metrics.userId, datetime.now(), self.__encrypt_data(metrics.payload))
+        )
+    def update_user_metrics(self, metrics: UserMetrics):
+        return self.dbConnector.write_or_update_data(
+            query="UPDATE userMetrics SET payload=%s, lastUpdate=%s WHERE userID=%s",
+            vars=(self.__encrypt_data(metrics.payload), datetime.now(), metrics.userId)
+        )
     def get_test_results_since_server_time(self, serverInfo: ServerInfo) -> [TestResult]:
         tests=self.dbConnector.read_data(
             query="SELECT * FROM testResults WHERE whenGenerated > %s",

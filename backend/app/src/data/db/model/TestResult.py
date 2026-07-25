@@ -12,6 +12,11 @@
 import datetime
 
 class TestResult:
+    GNG_TYPE="GoNoGo"
+    POSNER_TYPE="Posner"
+    TASK_SWITCHING="TaskSwitching"
+    SRT="SimpleReactionOnly"
+
     def __init__(self,
          id: int,
          userId: int,

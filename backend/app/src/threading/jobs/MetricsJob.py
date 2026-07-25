@@ -1,5 +1,12 @@
 from src.data.db.DbQueryFactory import DbQueryFactory
+from src.data.db.model import TaskSwitchingResult
+from src.data.db.model.CompleteTestResults import CompleteTestResults
+from src.data.db.model.GngTestResult import GngTestResult
+from src.data.db.model.PosnerCueResult import PosnerCueResult
 from src.data.db.model.ServerInfo import ServerInfo
+from src.data.db.model.SrtTestResult import SrtTestResult
+from src.data.db.model.TestResult import TestResult
+from src.data.db.model.UserMetrics import UserMetrics
 from src.util.LogFactory import LogFactory
 from src.util.ErrorFactory import errorStackTrace
 from src.Setup import Setup
@@ -24,18 +31,78 @@ class MetricsJob:
     AppHealthStatusUtil.write_status(ServiceNames.metricsJob, AppHealthStatus.HEALTHY)
     Cron.execute_jobs()
 
+  # TODO - run calculations
+  @staticmethod
+  def calculate_impulse_score(gngResults: [GngTestResult]) -> int:
+    return 0
+
+  @staticmethod
+  def calculate_srt_avg(srtResults: [SrtTestResult]) -> int:
+    return 0
+
+  @staticmethod
+  def calculate_multi_task_score(taskSwitchResults: [TaskSwitchingResult]) -> int:
+    return 0
+
+  @staticmethod
+  def calculate_attentional_score(posnerResults: [PosnerCueResult]) -> int:
+    return 0
+
   @staticmethod
   def compute_user_metrics(userId: int):
     LogFactory.MAIN_LOG.info(f"Re-computing user metrics for {userId}")
 
-    # TODO --
     # Check if their metrics exist, if not create a placeholder metrics entry
+    existingMetrics = MetricsJob.dbQueryFactory.get_user_metrics(userId)
+
+    if existingMetrics == None:
+      LogFactory.MAIN_LOG.info("Create new entry in metrics for user")
+      existingMetrics=UserMetrics(
+        id=0,
+        userId=userId,
+        lastUpdate=datetime.datetime.now(),
+        payload={}
+      )
+      MetricsJob.dbQueryFactory.create_user_metrics(existingMetrics)
 
     # Get all Gng, posner, task switching, srt, and controller related data
+    allTestId=Services.dbQueryFactory.get_all_user_test_result_ids(userId=userId)
+
+    gngResults=[]
+    posnerResults=[]
+    srtResults=[]
+    taskSwitchResults=[]
+    controllerResults=[]
+
+    for testId in allTestId:
+      result: CompleteTestResults=Services.dbQueryFactory \
+                .get_test_results(testId=testId,userId=userId)
+      # TODO - need to improve these db structure because this SUCKS
+      if result.testResult.classification == TestResult.SRT:
+        srtResults.append(result.srt)
+      elif result.testResult.classification == TestResult.POSNER_TYPE:
+        posnerResults.append(result.posner)
+      elif result.testResult.classification == TestResult.TASK_SWITCHING:
+        taskSwitchResults.append(result.taskSwitch)
+      elif result.testResult.classification == TestResult.GNG_TYPE:
+        gngResults.append(result.gngTestResults)
 
     # Calculate: Impulsivity score, reaction time score, multi-tasking score, attention score
+    impulseScore=MetricsJob.calculate_impulse_score(gngResults)
+    multiTask=MetricsJob.calculate_multi_task_score(taskSwitchResults)
+    attentionScore=MetricsJob.calculate_attentional_score(posnerResults)
+    reactionScore=MetricsJob.calculate_srt_avg(srtResults)
+
+    # Update them
+    existingMetrics.payload={
+      "impulseScore": impulseScore,
+      "multiTaskScore": multiTask,
+      "attentionScore": attentionScore,
+      "reactionScore": reactionScore
+    }
 
     # Update metrics in the db
+    MetricsJob.dbQueryFactory.update_user_metrics(existingMetrics)
 
   @staticmethod
   def update_metrics() -> {}:
