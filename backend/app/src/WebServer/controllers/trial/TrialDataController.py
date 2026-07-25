@@ -374,3 +374,5 @@ class TrialController:
                 "response": "sadness"
             }, 500
 
+    # TODO USER METRICS CONTROLLER 
+
