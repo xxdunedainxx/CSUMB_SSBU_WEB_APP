@@ -58,7 +58,7 @@ class DBConnectorTests(unittest.TestCase):
         assert(newUserRecord.salt != "blah")
         assert(len(newUserRecord.salt) == 32)
 
-        # The stored password is the hash of the plaintext + the generated salt, never the plaintext
+        # The stored password is the hash of the password + the generated salt, never the password
         assert(newUserRecord.password != passwordToUse)
         assert(newUserRecord.password == CryptoService.sha256_hash_string(passwordToUse + newUserRecord.salt))
 
