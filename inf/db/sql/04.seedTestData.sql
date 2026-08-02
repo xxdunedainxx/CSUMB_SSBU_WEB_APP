@@ -10,7 +10,8 @@ INSERT INTO userTable (
     registrationToken
 ) VALUES (
     'user@example.com',
-    'password', -- note this will be a hash alter
+    -- sha256 of the plaintext + the salt below. Log in with the password: password
+    'b12e451bb4ed8bf165d35345e7c99dd37d1a57fa708cbdbe02d32aa02a9f3a6e',
     'randSalt',
     true,
     NOW(),
