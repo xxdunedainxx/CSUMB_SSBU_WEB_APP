@@ -19,6 +19,11 @@ class AuthenticationService:
             return True
 
         current_user = self.dbQueryFactory.fetch_user_by_email(email)
+        # No account for this email. Fail the same way a wrong password does, so the
+        # response does not reveal which emails are registered (confidentiality)
+        if not current_user:
+            return False
+
         stored_password_hash = current_user.password
         salt = current_user.salt
         attempted_password_hash = CryptoService.sha256_hash_string(password + salt)

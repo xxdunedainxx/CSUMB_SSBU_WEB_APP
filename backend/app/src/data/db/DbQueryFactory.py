@@ -5,6 +5,7 @@
 """
 import json
 from datetime import datetime, timezone
+from typing import Optional
 
 from src.data.db.DBConnector import DBConnector
 from src.data.db.model.CompleteTestResults import CompleteTestResults
@@ -30,11 +31,12 @@ class DbQueryFactory:
     def check_health(self) -> bool:
         return self.dbConnector.ping()
 
+    """
+        NOTE: Database errors are intentionally not caught here. if they were, a failed read 
+        would cause the registration function to create a duplicate account
+    """
     def check_account_exists(self, email: str) -> bool:
-        try:
-            return self.fetch_user_by_email(email).email == email
-        except Exception as e:
-            return False
+        return self.fetch_user_by_email(email) is not None
 
     def check_registration_token(self, token: str) -> bool:
         try:
@@ -65,15 +67,18 @@ class DbQueryFactory:
         )
 
     """
-        Fetch a user by email
+        Fetch a user by email. Returns None when no account exists for that email.
     """
-    def fetch_user_by_email(self, email: str) -> User:
+    def fetch_user_by_email(self, email: str) -> Optional[User]:
         record=self.dbConnector.read_data(
             query="SELECT id, email, password, salt, verified, whenCreated, lastLogin FROM userTable WHERE email=%s",
             vars=(email,)
         )
-        print(record)
-        return User (
+
+        if not record:
+            return None
+
+        return User(
             id=int(record[0][0]),
             email=str(record[0][1]),
             password=str(record[0][2]),
