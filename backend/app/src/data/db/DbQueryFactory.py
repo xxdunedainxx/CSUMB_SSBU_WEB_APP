@@ -15,7 +15,9 @@ from src.data.db.model.TaskSwitchingResult import TaskSwitchingResults
 from src.data.db.model.TestResult import TestResult
 from src.data.db.model.User import User
 from src.util.DateTimeUtil import DateTimeUtils
+from src.util.RandomNumberGenerator import RandomNumberGenerator
 from src.Configuration import CONF_INSTANCE
+from src.sec.Crypto import CryptoService
 
 """
     Utility class for crafting/executing SQL queries against the DB 
@@ -63,7 +65,7 @@ class DbQueryFactory:
         )
 
     """
-        Fetch a user by email 
+        Fetch a user by email
     """
     def fetch_user_by_email(self, email: str) -> User:
         record=self.dbConnector.read_data(
@@ -96,9 +98,12 @@ class DbQueryFactory:
         )
 
     """
-        Create a new user object 
-        
-        Ref model: 
+        Create a new user object
+
+        The salt is generated here, so any salt set on the incoming User object is ignored.
+        Only the hash stays, the plaintext password never reaches the DB.
+
+        Ref model:
             email VARCHAR(1000) NOT NULL,
             password VARCHAR(1000) NOT NULL,
             salt VARCHAR(100) NOT NULL,
@@ -107,12 +112,15 @@ class DbQueryFactory:
             lastLogin TIMESTAMPTZ,
     """
     def create_new_user(self, user: User):
+        salt: str = RandomNumberGenerator.generate_random_string(32)
+        hashed_password: str = CryptoService.sha256_hash_string(user.password + salt)
+
         return self.dbConnector.write_or_update_data(
             query="INSERT INTO userTable (email, password, salt, verified, whenCreated, registrationToken) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
             vars=(
               user.email,
-              user.password,
-              user.salt,
+              hashed_password,
+              salt,
               False,
               DateTimeUtils.get_current_datetime_in_iso_format_str(),
               user.registrationToken
