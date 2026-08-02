@@ -4,6 +4,7 @@
   Synopsis: Central class for CRAFTING and EXECUTING DB queries.
 """
 import json
+import secrets
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -16,7 +17,6 @@ from src.data.db.model.TaskSwitchingResult import TaskSwitchingResults
 from src.data.db.model.TestResult import TestResult
 from src.data.db.model.User import User
 from src.util.DateTimeUtil import DateTimeUtils
-from src.util.RandomNumberGenerator import RandomNumberGenerator
 from src.Configuration import CONF_INSTANCE
 from src.sec.Crypto import CryptoService
 
@@ -117,7 +117,12 @@ class DbQueryFactory:
             lastLogin TIMESTAMPTZ,
     """
     def create_new_user(self, user: User):
-        salt: str = RandomNumberGenerator.generate_random_string(32)
+        """
+        - sort of over-engineering, but the randomNumberGenerator becomes predictable if given enough outputs
+        - using token_hex reduces the chance of the salt being pre-computed, since its output is a one way
+        function of internal state that cannot be worked backwards from
+        """
+        salt: str = secrets.token_hex(16)
         hashed_password: str = CryptoService.sha256_hash_string(user.password + salt)
 
         return self.dbConnector.write_or_update_data(
