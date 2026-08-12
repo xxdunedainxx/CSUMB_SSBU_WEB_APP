@@ -6,6 +6,7 @@
 from functools import wraps
 from flask import request, session, jsonify
 from src.util.LogFactory import LogFactory
+from src.Services import Services
 
 LOGGER = LogFactory.get_logger('http')
 
@@ -16,7 +17,7 @@ LOGGER = LogFactory.get_logger('http')
 def authorize(api):
     @wraps(api)
     def authorize(*args, **kwargs):
-        LOGGER.info(f"Auth check.")
+        LOGGER.info(f"Auth check. Resource {request.endpoint}, {request.view_args}")
         if "user_id" not in session:
             LOGGER.info(f"Not auth'd!")
             return jsonify({"error": "Unauthorized"}), 401

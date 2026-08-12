@@ -14,9 +14,9 @@ class SrtTestResult:
                  id: int,
                  testResultId: int,
                  TestOrTraining: str,
-                 TrainingOrReal: str,
+                 TrainingOrReal: int,
                  NumberOfChoices: int,
-                 timeBetweenResponseAndNextTrial: int,
+                 TimeBetweenResponseAndNextTrial: int,
                  XCoordinateTargetStim: int,
                  ResponseTimeMs: int,
                  StatusOfAnswer: int
@@ -24,8 +24,8 @@ class SrtTestResult:
         self.id: int = id
         self.testResultId: int = testResultId
         self.TestOrTraining: str = TestOrTraining
-        self.TrainingOrReal: str = TrainingOrReal
-        self.timeBetweenResponseAndNextTrial: int = timeBetweenResponseAndNextTrial
+        self.TrainingOrReal: int = TrainingOrReal
+        self.TimeBetweenResponseAndNextTrial: int = TimeBetweenResponseAndNextTrial
         self.XCoordinateTargetStim: int = XCoordinateTargetStim
         self.ResponseTimeMs: int = ResponseTimeMs
         self.StatusOfAnswer: int = StatusOfAnswer
@@ -37,7 +37,7 @@ class SrtTestResult:
             "testResultId": self.testResultId,
             "TestOrTraining": self.TestOrTraining,
             "TrainingOrReal": self.TrainingOrReal,
-            "timeBetweenResponseAndNextTrial": self.timeBetweenResponseAndNextTrial,
+            "TimeBetweenResponseAndNextTrial": self.TimeBetweenResponseAndNextTrial,
             "XCoordinateTargetStim": self.XCoordinateTargetStim,
             "ResponseTimeMs": self.ResponseTimeMs,
             "StatusOfAnswer": self.StatusOfAnswer,
@@ -45,7 +45,7 @@ class SrtTestResult:
         }
 
     """
-        Creates a new Gng Test result from a json dictionary provided 
+        Creates a new Simple Reaction Test result from a json dictionary provided 
     """
     @staticmethod
     def deserialize_to_object(json: dict):
@@ -54,7 +54,7 @@ class SrtTestResult:
             testResultId=json["testResultId"],
             TestOrTraining=json["TestOrTraining"],
             TrainingOrReal=json["TrainingOrReal"],
-            timeBetweenResponseAndNextTrial=json["timeBetweenResponseAndNextTrial"],
+            TimeBetweenResponseAndNextTrial=json["TimeBetweenResponseAndNextTrial"],
             XCoordinateTargetStim=json["XCoordinateTargetStim"],
             ResponseTimeMs=json["ResponseTimeMs"],
             StatusOfAnswer=json["StatusOfAnswer"],

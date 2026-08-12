@@ -8,10 +8,13 @@ from src.WebServer.decorators.Authorize import authorize
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.PosnerCueResult import PosnerCueResult
 from src.data.db.model.ControllerTestResult import ControllerTestResult
+from src.data.db.model.SrtTestResult import SrtTestResult
+from src.data.db.model.TaskSwitchingResult import TaskSwitchingResults
 from src.util.LogFactory import LogFactory
 from src.WebServer.decorators.HTTPLogger import http_logger
 from src.WebServer.WebServerInit import WebServerInit
 from src.util.ErrorFactory import errorStackTrace
+from src.sec.DataValidation import DataModelValidation
 
 from flask import Flask, request
 
@@ -30,6 +33,7 @@ class TrialController:
     @staticmethod
     @flask_ref.route('/create_new_test_result_entry', methods=['POST'])
     @http_logger
+    @authorize
     def create_new_test_result_entry():
         try:
             userId = request.json["userId"]
@@ -82,16 +86,24 @@ class TrialController:
     @staticmethod
     @flask_ref.route('/upload_gng_test_results', methods=['POST'])
     @http_logger
+    @authorize
     def upload_gng_test_results():
         try:
             LogFactory.MAIN_LOG.info("Processing Gng Test Results")
 
             results = request.json["gngTestResults"]
+            structuredResults: [GngTestResult] = []
 
             for result in results:
-                Services.dbQueryFactory.insert_gng_test_result(
-                    GngTestResult.deserialize_to_object(result)
-                )
+                structuredResult = GngTestResult.deserialize_to_object(result)
+                if not DataModelValidation.validate_gng_structure(structuredResult):
+                    return {
+                        "response": "invalid gng response given"
+                    }, 400
+                structuredResults.append(structuredResult)
+
+            for r in structuredResults:
+                Services.dbQueryFactory.insert_gng_test_result(r)
 
             return {
                 "response": "records uploaded"
@@ -153,17 +165,25 @@ class TrialController:
     @staticmethod
     @flask_ref.route('/upload_posner_results', methods=['POST'])
     @http_logger
+    @authorize
     def upload_posner_results():
         try:
             LogFactory.MAIN_LOG.info("Processing posner Test Results")
 
             # TODO FOR ALL OF THESE RESULT UPLAODS, ENSURE A RECORD FOR THIS TEST RESULT ID DOES NOT EXIST!!
             results = request.json["posnerResults"]
+            structuredResults: [PosnerCueResult] = []
 
             for result in results:
-                Services.dbQueryFactory.insert_posner_test_result(
-                    PosnerCueResult.deserialize_to_object(result)
-                )
+                structuredResult = PosnerCueResult.deserialize_to_object(result)
+                if not DataModelValidation.validate_posner_structure(structuredResult):
+                    return {
+                        "response": "invalid posner response given"
+                    }, 400
+                structuredResults.append(structuredResult)
+
+            for r in structuredResults:
+                Services.dbQueryFactory.insert_posner_test_result(r)
 
             return {
                 "response": "records uploaded"
@@ -237,12 +257,152 @@ class TrialController:
                 "response": "sadness"
             }, 500
 
+        """
+        Example: 
+        curl -X POST https://localhost:80/upload_srt_results \
+        -H "Content-Type: application/json" \
+        -d '{
+          "srtResults": [
+            {
+              "id": 1,
+              "testResultId": 1,
+              "TestOrTraining": "dlsimple_training",
+              "TrainingOrReal": 1,
+              "NumberOfChoices": 1,
+              "timeBetweenResponseAndNextTrial": 1361,
+              "XCoordinateTargetStim": 0,
+              "ResponseTimeMs": 466,
+              "StatusOfAnswer": 1
+            },
+        
+            {
+              "id": 2,
+              "testResultId": 1,
+              "TestOrTraining": "dlsimple_training",
+              "TrainingOrReal": 1,
+              "NumberOfChoices": 1,
+              "timeBetweenResponseAndNextTrial": 2705,
+              "XCoordinateTargetStim": 0,
+              "ResponseTimeMs": 264,
+              "StatusOfAnswer": 1
+            },
+        
+            {
+              "id": 3,
+              "testResultId": 1,
+              "TestOrTraining": "dlsimple_training",
+              "TrainingOrReal": 1,
+              "NumberOfChoices": 1,
+              "timeBetweenResponseAndNextTrial": 1486,
+              "XCoordinateTargetStim": 0,
+              "ResponseTimeMs": 335,
+              "StatusOfAnswer": 1
+            }
+        
+            // ... remaining trials ...
+          ]
+        }'
+        """
+
+    @staticmethod
+    @flask_ref.route('/upload_srt_results', methods=['POST'])
+    @http_logger
+    def upload_srt_results():
+        try:
+            LogFactory.MAIN_LOG.info("Processing Simple Reaction Test Results")
+            results = request.json["srtResults"]
+            structuredResults: [SrtTestResult] = []
+
+            for result in results:
+                structuredResult = SrtTestResult.deserialize_to_object(result)
+                if not DataModelValidation.validate_srt_structure(structuredResult):
+                    return {
+                        "response": "invalid srt response given"
+                    }, 400
+                structuredResults.append(structuredResult)
+
+            for r in structuredResults:
+                Services.dbQueryFactory.insert_srt_test_result(r)
+
+            return {
+                    "response": "SRT records uploaded"
+                }, 200
+        except Exception as e:
+            LogFactory.MAIN_LOG.error(f"Upload srt test results {errorStackTrace(e)}")
+            return {
+                "response": "Did not work"
+            }, 500
+
+    """
+    Example:
+
+    curl -X POST http://localhost:80/upload_task_switching_results \
+    -H "Content-Type: application/json" \
+    -d '{
+      "taskSwitchingResults": [
+        {
+          "id": 1,
+          "testResultId": 1,
+          "TaskSwitchTypeAndTestOrTrial": "mixed_test",
+          "position": 1,
+          "taskType": 1,
+          "letterStimulus": "A",
+          "numberStimulus": 4,
+          "typeOfBlock": 0,
+          "taskSwitchOrTaskRepeat": 1,
+          "status": 1,
+          "ResponseTimeMs": 512,
+          "totalTimeMs": 640
+        },
+
+        {
+          "id": 2,
+          "testResultId": 1,
+          "TaskSwitchTypeAndTestOrTrial": "mixed_test",
+          "position": 3,
+          "taskType": 2,
+          "letterStimulus": "B",
+          "numberStimulus": 7,
+          "typeOfBlock": 0,
+          "taskSwitchOrTaskRepeat": 0,
+          "status": 1,
+          "ResponseTimeMs": 388,
+          "totalTimeMs": 455
+        }
+
+        // ... remaining trials ...
+      ]
+    }'
+    """
+    @staticmethod
+    @flask_ref.route('/upload_task_switching_results', methods=['POST'])
+    @http_logger
+    def upload_task_switching_results():
+        try:
+            LogFactory.MAIN_LOG.info("Processing Task Switching Test Results")
+            results = request.json["taskSwitchingResults"]
+
+            for result in results:
+                Services.dbQueryFactory.insert_task_switching_result(
+                    TaskSwitchingResults.deserialize_to_object(result)
+                )
+
+            return {
+                "response": "Task switching records uploaded"
+            }, 200
+        except Exception as e:
+            LogFactory.MAIN_LOG.error(f"Upload task switching results {errorStackTrace(e)}")
+            return {
+                "response": "Did not work"
+            }, 500
+
     """
         Example Curl: curl localhost:80/get_test_result_data/1/1
     """
     @staticmethod
     @flask_ref.route('/get_test_result_data/<int:userId>/<int:testId>', methods=['GET'])
     @http_logger
+    @authorize
     def get_test_result_data(userId: int, testId: int):
         try:
             LogFactory.MAIN_LOG.info("Fetching test result data")

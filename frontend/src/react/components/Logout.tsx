@@ -11,7 +11,8 @@ const setup = new Setup();
 
 export const client = new HttpRequestClient(
   setup.config.remoteHost,
-  setup.config.remoteHostPort
+  setup.config.remoteHostPort,
+  setup.config.remoteHostPath
 );
 
 
@@ -24,7 +25,7 @@ export default function Logout() {
         const resp = await client.logout();
         console.log(resp)
         console.log("Redirecting...");
-        window.location.href = "/login";
+        window.location.href = "/ui/login/";
     } catch (err) {
         console.error(err);
     }

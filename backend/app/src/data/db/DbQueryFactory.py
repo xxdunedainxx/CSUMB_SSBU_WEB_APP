@@ -11,6 +11,8 @@ from src.data.db.model.CompleteTestResults import CompleteTestResults
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.PosnerCueResult import PosnerCueResult
 from src.data.db.model.ControllerTestResult import ControllerTestResult
+from src.data.db.model.SrtTestResult import SrtTestResult
+from src.data.db.model.TaskSwitchingResult import TaskSwitchingResults
 from src.data.db.model.TestResult import TestResult
 from src.data.db.model.User import User
 from src.util.DateTimeUtil import DateTimeUtils
@@ -23,6 +25,43 @@ class DbQueryFactory:
 
     def __init__(self, dbConnector: DBConnector):
         self.dbConnector = dbConnector
+
+    def check_health(self) -> bool:
+        return self.dbConnector.ping()
+
+    def check_account_exists(self, email: str) -> bool:
+        try:
+            return self.fetch_user_by_email(email).email == email
+        except Exception as e:
+            return False
+
+    def check_registration_token(self, token: str) -> bool:
+        try:
+            record = self.dbConnector.read_data(
+                query="SELECT registrationToken FROM userTable WHERE registrationToken=%s",
+                vars=(token,)
+            )
+            return len(record[0]) > 0
+        except Exception as e:
+            return False
+
+    def is_account_verified(self, email: str) -> str:
+        return bool((self.dbConnector.read_data(
+                query="SELECT verified FROM userTable WHERE email=%s",
+                vars=(email,)
+            )[0][0]))
+
+    def store_feedback(self, feedback: str) -> str:
+        self.dbConnector.write_or_update_data(
+            query="INSERT INTO feedback (feedback) VALUES (%s) RETURNING id",
+            vars=(feedback,)
+        )
+
+    def verify_account(self, token):
+        self.dbConnector.write_or_update_data(
+            query="UPDATE userTable SET verified=%s WHERE registrationToken=%s",
+            vars=(True, token,)
+        )
 
     """
         Fetch a user by email 
@@ -70,13 +109,14 @@ class DbQueryFactory:
     """
     def create_new_user(self, user: User):
         return self.dbConnector.write_or_update_data(
-            query="INSERT INTO userTable (email, password, salt, verified, whenCreated) VALUES (%s, %s, %s, %s, %s) RETURNING id",
+            query="INSERT INTO userTable (email, password, salt, verified, whenCreated, registrationToken) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
             vars=(
               user.email,
               user.password,
               user.salt,
               False,
-              DateTimeUtils.get_current_datetime_in_iso_format_str()
+              DateTimeUtils.get_current_datetime_in_iso_format_str(),
+              user.registrationToken
             )
         )
 
@@ -145,20 +185,22 @@ class DbQueryFactory:
         gngRecords = self.get_gng_test_results(testId=testId)
         posnerRecords = self.get_posner_cue_results(testId=testId)
         controllerRecords = self.get_controller_test_results(testId=testId)
+        srtRecords = self.get_srt_results(testId=testId)
+        taskRecords = self.get_task_switching_results(testId=testId)
         return CompleteTestResults(
             testResult=testRecord,
             GngTestResults=gngRecords,
             PosnerRecords=posnerRecords,
-            SrtRecords=[],
-            TaskSwitchingRecords=[],
-            ControllerRecords=controllerRecords
+            ControllerRecords=controllerRecords.
+            SrtRecords=srtRecords,
+            TaskSwitchingRecords=taskRecords
         )
 
 
     """
         TODO Create a new simple reaction time test result row 
     """
-    def create_new_srt_test_result(self):
+    def create_new_srt_test_result(self, srt: SrtTestResult):
         pass
 
     def get_gng_test_results(self, testId: int):
@@ -189,11 +231,11 @@ class DbQueryFactory:
             vars=(testId,)
         )
 
-        structuredGngResults: [PosnerCueResult] = []
+        structuredPosnerResults: [PosnerCueResult] = []
 
         for res in allResults:
             jsonData=self.__decrypt_data(bytes(res[1]))
-            structuredGngResults.append(
+            structuredPosnerResults.append(
                 PosnerCueResult(
                     id=int(res[0]),
                     testResultId=testId,
@@ -208,7 +250,7 @@ class DbQueryFactory:
                 )
             )
 
-        return structuredGngResults
+        return structuredPosnerResults
     
     def get_controller_test_results(self, testId: int):
         allResults = self.dbConnector.read_data(
@@ -231,6 +273,66 @@ class DbQueryFactory:
 
         return structuredControllerResults
 
+    def get_srt_results(self, testId: int):
+        allResults = self.dbConnector.read_data(
+            query="SELECT id, payload FROM srtTestResultData WHERE testResultId=%s",
+            vars=(testId,)
+        )
+
+        # list of srt result objects
+        structured_srt: [SrtTestResult] = []
+
+        for result in allResults:
+            # takes database row and converts it to a dictionary
+            jsonObj = self.__decrypt_data(bytes(result[1]))
+            # abstraction
+            structured_srt.append(
+                SrtTestResult(
+                    id=int(result[0]),
+                    testResultId=jsonObj["testResultId"],
+                    TestOrTraining=jsonObj["TestOrTraining"],
+                    TrainingOrReal=jsonObj["TrainingOrReal"],
+                    NumberOfChoices=jsonObj["NumberOfChoices"],
+                    TimeBetweenResponseAndNextTrial=jsonObj["TimeBetweenResponseAndNextTrial"],
+                    XCoordinateTargetStim=jsonObj["XCoordinateTargetStim"],
+                    ResponseTimeMs=jsonObj["ResponseTimeMs"],
+                    StatusOfAnswer=jsonObj["StatusOfAnswer"],
+
+                )
+            )
+        return structured_srt
+
+    def get_task_switching_results(self, testId: int):
+        allResults = self.dbConnector.read_data(
+            query="SELECT id, payload FROM taskSwitchingTestResultData WHERE testResultId=%s",
+            vars=(testId,)
+        )
+
+        # list of task switching result objects
+        structured_taskSwitching: [TaskSwitchingResults] = []
+
+        for result in allResults:
+            # takes database row and converts it to a dictionary
+            jsonObj = self.__decrypt_data(bytes(result[1]))
+            # abstraction
+            structured_taskSwitching.append(
+                TaskSwitchingResults(
+                    id=int(result[0]),
+                    testResultId=jsonObj["testResultId"],
+                    TaskSwitchTypeAndTestOrTrial=jsonObj["TaskSwitchTypeAndTestOrTrial"],
+                    position=jsonObj["position"],
+                    taskType=jsonObj["taskType"],
+                    numberStimulus=jsonObj["numberStimulus"],
+                    letterStimulus=jsonObj["letterStimulus"],
+                    typeOfBlock=jsonObj["typeOfBlock"],
+                    taskSwitchOrTaskRepeat=jsonObj["taskSwitchOrTaskRepeat"],
+                    status=jsonObj["status"],
+                    ResponseTimeMs=jsonObj["ResponseTimeMs"],
+                    totalTimeMs=jsonObj["totalTimeMs"]
+
+                )
+            )
+        return structured_taskSwitching
 
     """
     CREATE TABLE IF NOT EXISTS gngTestResultData(
@@ -267,6 +369,21 @@ class DbQueryFactory:
             )
         )
 
+    def insert_srt_test_result(self, SrtResult: SrtTestResult):
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO srtTestResultData (testResultId, payload) VALUES (%s, %s)",
+            vars=(
+                SrtResult.testResultId, self.__encrypt_data(SrtResult.serialize())
+            )
+        )
+
+    def insert_task_switching_result(self, task: TaskSwitchingResults):
+        return self.dbConnector.write_or_update_data(
+            query="INSERT INTO taskSwitchingTestResultData (testResultId, payload) VALUES (%s, %s)",
+            vars=(
+                task.testResultId, self.__encrypt_data(task.serialize())
+            )
+        )
 
     def __encrypt_data(self, jsonData: dict):
         jsonStr = json.dumps(jsonData)

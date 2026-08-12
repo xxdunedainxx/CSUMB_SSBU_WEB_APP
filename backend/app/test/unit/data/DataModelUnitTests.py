@@ -4,7 +4,9 @@
     Synopsis: Unit tests for data models
 """
 from src.data.db.model.GngTestResult import GngTestResult
+from src.data.db.model.SrtTestResult import SrtTestResult
 from src.util.LogFactory import LogFactory
+from src.sec.DataValidation import DataModelValidation
 
 from test.util.decorators.Toggle import enabled
 
@@ -37,7 +39,36 @@ class DataModelUnitTests(unittest.TestCase):
         assert(obj.id == backToObject.id)
         assert(obj.GoNoGoAndTestOrTrial == backToObject.GoNoGoAndTestOrTrial)
 
+    @enabled
+    def test_srt_result_model(self):
+        srt = SrtTestResult(
+            id=1,
+            testResultId=1,
+            TestOrTraining="dlsimple_training",
+            TrainingOrReal=1,
+            NumberOfChoices=1,
+            TimeBetweenResponseAndNextTrial=1361,
+            XCoordinateTargetStim=0,
+            ResponseTimeMs=466,
+            StatusOfAnswer=1
+        )
+        falseSrt = SrtTestResult(
+            id=1,
+            testResultId="1",
+            TestOrTraining="dlsimple_training",
+            TrainingOrReal=3,
+            NumberOfChoices=3,
+            TimeBetweenResponseAndNextTrial=9,
+            XCoordinateTargetStim=2,
+            ResponseTimeMs=466,
+            StatusOfAnswer=1
+        )
+
+        assert (DataModelValidation.validate_srt_structure(srt))
+        assert (not DataModelValidation.validate_srt_structure(falseSrt))
+
 
 
 if __name__ == "__main__":
     unittest.main()
+LogFactory.main_log()

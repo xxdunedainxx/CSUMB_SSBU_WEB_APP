@@ -62,7 +62,7 @@ class TaskSwitchingResults:
     """
     @staticmethod
     def deserialize_to_object(json: dict):
-        return SrtTestResult(
+        return TaskSwitchingResults(
             id=json["id"],
             testResultId=json["testResultId"],
             TaskSwitchTypeAndTestOrTrial=json["TaskSwitchTypeAndTestOrTrial"],

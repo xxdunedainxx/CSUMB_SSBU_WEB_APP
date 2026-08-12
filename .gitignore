@@ -1,6 +1,10 @@
+worker-pool*
 PRIMARY.PID
 tmpIV
 tmpAesKey
+conf.json
+conf-prod.json
+*.status
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

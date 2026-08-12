@@ -6,7 +6,8 @@ const setup = new Setup();
 
 export const client = new HttpRequestClient(
   setup.config.remoteHost,
-  setup.config.remoteHostPort
+  setup.config.remoteHostPort,
+  setup.config.remoteHostPath
 );
 
 type TestResult = any;
@@ -16,7 +17,7 @@ type TestResult = any;
  * @param param0 
  * @returns 
  */
-export default function Dashboard({ userId }: { userId: number }) {
+export default function Dashboard() {
   const [results, setResults] = useState<TestResult[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +29,8 @@ export default function Dashboard({ userId }: { userId: number }) {
     async function load() {
       try {
         console.log("load data");
-
+        const me = await client.me();
+        const userId = me.user_id;
         const idsData = await client.getAllTestIds(userId);
         const testIds = idsData.testIds;
 
@@ -45,7 +47,7 @@ export default function Dashboard({ userId }: { userId: number }) {
     }
 
     load();
-  }, [client, userId]);
+  }, [client]);
 
   if (loading) return <p>Loading...</p>;
 
@@ -130,7 +132,7 @@ export default function Dashboard({ userId }: { userId: number }) {
           )}
 
           {result.controllerRecords != null && result.controllerRecords.length > 0 && (
-            <div className="table-wrapper">
+             <div className="table-wrapper">
               <table className="styled-table">
                 <thead>
                   <tr>
@@ -158,6 +160,40 @@ export default function Dashboard({ userId }: { userId: number }) {
               </table>
             </div>
           )}
+          {result.srtRecords != null && (
+            <div className="table-wrapper">
+              <table className="styled-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Test/Train</th>
+                    <th>Training/Real</th>
+                    <th>Time between response and next trial</th>
+                    <th>X-Coordinate target stim</th>
+                    <th>Response Time</th>
+                    <th>Response Status</th>
+                    <th>Number of Choices</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {result.srtRecords.map((record: any) => (
+                    <tr key={record.id}>
+                      <td>{record.id}</td>
+                      <td>{record.TestOrTraining}</td>
+                      <td>{record.TrainingOrReal}</td>
+                      <td>{record.TimeBetweenResponseAndNextTrial}</td>
+                      <td>{record.XCoordinateTargetStim}</td>
+                      <td>{record.ResponseTimeMs}</td>
+                      <td>{record.StatusOfAnswer}</td>
+                      <td>{record.NumberOfChoices}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          
         </div>
       ))}
     </div>

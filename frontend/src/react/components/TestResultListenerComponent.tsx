@@ -19,7 +19,8 @@ export default function TestResultListenerComponent({
   
   const client = new HttpRequestClient(
     setup.config.remoteHost,
-    setup.config.remoteHostPort
+    setup.config.remoteHostPort,
+    setup.config.remoteHostPath
   );
   
 
@@ -118,6 +119,29 @@ export default function TestResultListenerComponent({
 
           if (uploadCompleted) {
             finalize();
+          }
+
+          } else if (testCategory == "SimpleReactionOnly"){
+            console.log("SRT Upload");
+            const dataToUpload = listener.srtToJson(event.data.payload);
+            console.log(dataToUpload);
+            const srtResults = (dataToUpload as any).srtTestResults.map((item: any) => ({
+              ...item, testResultId: testId, id: -1
+            }));
+            await client.uploadSrtResults({srtResults});
+            uploadCompleted = true;
+          } else if (testCategory == "TaskSwitching") {
+            console.log("Task switch upload");
+            const dataToUpload = listener.taskSwitchToJson(event.data.payload);
+            const taskSwitchingResults = (dataToUpload as any).taskSwitchingResults.map((item: any) => ({
+              ...item, testResultId: testId, id: -1
+            }));
+            await client.uploadTaskSwitchingResults({
+              taskSwitchingResults
+              uploadCompleted = true;
+            });
+          }else {
+            console.log("UNKNOWN TEST TYPE");
           }
 
         } catch (err) {

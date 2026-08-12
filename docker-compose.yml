@@ -1,0 +1,36 @@
+# docker-compose --env-file .docker-compose.env up
+version: "3.2"
+services:
+  ingress:
+    image: csumbssbu-ingress
+    container_name: csumbssbu-ingress
+    ports:
+      - "0.0.0.0:80:80"
+    depends_on:
+      - backend
+      - frontend
+  frontend:
+    image: csubmssbu-react-app
+    container_name: csubmssbu-react-app
+  backend:
+    image: csumbssbu_backend
+    container_name: csumbssbu_backend
+    volumes:
+      - ./conf-prod.json:/conf-prod.json
+#      - ./logs:/logs
+#      - ./archive:/archive
+#      - ./files:/files
+    depends_on:
+      - db
+      - redis
+  redis:
+    image: redis-integration-test-image
+    container_name: redis-integration-test
+  db:
+    image: csumbdb
+    container_name: csumbdbpg
+    environment:
+      POSTGRES_DB: csumb_webapp
+      POSTGRES_PASSWORD: my-secret-pw
+    # ports:
+    #   - "0.0.0.0:6379:6379"

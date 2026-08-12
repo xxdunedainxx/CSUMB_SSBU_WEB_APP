@@ -14,4 +14,5 @@ export default defineConfig({
       noExternal: ['@rive-app/react-webgl2'],
     },
   },
+  base: "/ui/"
 });
