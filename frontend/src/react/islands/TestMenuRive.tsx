@@ -11,16 +11,16 @@ import {
 	useViewModelInstanceTrigger,
 } from '@rive-app/react-webgl2';
 
-const RIVE_SRC = '/test_menu.riv';
+const RIVE_SRC = '/ui/test_menu.riv';
 const STATE_MACHINE = 'State Machine 1';
 const VIEW_MODEL = 'ViewModel1';
 
 const TEST_ROUTES = {
-	controller_pressed: '/tests/HeneveldControlllerParadigm/',
-	task_switching_pressed: '/tests/TaskSwitching/',
-	posner_pressed: '/tests/Posner/',
-	rt_pressed: '/tests/SimpleReactionOnly/',
-	go_nogo_pressed: '/tests/GoNoGo/',
+	controller_pressed: '/ui/tests/HeneveldControlllerParadigm/',
+	task_switching_pressed: '/ui/tests/TaskSwitching/',
+	posner_pressed: '/ui/tests/Posner/',
+	rt_pressed: '/ui/tests/SimpleReactionOnly/',
+	go_nogo_pressed: '/ui/tests/GoNoGo/',
 } as const;
 
 type TriggerKey = keyof typeof TEST_ROUTES;

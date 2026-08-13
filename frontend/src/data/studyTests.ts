@@ -62,11 +62,11 @@ export const STUDY_TESTS: StudyTest[] = [
 		description:
 			'Reaction time is relied upon heavily in most First Person Shooter (FPS) Esports. It is also used in fighting games for defensive parries and acting to punish opponents\' whiffed attacks.',
 		assets: {
-			videoWebm: '/research-assets/tests/rt/raw/Reaction-Time-EX.webm',
-			videoMp4: '/research-assets/tests/rt/raw/Reaction-Time-EX.mp4',
-			poster: '/research-assets/tests/rt/raw/first-frame.png',
-			inFrames: ezgifFrames('/research-assets/tests/rt/reaction-in', TRANSITION_IN_FRAMES),
-			outFrames: ezgifFrames('/research-assets/tests/rt/reaction-out', 14),
+			videoWebm: '/ui/research-assets/tests/rt/raw/Reaction-Time-EX.webm',
+			videoMp4: '/ui/research-assets/tests/rt/raw/Reaction-Time-EX.mp4',
+			poster: '/ui/research-assets/tests/rt/raw/first-frame.png',
+			inFrames: ezgifFrames('/ui/research-assets/tests/rt/reaction-in', TRANSITION_IN_FRAMES),
+			outFrames: ezgifFrames('/ui/research-assets/tests/rt/reaction-out', 14),
 		},
 	},
 	{
@@ -76,11 +76,11 @@ export const STUDY_TESTS: StudyTest[] = [
 		description:
 			'Inhibition is exercised in Esports to control reactions to resist misinputs in demanding situations. Super Smash Bros. Melee players use this skill to react appropriately to opponents\' options during a \'tech chase\'.',
 		assets: {
-			videoWebm: '/research-assets/tests/gonogo/raw/Go-NoGo-EX.webm',
-			videoMp4: '/research-assets/tests/gonogo/raw/Go-NoGo-EX.mp4',
-			poster: '/research-assets/tests/gonogo/raw/first-frame.png',
-			inFrames: ezgifFrames('/research-assets/tests/gonogo/gonogo-in', TRANSITION_IN_FRAMES),
-			outFrames: ezgifFrames('/research-assets/tests/gonogo/gonogo-out', 14),
+			videoWebm: '/ui/research-assets/tests/gonogo/raw/Go-NoGo-EX.webm',
+			videoMp4: '/ui/research-assets/tests/gonogo/raw/Go-NoGo-EX.mp4',
+			poster: '/ui/research-assets/tests/gonogo/raw/first-frame.png',
+			inFrames: ezgifFrames('/ui/research-assets/tests/gonogo/gonogo-in', TRANSITION_IN_FRAMES),
+			outFrames: ezgifFrames('/ui/research-assets/tests/gonogo/gonogo-out', 14),
 		},
 	},
 	{
@@ -90,11 +90,11 @@ export const STUDY_TESTS: StudyTest[] = [
 		description:
 			'Esports rarely give competitors the luxury of singular focus. For example, League of Legends players are demanded to switch focus by checking the mini-map, changing targets mid-fight, dodging skill shots, checking game state, and switching between fighting and farming.',
 		assets: {
-			videoWebm: '/research-assets/tests/taskswitching/raw/Task-Switching-EX.webm',
-			videoMp4: '/research-assets/tests/taskswitching/raw/Task-Switching-EX.mp4',
-			poster: '/research-assets/tests/taskswitching/raw/first-frame.png',
-			inFrames: ezgifFrames('/research-assets/tests/taskswitching/task-in', TRANSITION_IN_FRAMES),
-			outFrames: ezgifFrames('/research-assets/tests/taskswitching/task-out', 15),
+			videoWebm: '/ui/research-assets/tests/taskswitching/raw/Task-Switching-EX.webm',
+			videoMp4: '/ui/research-assets/tests/taskswitching/raw/Task-Switching-EX.mp4',
+			poster: '/ui/research-assets/tests/taskswitching/raw/first-frame.png',
+			inFrames: ezgifFrames('/ui/research-assets/tests/taskswitching/task-in', TRANSITION_IN_FRAMES),
+			outFrames: ezgifFrames('/ui/research-assets/tests/taskswitching/task-out', 15),
 		},
 	},
 	{
@@ -104,11 +104,11 @@ export const STUDY_TESTS: StudyTest[] = [
 		description:
 			'Ignoring irrelevant stimuli, tracking relevant information, and focusing on the relevant task is a skill found in Esports when setting/avoiding traps, keeping aware of latent elements, and holding advantageous positions.',
 		assets: {
-			videoWebm: '/research-assets/tests/posner/raw/Posner-Cueing-EX.webm',
-			videoMp4: '/research-assets/tests/posner/raw/Posner-Cueing-EX.mp4',
-			poster: '/research-assets/tests/posner/raw/first-frame.png',
-			inFrames: ezgifFrames('/research-assets/tests/posner/posner-in', TRANSITION_IN_FRAMES),
-			outFrames: ezgifFrames('/research-assets/tests/posner/posner-out', 14),
+			videoWebm: '/ui/research-assets/tests/posner/raw/Posner-Cueing-EX.webm',
+			videoMp4: '/ui/research-assets/tests/posner/raw/Posner-Cueing-EX.mp4',
+			poster: '/ui/research-assets/tests/posner/raw/first-frame.png',
+			inFrames: ezgifFrames('/ui/research-assets/tests/posner/posner-in', TRANSITION_IN_FRAMES),
+			outFrames: ezgifFrames('/ui/research-assets/tests/posner/posner-out', 14),
 		},
 	},
 	{
@@ -118,9 +118,9 @@ export const STUDY_TESTS: StudyTest[] = [
 		description:
 			'Previous tests measure cognitive and reaction time using tests conducted on a mouse and keyboard, while many esports players employ handheld controllers to actually compete. Often, reaction time alone is not enough; precision is required to meet desired outcomes.',
 		assets: {
-			staticImage: '/research-assets/tests/heneveld/placeholder.png',
-			inFrames: ezgifFrames('/research-assets/tests/posner/posner-in', TRANSITION_IN_FRAMES),
-			outFrames: ezgifFrames('/research-assets/tests/posner/posner-out', 14),
+			staticImage: '/ui/research-assets/tests/heneveld/placeholder.png',
+			inFrames: ezgifFrames('/ui/research-assets/tests/posner/posner-in', TRANSITION_IN_FRAMES),
+			outFrames: ezgifFrames('/ui/research-assets/tests/posner/posner-out', 14),
 		},
 	},
 ];
@@ -128,7 +128,7 @@ export const STUDY_TESTS: StudyTest[] = [
 /** Genesis GX3 carousel photo paths. */
 export const GX3_PHOTOS = Array.from(
 	{ length: 11 },
-	(_, i) => `/research-assets/genesis/${String(i + 1).padStart(3, '0')}.jpg`,
+	(_, i) => `/ui/research-assets/genesis/${String(i + 1).padStart(3, '0')}.jpg`,
 );
 
 /** Research hero — trimmed sequence (frames 40–140, 101 total). */
@@ -138,7 +138,7 @@ export const HERO_FRAME_COUNT = 101;
 export const HERO_FRAMES = Array.from(
 	{ length: HERO_FRAME_COUNT },
 	(_, i) =>
-		`/research-assets/new-hero/ezgif-frame-${String(HERO_FRAME_START + i).padStart(3, '0')}.jpg`,
+		`/ui/research-assets/new-hero/ezgif-frame-${String(HERO_FRAME_START + i).padStart(3, '0')}.jpg`,
 );
 
 export default STUDY_TESTS;
