@@ -3,16 +3,16 @@ import Setup from '../react/ts/util/Setup'
 import Logout from '../react/components/Logout'
 const setup = new Setup();
 
-const siteTitle = `CSUMB Research`; //TODO: update this with offical name
-const finalSiteTile = !setup.config.isProd ? `DEV ENV - ${siteTitle}` : siteTitle;
+// const siteTitle = `CSUMB Research`; //TODO: update this with offical name
+// const finalSiteTile = !setup.config.isProd ? `DEV ENV - ${siteTitle}` : siteTitle;
 const VERSION = setup.config.version
 ---
 
 <header class="site-header" role="banner">
     <div class="container header-inner">
-        <a class="site-logo" href="/ui/" aria-label={finalSiteTile}>
+        <!-- <a class="site-logo" href="/ui/" aria-label={finalSiteTile}>
             <span>{finalSiteTile}</span>
-        </a>
+        </a> -->
 
         <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false" aria-label="Toggle navigation">
             <span class="hamburger" aria-hidden="true"></span>
