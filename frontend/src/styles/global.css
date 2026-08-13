@@ -69,6 +69,175 @@ body {
 /* =========================================================
    LIGHT THEME  (Research page — museum-case / airy)
    Per redesign spec: warm neutral gradient + deep studio shadows.
+========================================================= */
+
+/* =========================================================
+   CINEMATIC THEME  (Landing + Research — shared dark palette)
+   Minimal neutrals, no bright accent glows.
+========================================================= */
+
+html.theme-cinematic {
+	--bg-primary: #0a0a0b;
+	--bg-secondary: #121214;
+	--bg-card: rgba(24, 24, 26, 0.88);
+
+	--surface-1: #141416;
+	--surface-2: #1c1c1f;
+	--surface-3: #28282b;
+
+	--border: rgba(255, 255, 255, 0.08);
+
+	--text-primary: #ececee;
+	--text-secondary: #a8a8ad;
+	--text-muted: #6e6e73;
+
+	--accent-blue: #9a9a9f;
+	--accent-cyan: #b0b0b5;
+	--accent-gold: #8a8a8f;
+
+	--secondary: #28282b;
+
+	--glass-bg: rgba(20, 20, 22, 0.55);
+	--glass-border: rgba(255, 255, 255, 0.06);
+	--glass-blur: 14px;
+	--glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+
+	--chrome-bg: rgba(10, 10, 11, 0.85);
+	--chrome-border: rgba(255, 255, 255, 0.05);
+
+	/* Flat page + stage fill — matches transition frame letterboxing */
+	--stage-bg: #0a0a0b;
+	--page-bg: #0a0a0b;
+
+	--shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
+	--shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+html.theme-cinematic .site-logo {
+	color: var(--text-primary);
+}
+
+html.theme-cinematic .site-logo:hover {
+	color: var(--text-primary);
+	text-shadow: none;
+}
+
+html.theme-cinematic .nav-list a:hover {
+	color: var(--text-primary);
+}
+
+html.theme-cinematic .nav-list a::after {
+	background: var(--text-muted);
+}
+
+html.theme-cinematic .hamburger,
+html.theme-cinematic .hamburger::before,
+html.theme-cinematic .hamburger::after {
+	background: var(--text-primary);
+}
+
+html.theme-cinematic .btn-primary {
+	background: var(--surface-3);
+	color: var(--text-primary);
+	box-shadow: var(--shadow-md);
+	border: 1px solid var(--border);
+}
+
+html.theme-cinematic .btn-primary:hover {
+	background: #323235;
+	box-shadow: var(--shadow-lg);
+	transform: translateY(-2px);
+}
+
+html.theme-cinematic .btn-secondary {
+	background: transparent;
+	color: var(--text-secondary);
+	border: 1px solid var(--border);
+}
+
+html.theme-cinematic .btn-secondary:hover {
+	background: rgba(255, 255, 255, 0.04);
+	border-color: rgba(255, 255, 255, 0.14);
+	color: var(--text-primary);
+}
+
+html.theme-cinematic .social a:hover {
+	color: var(--text-secondary);
+}
+
+html.theme-cinematic ::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.15);
+}
+
+html.theme-cinematic ::-webkit-scrollbar-thumb:hover {
+	background: rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 900px) {
+	html.theme-cinematic .primary-nav {
+		background: rgba(10, 10, 11, 0.98);
+	}
+}
+
+html.theme-cinematic .text-gradient {
+	background: linear-gradient(100deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+html.theme-cinematic .research-explainer__card::before {
+	opacity: 0.35;
+}
+
+html.theme-cinematic h1,
+html.theme-cinematic .tests-menu {
+	font-family: var(--font-body);
+}
+
+html.theme-light {
+	--bg-primary: #E4E3DF;
+	--bg-secondary: #D6D5D1;
+	--bg-card: rgba(255, 255, 255, 0.62);
+
+	--surface-1: #EDECE8;
+	--surface-2: #E2E1DD;
+	--surface-3: #D6D5D1;
+
+	--border: rgba(116, 115, 113, 0.22);
+
+	--text-primary: #2A2A2C;
+	--text-secondary: #4A4A4D;
+	--text-muted: #747371;
+
+	--accent-blue: #3b6fb0;
+	--accent-cyan: #2f8fb3;
+	--accent-gold: #b8862f;
+
+	/* Secondary surface color per redesign spec (light mode) */
+	--secondary: #28282b;
+
+	--glass-bg: rgba(255, 255, 255, 0.45);
+	--glass-border: rgba(255, 255, 255, 0.55);
+	--glass-blur: 18px;
+	--glass-shadow: 0 20px 50px rgba(116, 115, 113, 0.28);
+
+	--chrome-bg: rgba(228, 227, 223, 0.72);
+	--chrome-border: rgba(116, 115, 113, 0.16);
+
+	/*
+	  Exact background from the redesign spec:
+	  center #E4E3DF (brightest), top corners #D6D5D1 (vignette),
+	  bottom corners #CBCAC6 (deepest falloff), #747371 core shadow.
+	*/
+	--page-bg:
+		radial-gradient(circle at 50% 42%, #E4E3DF 0%, #E4E3DF 18%, rgba(214,213,209,0.6) 60%, rgba(203,202,198,0.85) 100%),
+		linear-gradient(to bottom, #D6D5D1 0%, #E4E3DF 35%, #CBCAC6 100%);
+
+	--shadow-lg: 0 18px 50px rgba(116, 115, 113, 0.30);
+	--shadow-md: 0 6px 22px rgba(116, 115, 113, 0.22);
+}
+
 /* =========================================================
    BODY
 ========================================================= */
@@ -154,6 +323,383 @@ main {
 
 /* =========================================================
    NAVIGATION
+========================================================= */
+
+.primary-nav {
+	display: flex;
+	align-items: center;
+}
+
+.nav-list {
+	display: flex;
+	align-items: center;
+	list-style: none;
+	gap: 1.8rem;
+}
+
+.nav-list a {
+	position: relative;
+
+	color: var(--text-secondary);
+
+	text-decoration: none;
+	font-weight: 600;
+
+	transition: all var(--transition);
+}
+
+.nav-list a::after {
+	content: "";
+
+	position: absolute;
+	left: 0;
+	bottom: -6px;
+
+	width: 0%;
+	height: 2px;
+
+	background: linear-gradient(
+		to right,
+		var(--accent-blue),
+		var(--accent-cyan)
+	);
+
+	transition: width var(--transition);
+}
+
+.nav-list a:hover {
+	color: white;
+}
+
+.nav-list a:hover::after {
+	width: 100%;
+}
+
+/* =========================================================
+   MOBILE NAV
+========================================================= */
+
+.nav-toggle {
+	display: none;
+
+	background: none;
+	border: none;
+
+	cursor: pointer;
+}
+
+.hamburger {
+	width: 26px;
+	height: 2px;
+
+	background: white;
+
+	position: relative;
+	display: block;
+}
+
+.hamburger::before,
+.hamburger::after {
+	content: "";
+
+	position: absolute;
+
+	width: 26px;
+	height: 2px;
+
+	background: white;
+}
+
+.hamburger::before {
+	top: -8px;
+}
+
+.hamburger::after {
+	top: 8px;
+}
+
+/* =========================================================
+   HERO / UNDER CONSTRUCTION
+========================================================= */
+
+.under-construction {
+	min-height: 70vh;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	text-align: center;
+
+	padding: 2rem;
+}
+
+.under-construction h1 {
+	font-size: clamp(2.5rem, 8vw, 5rem);
+
+	font-weight: 900;
+
+	background: linear-gradient(
+		to right,
+		#ffffff,
+		var(--accent-cyan)
+	);
+
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+
+	margin-bottom: 1rem;
+
+	text-shadow: 0 4px 24px rgba(78, 163, 255, 0.2);
+}
+
+.under-construction p {
+	font-size: 1.3rem;
+	color: var(--text-secondary);
+	max-width: 720px;
+}
+
+/* =========================================================
+   TEST LIST
+========================================================= */
+
+.test-list {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+
+	gap: 1.5rem;
+
+	margin-top: 2rem;
+}
+
+/* =========================================================
+   APP CARDS
+========================================================= */
+
+.app-card {
+	position: relative;
+
+	display: flex;
+	gap: 1.5rem;
+
+	background: linear-gradient(
+		145deg,
+		rgba(20, 37, 56, 0.92),
+		rgba(12, 22, 34, 0.92)
+	);
+
+	border: 1px solid rgba(114, 212, 255, 0.12);
+
+	border-radius: var(--radius-lg);
+
+	padding: 1.5rem;
+
+	backdrop-filter: blur(10px);
+
+	box-shadow: var(--shadow-md);
+
+	overflow: hidden;
+
+	transition:
+		transform 220ms ease,
+		box-shadow 220ms ease,
+		border-color 220ms ease;
+}
+
+.app-card::before {
+	content: "";
+
+	position: absolute;
+	inset: 0;
+
+	background:
+		linear-gradient(
+			130deg,
+			transparent,
+			rgba(255,255,255,0.03),
+			transparent
+		);
+
+	pointer-events: none;
+}
+
+.app-card:hover {
+	transform: translateY(-6px);
+
+	border-color: rgba(114, 212, 255, 0.4);
+
+	box-shadow:
+		0 16px 40px rgba(0,0,0,0.5),
+		0 0 18px rgba(78,163,255,0.12);
+}
+
+.card-link {
+	text-decoration: none;
+	color: inherit;
+}
+
+.card-media {
+	width: 96px;
+	height: 96px;
+
+	border-radius: 16px;
+
+	overflow: hidden;
+
+	flex-shrink: 0;
+
+	background: rgba(255,255,255,0.04);
+
+	border: 1px solid rgba(255,255,255,0.08);
+}
+
+.card-media img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.card-body {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.card-title {
+	font-size: 1.2rem;
+	font-weight: 800;
+
+	color: white;
+
+	margin-bottom: 0.4rem;
+}
+
+.card-desc {
+	color: var(--text-secondary);
+	font-size: 0.95rem;
+}
+
+.card-description {
+	color: var(--text-muted);
+	font-size: 0.85rem;
+	margin-top: 0.6rem;
+}
+
+.card-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+
+	list-style: none;
+
+	margin-top: auto;
+	padding-top: 1rem;
+}
+
+.tag {
+	background: rgba(78, 163, 255, 0.12);
+
+	border: 1px solid rgba(78, 163, 255, 0.18);
+
+	color: var(--accent-cyan);
+
+	padding: 0.3rem 0.75rem;
+
+	border-radius: 999px;
+
+	font-size: 0.75rem;
+	font-weight: 700;
+}
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+.dashboard {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+
+	padding: 2rem 0;
+}
+
+/* =========================================================
+   TEST RESULT CARDS
+========================================================= */
+
+.test-card {
+	background:
+		linear-gradient(
+			145deg,
+			rgba(16, 34, 54, 0.92),
+			rgba(10, 20, 32, 0.92)
+		);
+
+	border: 1px solid rgba(114, 212, 255, 0.12);
+
+	border-radius: 20px;
+
+	padding: 1.75rem;
+
+	box-shadow: var(--shadow-md);
+
+	backdrop-filter: blur(10px);
+
+	transition:
+		transform var(--transition),
+		border-color var(--transition);
+}
+
+.test-card:hover {
+	transform: translateY(-3px);
+
+	border-color: rgba(114, 212, 255, 0.28);
+}
+
+.test-card h2 {
+	font-size: 1.4rem;
+	font-weight: 800;
+
+	color: white;
+
+	margin-bottom: 1rem;
+}
+
+.meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1.5rem;
+
+	margin-bottom: 1.5rem;
+}
+
+.meta p {
+	color: var(--text-secondary);
+}
+
+/* =========================================================
+   TABLES
+========================================================= */
+
+.table-wrapper {
+	width: 100%;
+	overflow-x: auto;
+
+	border-radius: 16px;
+
+	border: 1px solid rgba(255,255,255,0.05);
+
+	background: rgba(255,255,255,0.02);
+}
+
+.styled-table {
+	width: 100%;
+	min-width: 800px;
+
+	border-collapse: collapse;
+
+	font-size: 0.92rem;
 }
 
 .styled-table thead {
@@ -281,6 +827,13 @@ body.test-page main#main {
 
 /* =========================================================
    SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
 ::-webkit-scrollbar-track {
 	background: rgba(255,255,255,0.03);
 }
@@ -417,4 +970,285 @@ body.test-page main#main {
 
 /* =========================================================
    PRIMARY BUTTON
+========================================================= */
+
+.btn-primary {
+	background:
+		linear-gradient(
+			135deg,
+			#2d7dd2,
+			#4ea3ff
+		);
+
+	color: white;
+
+	box-shadow:
+		0 4px 18px rgba(78, 163, 255, 0.28),
+		inset 0 1px rgba(255,255,255,0.18);
+
+	border: 1px solid rgba(255,255,255,0.08);
+}
+
+.btn-primary:hover {
+	transform: translateY(-2px);
+
+	background:
+		linear-gradient(
+			135deg,
+			#3b8de0,
+			#67b4ff
+		);
+
+	box-shadow:
+		0 8px 24px rgba(78, 163, 255, 0.38),
+		0 0 14px rgba(114, 212, 255, 0.22);
+}
+
+.btn-primary:active {
+	transform: translateY(1px) scale(0.98);
+}
+
+/* =========================================================
+   SECONDARY BUTTON
+========================================================= */
+
+.btn-secondary {
+	background:
+		rgba(255,255,255,0.05);
+
+	color: var(--text-primary);
+
+	border: 1px solid rgba(114, 212, 255, 0.15);
+
+	backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+	background:
+		rgba(78, 163, 255, 0.12);
+
+	border-color:
+		rgba(114, 212, 255, 0.35);
+
+	transform: translateY(-2px);
+}
+
+/* =========================================================
+   GOLD / SPECIAL BUTTON
+========================================================= */
+
+.btn-gold {
+	background:
+		linear-gradient(
+			135deg,
+			#ffbf3f,
+			#ffd978
+		);
+
+	color: #1a1a1a;
+
+	box-shadow:
+		0 6px 20px rgba(255, 200, 87, 0.25);
+}
+
+.btn-gold:hover {
+	transform: translateY(-2px);
+
+	box-shadow:
+		0 10px 28px rgba(255, 200, 87, 0.35);
+}
+
+/* =========================================================
+   DANGER BUTTON
+========================================================= */
+
+.btn-danger {
+	background:
+		linear-gradient(
+			135deg,
+			#c0392b,
+			#e74c3c
+		);
+
+	color: white;
+
+	box-shadow:
+		0 6px 18px rgba(231, 76, 60, 0.28);
+}
+
+.btn-danger:hover {
+	transform: translateY(-2px);
+
+	box-shadow:
+		0 10px 28px rgba(231, 76, 60, 0.4);
+}
+
+/* =========================================================
+   BUTTON GLOW EFFECT
+========================================================= */
+
+.btn::before {
+	content: "";
+
+	position: absolute;
+
+	top: 0;
+	left: -120%;
+
+	width: 100%;
+	height: 100%;
+
+	background:
+		linear-gradient(
+			120deg,
+			transparent,
+			rgba(255,255,255,0.18),
+			transparent
+		);
+
+	transition: left 500ms ease;
+}
+
+.btn:hover::before {
+	left: 120%;
+}
+
+/* =========================================================
+   FOCUS ACCESSIBILITY
+========================================================= */
+
+.btn:focus-visible {
+	outline: 2px solid var(--accent-cyan);
+	outline-offset: 3px;
+}
+
+/* =========================================================
+   DISABLED
+========================================================= */
+
+.btn:disabled,
+.btn.disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+
+	transform: none !important;
+	box-shadow: none !important;
+}
+
+/* =========================================================
+   BUTTON SIZES
+========================================================= */
+
+.btn-sm {
+	padding: 0.55rem 1rem;
+	font-size: 0.82rem;
+	border-radius: 10px;
+}
+
+.btn-lg {
+	padding: 1rem 1.8rem;
+	font-size: 1.05rem;
+	border-radius: 18px;
+}
+
+/* =========================================================
+   FULL WIDTH
+========================================================= */
+
+.btn-block {
+	width: 100%;
+	display: flex;
+}
+
+/* =========================================================
+   ICON BUTTON
+========================================================= */
+
+.btn-icon {
+	width: 44px;
+	height: 44px;
+
+	padding: 0;
+
+	border-radius: 12px;
+}
+
+/* =========================================================
+   GLASSMORPHISM UTILITY  (used across the redesign)
+   Resolves per-theme via --glass-* tokens.
+========================================================= */
+
+.glass {
+	background: var(--glass-bg);
+	border: 1px solid var(--glass-border);
+
+	border-radius: var(--radius-lg);
+
+	backdrop-filter: blur(var(--glass-blur));
+	-webkit-backdrop-filter: blur(var(--glass-blur));
+
+	box-shadow: var(--glass-shadow);
+
+	/* Subtle top highlight for that premium product feel */
+	position: relative;
+	overflow: hidden;
+}
+
+.glass::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+
+	background:
+		linear-gradient(
+			160deg,
+			rgba(255, 255, 255, 0.18),
+			transparent 40%
+		);
+
+	pointer-events: none;
+}
+
+/* Secondary-surface card tinted with the redesign #28282b accent */
+.glass-secondary {
+	background:
+		linear-gradient(
+			145deg,
+			rgba(40, 40, 43, 0.92),
+			rgba(20, 20, 22, 0.92)
+		);
+
+	border: 1px solid rgba(255, 255, 255, 0.08);
+
+	color: #f5f6f8;
+
+	border-radius: var(--radius-lg);
+	box-shadow: var(--glass-shadow);
+}
+
+/* Accent text gradient + glow used for hero / display copy */
+.text-gradient {
+	background: linear-gradient(
+		100deg,
+		var(--text-primary) 0%,
+		var(--accent-cyan) 100%
+	);
+
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	color: transparent;
+}
+
+.glow-soft {
+	filter: drop-shadow(0 0 18px rgba(114, 212, 255, 0.25));
+}
+
+/* Hide native scrollbar for in-page horizontal strips where needed */
+.no-scrollbar {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
 }
