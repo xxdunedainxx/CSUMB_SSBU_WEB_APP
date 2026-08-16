@@ -24,6 +24,53 @@ export class TestResultListener {
     console.log(gngData)
     return {gngTestResults: gngData}
   }
+
+  private parseControllerPayload(outputData: unknown): any {
+    if (typeof outputData === "string") {
+      return JSON.parse(outputData);
+    }
+
+    return outputData;
+  }
+
+  private getControllerResultType(payload: any): string {
+    if (
+      payload &&
+      typeof payload === "object" &&
+      "left" in payload &&
+      "right" in payload &&
+      "dual" in payload
+    ) {
+      return "combined";
+    }
+
+    if (payload?.settings?.stick === "left") {
+      return "left";
+    }
+
+    if (payload?.settings?.stick === "right") {
+      return "right";
+    }
+
+    if (typeof payload?.app_version === "string" && payload.app_version.includes("dual")) {
+      return "dual";
+    }
+
+    return "session";
+  }
+
+  controllerToJson(outputData: unknown): {} {
+    const payload = this.parseControllerPayload(outputData);
+
+    return {
+      controllerResults: [
+        {
+          resultType: this.getControllerResultType(payload),
+          payload,
+        },
+      ],
+    };
+  }
   
   /**
    * Ex: 

@@ -7,6 +7,7 @@ from src.Services import Services
 from src.WebServer.decorators.Authorize import authorize
 from src.data.db.model.GngTestResult import GngTestResult
 from src.data.db.model.PosnerCueResult import PosnerCueResult
+from src.data.db.model.ControllerTestResult import ControllerTestResult
 from src.data.db.model.SrtTestResult import SrtTestResult
 from src.data.db.model.TaskSwitchingResult import TaskSwitchingResults
 from src.util.LogFactory import LogFactory
@@ -189,6 +190,69 @@ class TrialController:
             }, 200
         except Exception as e:
             LogFactory.MAIN_LOG.error(f"Upload gng test results {errorStackTrace(e)}")
+            return {
+                "response": "sadness"
+            }, 500
+        
+    """
+    curl localhost:80/upload_controller_test_results \
+  -XPOST \
+  -H "Content-Type: application/json" \
+  -d '{"controllerResults": [
+    {
+      "id": -1,
+      "testResultId": 1,
+      "resultType": "combined",
+      "payload": {
+        "left": {
+          "generated": "2026-06-15T17:31:06.759Z",
+          "settings": { "stick": "left", "targetCount": 16 },
+          "trials": [ { "time": "2026-06-15T17:29:59.450Z", "hit_type": "oob" } ]
+        },
+        "right": {
+          "generated": "2026-06-15T17:32:08.673Z",
+          "settings": { "stick": "right", "targetCount": 16 },
+          "trials": [ { "time": "2026-06-15T17:32:10.000Z", "hit_type": "target" } ]
+        },
+        "dual": {
+          "generated": "2026-06-15T17:33:47.025Z",
+          "app_version": "prototype-4-dual",
+          "trials": [
+            {
+              "time": "2026-06-15T17:32:17.589Z",
+              "left": { "hit_type": "target", "target_hit": true },
+              "right": { "hit_type": "boundary", "target_hit": true },
+              "wrong_cursor_first": false
+            }
+          ]
+        },
+        "metadata": {
+          "generated": "2026-06-15T17:33:49.157Z",
+          "app_version": "prototype-4-combined"
+        }
+      }
+    }
+  ]}'
+    """
+    @staticmethod
+    @flask_ref.route('/upload_controller_test_results', methods=['POST'])
+    @http_logger
+    def upload_controller_test_results():
+        try:
+            LogFactory.MAIN_LOG.info("Processing controller Test Results")
+
+            results = request.json["controllerResults"]
+
+            for result in results:
+                Services.dbQueryFactory.insert_controller_test_result(
+                    ControllerTestResult.deserialize_to_object(result)
+                )
+
+            return {
+                "response": "records uploaded"
+            }, 200
+        except Exception as e:
+            LogFactory.MAIN_LOG.error(f"Upload controller test results {errorStackTrace(e)}")
             return {
                 "response": "sadness"
             }, 500

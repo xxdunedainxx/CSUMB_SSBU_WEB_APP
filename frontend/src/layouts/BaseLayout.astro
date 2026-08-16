@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import '../styles/fonts.css';
 import Configuration from '../react/ts/util/Configuration';
 
 
@@ -10,14 +11,16 @@ const {
     description = 'Test and track your cognitive and reaction ablities!',
     lang = 'en',
     url = '',
-    twitter = ''
+    twitter = '',
+    theme = 'dark',
+    ambientScroll = false,
 } = Astro.props;
 
 
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} class={`theme-${theme}`} data-ambient={ambientScroll ? 'on' : undefined}>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -29,9 +32,10 @@ const {
         {url ? <meta property="og:url" content={url} /> : null}
         <meta name="twitter:card" content="summary_large_image" />
         {twitter ? <meta name="twitter:creator" content={twitter} /> : null}
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/ui/favicon.ico" />
     </head>
     <body>
+        {ambientScroll ? <div class="cinematic-ambient" aria-hidden="true"></div> : null}
         <Header />
 
         <main id="main" class="site-container" role="main">

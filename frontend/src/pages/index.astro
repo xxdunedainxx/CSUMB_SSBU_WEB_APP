@@ -1,10 +1,46 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LandingTestStage from '../react/islands/LandingTestStage';
+import '../styles/landing.css';
 ---
-<BaseLayout title="Under Construction">
 
-	<div class="under-construction">
-		<h1>Under Construction</h1>
-		<p>This site is currently being built. Check back soon!</p>
-	</div>
+<BaseLayout
+	title="CSUMB Esports Study — Cognitive & Dexterity Skills"
+	description="Measure the cognitive and dexterity skills that affect your esports performance. A Cal State Monterey Bay research study."
+	theme="cinematic"
+	ambientScroll
+>
+	<!-- 1. HERO -->
+	<section class="hero" id="hero">
+		<div class="hero__content">
+			<p class="hero__eyebrow">Cal State Monterey Bay · Machek Lab</p>
+			<h1 class="hero__title">
+				Measure the cognitive and dexterity skills that <span class="hero__accent">affect YOUR performance</span>
+			</h1>
+			<a class="btn btn-primary btn-lg" href="#tests">Explore the tests</a>
+		</div>
+		<div class="hero__cue" aria-hidden="true">
+			<span class="hero__cue-line"></span>
+			<span class="hero__cue-text">scroll</span>
+		</div>
+	</section>
+
+	<!-- 2. TEST STORYTELLING -->
+	<div id="tests" class="test-anchor"></div>
+	<LandingTestStage client:load />
+
+	<!-- 3. CLOSING CTA -->
+	<section class="cta">
+		<div class="cta__inner">
+			<h2 class="cta__title">Ready to find out how you measure up?</h2>
+			<p class="cta__sub">
+				Run the full battery yourself, then track your results over time — and
+				see where the research comes from.
+			</p>
+			<div class="cta__actions">
+				<a class="btn btn-primary btn-lg" href="/ui/tests/">Take the tests</a>
+				<a class="btn btn-secondary btn-lg" href="/ui/research/">Explore the research</a>
+			</div>
+		</div>
+	</section>
 </BaseLayout>

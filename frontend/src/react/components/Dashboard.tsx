@@ -131,6 +131,35 @@ export default function Dashboard() {
             </div>
           )}
 
+          {result.controllerRecords != null && result.controllerRecords.length > 0 && (
+             <div className="table-wrapper">
+              <table className="styled-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Result Type</th>
+                    <th>Generated</th>
+                    <th>Trial Count</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {result.controllerRecords.map((record: any) => (
+                    <tr key={record.id}>
+                      <td>{record.id}</td>
+                      <td>{record.resultType}</td>
+                      <td>{record.payload?.generated ?? record.payload?.metadata?.generated ?? "N/A"}</td>
+                      <td>
+                        {Array.isArray(record.payload?.trials)
+                          ? record.payload.trials.length
+                          : "N/A"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
           {result.srtRecords != null && (
             <div className="table-wrapper">
               <table className="styled-table">
@@ -164,7 +193,7 @@ export default function Dashboard() {
               </table>
             </div>
           )}
-
+          
         </div>
       ))}
     </div>

@@ -68,6 +68,17 @@ export class HttpRequestClient {
     );
   }
 
+  // Upload Controller results
+  uploadControllerResults(data: {}){
+    console.log("Upload Controller results")
+    console.log(data)
+    return this.post<any>(
+      "/upload_controller_test_results",
+      JSON.stringify(data)
+    );
+  }
+
+  // Get test IDs method 
   uploadSrtResults(data: {}) {
     console.log("Upload SRT Results");
     console.log(data);

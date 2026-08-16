@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ResearchBoxScene from '../../react/islands/ResearchBoxScene';
+import Gx3Carousel from '../../react/islands/Gx3Carousel';
+import '../../styles/research.css';
+---
+
+<BaseLayout
+	title="The Research — CSUMB Esports Study"
+	description="Dr. Steven Machek's lab at Cal State Monterey Bay studies the physiological and cognitive indices of Super Smash Bros. Ultimate players."
+	theme="cinematic"
+>
+	<!-- 1. Cinematic box scene (sticky, scroll-scrubbed) -->
+	<ResearchBoxScene client:load scrollSpan={3} />
+
+	<!-- 2. Explainer text -->
+	<section class="research-explainer">
+		<div class="container research-explainer__inner">
+			<article class="glass research-explainer__card">
+				<p class="eyebrow">The Study</p>
+				<h1 class="research-explainer__title">
+					Comparative Analysis on Physiological Indices Amongst
+					Super Smash Bros. Ultimate Players
+				</h1>
+
+				<p class="research-explainer__lead">
+					Dr. Steven Machek and his lab at Cal State Monterey Bay conduct the
+					ongoing Esports study.
+				</p>
+
+				<p>
+					The study examines the Super Smash Bros. Ultimate (SSBU) Esport
+					specifically. SSBU demands a variety of skillsets to be successful in
+					the competitive scene. The study aims at discovering the differences
+					that may exist between casual SSBU players, non-gamers, and other
+					esports players when it comes to cognitive indices and dexterity.
+				</p>
+
+				<p>
+					Participants have their vitals taken non-invasively, conduct cognitive
+					tests on the study&rsquo;s predetermined laptop, perform the Lafayette
+					Purdue Pegboard Test, and combine their cognitive and dexterity skills
+					in a study-specific controller test.
+				</p>
+
+				<p>
+					The study also makes use of Polar H10 heart monitors to measure
+					cardiovascular performance during competitive timeframes.
+				</p>
+			</article>
+		</div>
+	</section>
+
+	<!-- 3. Research at GX3 carousel -->
+	<Gx3Carousel client:load />
+</BaseLayout>

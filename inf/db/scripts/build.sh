@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: ./scripts/build.sh
+# Usage: run from inf/db via scripts/build.sh
 
 imageBase=${1:-"dev"}
 

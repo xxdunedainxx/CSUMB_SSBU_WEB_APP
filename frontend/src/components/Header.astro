@@ -3,30 +3,31 @@ import Setup from '../react/ts/util/Setup'
 import Logout from '../react/components/Logout'
 const setup = new Setup();
 
-const siteTitle = `CSUMB Research`; //TODO: update this with offical name
-const finalSiteTile = !setup.config.isProd ? `DEV ENV - ${siteTitle}` : siteTitle;
+// const siteTitle = `CSUMB Research`; //TODO: update this with offical name
+// const finalSiteTile = !setup.config.isProd ? `DEV ENV - ${siteTitle}` : siteTitle;
 const VERSION = setup.config.version
 ---
 
 <header class="site-header" role="banner">
     <div class="container header-inner">
-        <a class="site-logo" href="/ui/" aria-label={finalSiteTile}>
+        <!-- <a class="site-logo" href="/ui/" aria-label={finalSiteTile}>
             <span>{finalSiteTile}</span>
-        </a>
+        </a> -->
 
         <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false" aria-label="Toggle navigation">
             <span class="hamburger" aria-hidden="true"></span>
         </button>
 
-        <nav id="primary-navigation" class="primary-nav" aria-label="Main">
+        <nav id="primary-navigation" class="primary-nav" aria-label="Main" style="margin-left: auto; text-align: center;">
             <ul class="nav-list">
                 <li><a href="/ui/">Home</a></li>
+                <li><a href="/ui/research/">Research</a></li>
                 <li><a href="/ui/tests/">Cognitive and Reaction Tests</a></li>
                 <li><a href="/ui/dashboard/">Your personal dashboard</a></li>
                 <li><Logout client:load /></li>
             </ul>
         </nav>
-        <div>v{VERSION}</div>
+        <div style="margin-left: auto; text-align: left;">v{VERSION}</div>
     </div>
 
     <script>

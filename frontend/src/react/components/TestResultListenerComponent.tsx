@@ -26,6 +26,22 @@ export default function TestResultListenerComponent({
 
   const [showIframe, setShowIframe] = useState(false);
 
+  function isControllerTestCategory(category: string) {
+    return category === "HeneveldControlllerParadigm";
+  }
+
+  function isResultMessage(event: MessageEvent) {
+    return event.data?.type === "PSYTOOLKIT_RESULT" || event.data?.type === "CONTROLLER_TEST_RESULT";
+  }
+
+  function isReadyMessage(event: MessageEvent) {
+    return (
+      event.data?.type === "PSYTOOLKIT_PING" ||
+      event.data?.type === "CONTROLLER_TEST_PING" ||
+      event.data?.type === "CONTROLLER_TEST_READY"
+    );
+  }
+
   function finalize(){
     alert("Test done! Redirecting..")
     // window.location.href = "/dashboard/"
@@ -33,7 +49,7 @@ export default function TestResultListenerComponent({
 
   useEffect(() => {
     async function handler(event: MessageEvent) {
-      if (event.data?.type === "PSYTOOLKIT_RESULT") {
+      if (isResultMessage(event)) {
         try {
           console.log("Received outputdata:", event.data.payload);
 
@@ -49,48 +65,64 @@ export default function TestResultListenerComponent({
             testCategory
           );
 
-          const testId = createRes.id; // adjust field name if different
+          const testId = createRes.id;
+          let uploadCompleted = false;
           
-          if (testCategory == "GoNoGo") {
+          if (testCategory === "GoNoGo") {
             console.log("Upload go/no-go results");
 
             const dataToUpload = listener.goNoGoToJson(event.data.payload);
-            console.log(dataToUpload)
+            console.log(dataToUpload);
             const gngTestResults = (dataToUpload as any).gngTestResults.map((item: any) => ({
               ...item,
               testResultId: testId,
               id: -1,
             }));
             
-            console.log(gngTestResults)
-            // 3. Upload results (attach IDs if needed)
+            console.log(gngTestResults);
             await client.uploadGngResults({
               gngTestResults
             });
-          } else if(testCategory == "Posner") {
-            console.log("Posner upload")
+            uploadCompleted = true;
+          } else if (testCategory === "Posner") {
+            console.log("Posner upload");
             const dataToUpload = listener.posnerToJson(event.data.payload);
-            console.log(dataToUpload)
+            console.log(dataToUpload);
             const posnerResults = (dataToUpload as any).posnerResults.map((item: any) => ({
               ...item,
               testResultId: testId,
               id: -1,
             }));
             
-            console.log(posnerResults)
-            // 3. Upload results (attach IDs if needed)
+            console.log(posnerResults);
             await client.uploadPosnerResults({
               posnerResults
             });
-          } else if (testCategory == "SimpleReactionOnly"){
+            uploadCompleted = true;
+          } else if (isControllerTestCategory(testCategory)) {
+            console.log("Controller test upload");
+            const dataToUpload = listener.controllerToJson(event.data.payload);
+            const controllerResults = (dataToUpload as any).controllerResults.map((item: any) => ({
+              ...item,
+              testResultId: testId,
+              id: -1,
+            }));
+
+            console.log(controllerResults);
+            await client.uploadControllerResults({
+              controllerResults
+            });
+            uploadCompleted = true;
+          } else if (testCategory === "SimpleReactionOnly") {
             console.log("SRT Upload");
             const dataToUpload = listener.srtToJson(event.data.payload);
             console.log(dataToUpload);
             const srtResults = (dataToUpload as any).srtTestResults.map((item: any) => ({
               ...item, testResultId: testId, id: -1
             }));
-            await client.uploadSrtResults({srtResults});
-          } else if (testCategory == "TaskSwitching") {
+            await client.uploadSrtResults({ srtResults });
+            uploadCompleted = true;
+          } else if (testCategory === "TaskSwitching") {
             console.log("Task switch upload");
             const dataToUpload = listener.taskSwitchToJson(event.data.payload);
             const taskSwitchingResults = (dataToUpload as any).taskSwitchingResults.map((item: any) => ({
@@ -99,17 +131,20 @@ export default function TestResultListenerComponent({
             await client.uploadTaskSwitchingResults({
               taskSwitchingResults
             });
-          }else {
+            uploadCompleted = true;
+          } else {
             console.log("UNKNOWN TEST TYPE");
+          }
+
+          if (uploadCompleted) {
+            finalize();
           }
 
         } catch (err) {
           console.error("Failed processing test results:", err);
         }
 
-        finalize()
-
-      } else if (event.data?.type === "PSYTOOLKIT_PING") {
+      } else if (isReadyMessage(event)) {
         console.log("PING, TEST IS READY");
         setShowIframe(true);
       }
