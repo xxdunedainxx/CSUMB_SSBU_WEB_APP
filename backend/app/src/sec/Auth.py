@@ -1,5 +1,6 @@
 # Authentication service
 from src.data.db.DbQueryFactory import DbQueryFactory
+from src.sec.Crypto import CryptoService
 from src.Configuration import CONF_INSTANCE
 from flask import request
 
@@ -17,9 +18,16 @@ class AuthenticationService:
         if self.__bypass_auth():
             return True
 
-        pw = self.dbQueryFactory.fetch_user_password_by_email(email)
-        verified = self.dbQueryFactory.is_account_verified(email)
-        return verified and pw == password
+        current_user = self.dbQueryFactory.fetch_user_by_email(email)
+        # No account for this email. Fail the same way a wrong password does, so the
+        # response does not reveal which emails are registered (confidentiality)
+        if not current_user:
+            return False
+
+        stored_password_hash = current_user.password
+        salt = current_user.salt
+        attempted_password_hash = CryptoService.sha256_hash_string(password + salt)
+        return current_user.verified and stored_password_hash == attempted_password_hash
 
     def authorize(self, session, endpoint, requestArgs) -> bool:
         return ("user_id" not in session  == False) and self.__endpoint_authorization_check(session, endpoint, requestArgs)

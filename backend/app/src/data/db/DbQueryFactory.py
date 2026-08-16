@@ -4,7 +4,9 @@
   Synopsis: Central class for CRAFTING and EXECUTING DB queries.
 """
 import json
+import secrets
 from datetime import datetime, timezone
+from typing import Optional
 
 from src.data.db.DBConnector import DBConnector
 from src.data.db.model.CompleteTestResults import CompleteTestResults
@@ -17,6 +19,7 @@ from src.data.db.model.TestResult import TestResult
 from src.data.db.model.User import User
 from src.util.DateTimeUtil import DateTimeUtils
 from src.Configuration import CONF_INSTANCE
+from src.sec.Crypto import CryptoService
 
 """
     Utility class for crafting/executing SQL queries against the DB 
@@ -29,11 +32,12 @@ class DbQueryFactory:
     def check_health(self) -> bool:
         return self.dbConnector.ping()
 
+    """
+        NOTE: Database errors are intentionally not caught here. if they were, a failed read 
+        would cause the registration function to create a duplicate account
+    """
     def check_account_exists(self, email: str) -> bool:
-        try:
-            return self.fetch_user_by_email(email).email == email
-        except Exception as e:
-            return False
+        return self.fetch_user_by_email(email) is not None
 
     def check_registration_token(self, token: str) -> bool:
         try:
@@ -64,15 +68,18 @@ class DbQueryFactory:
         )
 
     """
-        Fetch a user by email 
+        Fetch a user by email. Returns None when no account exists for that email.
     """
-    def fetch_user_by_email(self, email: str) -> User:
+    def fetch_user_by_email(self, email: str) -> Optional[User]:
         record=self.dbConnector.read_data(
             query="SELECT id, email, password, salt, verified, whenCreated, lastLogin FROM userTable WHERE email=%s",
             vars=(email,)
         )
-        print(record)
-        return User (
+
+        if not record:
+            return None
+
+        return User(
             id=int(record[0][0]),
             email=str(record[0][1]),
             password=str(record[0][2]),
@@ -97,9 +104,12 @@ class DbQueryFactory:
         )
 
     """
-        Create a new user object 
-        
-        Ref model: 
+        Create a new user object
+
+        The salt is generated here, so any salt set on the incoming User object is ignored.
+        Only the hash stays, the plaintext password never reaches the DB.
+
+        Ref model:
             email VARCHAR(1000) NOT NULL,
             password VARCHAR(1000) NOT NULL,
             salt VARCHAR(100) NOT NULL,
@@ -108,12 +118,20 @@ class DbQueryFactory:
             lastLogin TIMESTAMPTZ,
     """
     def create_new_user(self, user: User):
+        """
+        - sort of over-engineering, but the randomNumberGenerator becomes predictable if given enough outputs
+        - using token_hex reduces the chance of the salt being pre-computed, since its output is a one way
+        function of internal state that cannot be worked backwards from
+        """
+        salt: str = secrets.token_hex(16)
+        hashed_password: str = CryptoService.sha256_hash_string(user.password + salt)
+
         return self.dbConnector.write_or_update_data(
             query="INSERT INTO userTable (email, password, salt, verified, whenCreated, registrationToken) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
             vars=(
               user.email,
-              user.password,
-              user.salt,
+              hashed_password,
+              salt,
               False,
               DateTimeUtils.get_current_datetime_in_iso_format_str(),
               user.registrationToken
