@@ -14,8 +14,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        
       - name: Python setup
         uses: actions/setup-python@v7
         with:
           python-version: 3.9
+      
+      - name: Backend setup
+        run: ./backend/app/scripts/setup.sh
+
+      - name: Unit Testing
+        run: ./backend/app/scripts/run.sh
         
