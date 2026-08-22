@@ -24,5 +24,6 @@ jobs:
         run: ./backend/app/scripts/setup.sh
 
       - name: Unit Testing
-        run: ./backend/app/scripts/run.sh
+        working-directory: ./backend
+        run: ./app/scripts/run.sh
         
