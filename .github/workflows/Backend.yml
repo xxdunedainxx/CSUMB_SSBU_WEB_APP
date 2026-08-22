@@ -17,5 +17,5 @@ jobs:
       - name: Python setup
         uses: actions/setup-python@v7
         with:
-          python-version: matrix.python-version
+          python-version: 3.9
         
