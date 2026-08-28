@@ -25,5 +25,5 @@ jobs:
 
       - name: Unit Testing
         working-directory: ./backend/app
-        run: ./scripts/run.sh
+        run: ./test/scripts/unit_tests.sh
         
