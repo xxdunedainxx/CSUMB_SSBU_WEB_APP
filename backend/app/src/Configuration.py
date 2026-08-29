@@ -126,7 +126,9 @@ class Configuration:
   def __parse_conf_file_value(self, key: str):
     return self.CONF[key]
 
-CONF_INSTANCE = Configuration()
+
 
 if "CONF_FILE_LOCATION_OVERRIDE" in os.environ.keys():
   CONF_INSTANCE = Configuration(os.environ.get("CONF_FILE_LOCATION_OVERRIDE"))
+else:
+  CONF_INSTANCE = Configuration()
