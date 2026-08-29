@@ -1,0 +1,712 @@
+/* =========================================================
+   DASHBOARD — player-profile sunburst UI
+   Reuses the site's glass / surface / radius tokens so the
+   dashboard matches the rest of the cinematic theme.
+========================================================= */
+
+.dashboard {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	padding: 2rem 0;
+}
+
+/* =========================================================
+   PROFILE ARCHETYPE (above sunburst card)
+========================================================= */
+
+.profile-archetype {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.profile-archetype__heading {
+	font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+	font-weight: 800;
+	color: var(--text-primary);
+	line-height: 1.35;
+	max-width: 48ch;
+}
+
+.profile-archetype__body {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.profile-archetype-badge {
+	align-self: flex-start;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+
+	background: var(--surface-2);
+	border: 1px solid var(--border);
+	border-radius: 999px;
+	padding: 0.45rem 1.1rem;
+
+	font-size: 0.8rem;
+	font-weight: 800;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--text-primary);
+
+	box-shadow: var(--shadow-md);
+}
+
+.profile-archetype-badge::before {
+	content: "";
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: var(--accent-gold);
+}
+
+.profile-archetype-desc {
+	color: var(--text-secondary);
+	font-size: 0.95rem;
+	max-width: 62ch;
+}
+
+.profile-archetype-desc--balanced {
+	color: var(--text-muted);
+	font-style: italic;
+}
+
+/* =========================================================
+   SUNBURST CARD
+========================================================= */
+
+.profile-sunburst-card {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding: 1.5rem;
+}
+
+.profile-sunburst-card__toolbar {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.profile-sunburst-card__body {
+	display: grid;
+	grid-template-columns: minmax(0, 1.65fr) minmax(220px, 0.85fr);
+	gap: 1.25rem;
+	align-items: start;
+}
+
+.profile-sunburst-card__chart {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	min-width: 0;
+}
+
+.profile-sunburst-card__chart > div {
+	width: 100%;
+	max-width: 480px;
+}
+
+/* =========================================================
+   TEST METRICS (compact bar charts, right column)
+========================================================= */
+
+.profile-test-metrics {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 0.5rem;
+	min-width: 0;
+	min-height: min(560px, 70vh);
+}
+
+.profile-test-metrics--empty {
+	justify-content: center;
+	min-height: 120px;
+}
+
+.profile-test-metrics__viewport {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
+
+.profile-test-metrics__nav-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: 100%;
+	height: 2rem;
+	padding: 0;
+
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	background: rgba(255, 255, 255, 0.03);
+
+	color: var(--text-secondary);
+	font: inherit;
+	font-size: 0.9rem;
+	font-weight: 700;
+	line-height: 1;
+
+	cursor: pointer;
+	transition:
+		color var(--transition),
+		background var(--transition),
+		border-color var(--transition);
+}
+
+.profile-test-metrics__nav-btn:hover:not(:disabled) {
+	color: var(--text-primary);
+	background: rgba(255, 255, 255, 0.06);
+	border-color: rgba(255, 255, 255, 0.2);
+}
+
+.profile-test-metrics__nav-btn:focus-visible {
+	outline: 2px solid var(--accent-gold);
+	outline-offset: 2px;
+}
+
+.profile-test-metrics__nav-btn:disabled {
+	opacity: 0.35;
+	cursor: not-allowed;
+}
+
+.profile-test-metrics__counter {
+	margin: 0;
+	font-size: 0.72rem;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+	text-align: center;
+}
+
+.profile-test-metrics__empty {
+	font-size: 0.82rem;
+	color: var(--text-muted);
+	font-style: italic;
+	text-align: center;
+	margin: 0;
+}
+
+.metric-bar-chart {
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	background: rgba(255, 255, 255, 0.02);
+	padding: 0.65rem 0.75rem 0.75rem;
+}
+
+.metric-bar-chart__header {
+	margin-bottom: 0.45rem;
+}
+
+.metric-bar-chart__title {
+	font-size: 0.72rem;
+	font-weight: 800;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--text-primary);
+	margin: 0;
+}
+
+.metric-bar-chart__subtitle {
+	font-size: 0.65rem;
+	color: var(--text-muted);
+	margin: 0.2rem 0 0;
+	line-height: 1.3;
+}
+
+.metric-bar-chart__group + .metric-bar-chart__group {
+	margin-top: 0.55rem;
+	padding-top: 0.55rem;
+	border-top: 1px solid var(--border);
+}
+
+.metric-bar-chart__group-title {
+	display: block;
+	font-size: 0.62rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+	margin-bottom: 0.35rem;
+}
+
+.metric-bar-chart__bars {
+	display: flex;
+	align-items: flex-end;
+	gap: 0.35rem;
+	height: 128px;
+}
+
+.metric-bar-chart__column {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.25rem;
+	height: 100%;
+}
+
+.metric-bar-chart__value {
+	font-size: 0.58rem;
+	font-weight: 700;
+	color: var(--text-secondary);
+	font-variant-numeric: tabular-nums;
+	text-align: center;
+	line-height: 1.1;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
+}
+
+.metric-bar-chart__track {
+	flex: 1;
+	width: 100%;
+	display: flex;
+	align-items: flex-end;
+	min-height: 0;
+}
+
+.metric-bar-chart__fill {
+	width: 100%;
+	height: 100%;
+	border-radius: 3px 3px 2px 2px;
+	min-height: 2px;
+}
+
+.metric-bar-chart__label {
+	font-size: 0.58rem;
+	font-weight: 600;
+	color: var(--text-muted);
+	text-align: center;
+	line-height: 1.15;
+	max-width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
+
+/* =========================================================
+   PROFILE TUNER (demo session picker)
+========================================================= */
+
+.profile-tuner {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 0.35rem;
+}
+
+.profile-tuner__label {
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+}
+
+.profile-tuner__select {
+	appearance: none;
+	background: var(--surface-1);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	color: var(--text-primary);
+	font: inherit;
+	font-size: 0.9rem;
+	padding: 0.55rem 2.4rem 0.55rem 1rem;
+
+	background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+		linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+	background-position: calc(100% - 1.1rem) 55%, calc(100% - 0.8rem) 55%;
+	background-size: 5px 5px;
+	background-repeat: no-repeat;
+
+	cursor: pointer;
+	transition: border-color var(--transition);
+}
+
+.profile-tuner__select:hover {
+	border-color: rgba(255, 255, 255, 0.2);
+}
+
+.profile-tuner__select:focus-visible {
+	outline: 2px solid var(--accent-gold);
+	outline-offset: 2px;
+}
+
+.profile-tuner__description {
+	font-size: 0.82rem;
+	color: var(--text-muted);
+	max-width: 42ch;
+	text-align: right;
+}
+
+/* =========================================================
+   BREADCRUMB (drill-down trail)
+========================================================= */
+
+.profile-breadcrumb {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem;
+	list-style: none;
+	padding: 0;
+}
+
+.profile-breadcrumb__item {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.profile-breadcrumb__sep {
+	color: var(--text-muted);
+	font-size: 0.85rem;
+}
+
+.profile-breadcrumb__button {
+	background: none;
+	border: none;
+	padding: 0.15rem 0.4rem;
+	border-radius: 8px;
+
+	color: var(--text-secondary);
+	font: inherit;
+	font-size: 0.85rem;
+	font-weight: 600;
+
+	cursor: pointer;
+	transition:
+		color var(--transition),
+		background var(--transition);
+}
+
+.profile-breadcrumb__button:hover {
+	color: var(--text-primary);
+	background: rgba(255, 255, 255, 0.06);
+}
+
+.profile-breadcrumb__button:focus-visible {
+	outline: 2px solid var(--accent-gold);
+	outline-offset: 1px;
+}
+
+.profile-breadcrumb__current {
+	color: var(--text-primary);
+	font-size: 0.85rem;
+	font-weight: 800;
+}
+
+.profile-breadcrumb__current-block {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.35rem;
+}
+
+.profile-breadcrumb__current-block .profile-archetype-desc {
+	margin: 0;
+	max-width: 42ch;
+}
+
+/* =========================================================
+   HINT
+========================================================= */
+
+.profile-hint__text {
+	font-size: 0.85rem;
+	color: var(--text-muted);
+}
+
+/* =========================================================
+   PROFILE INSPECTOR (dev-only panel)
+========================================================= */
+
+.profile-inspector {
+	width: 100%;
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	background: rgba(255, 255, 255, 0.02);
+	overflow: hidden;
+}
+
+.profile-inspector__summary {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+
+	padding: 0.8rem 1.1rem;
+	cursor: pointer;
+	user-select: none;
+
+	font-size: 0.85rem;
+	font-weight: 700;
+	color: var(--text-secondary);
+
+	list-style: none;
+	transition: color var(--transition);
+}
+
+.profile-inspector__summary::-webkit-details-marker {
+	display: none;
+}
+
+.profile-inspector__summary::before {
+	content: "▸";
+	color: var(--text-muted);
+	transition: transform 160ms ease;
+}
+
+.profile-inspector[open] .profile-inspector__summary::before {
+	transform: rotate(90deg);
+}
+
+.profile-inspector__summary:hover {
+	color: var(--text-primary);
+}
+
+.profile-inspector__badge {
+	background: var(--surface-3);
+	border-radius: 6px;
+	padding: 0.1rem 0.45rem;
+
+	font-size: 0.62rem;
+	font-weight: 800;
+	letter-spacing: 0.12em;
+	color: var(--text-primary);
+}
+
+.profile-inspector__body {
+	padding: 0 1.1rem 1.1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+}
+
+.profile-inspector__meta {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 0.75rem 1.25rem;
+	margin: 0;
+}
+
+.profile-inspector__meta div {
+	display: flex;
+	flex-direction: column;
+	gap: 0.1rem;
+}
+
+.profile-inspector__meta dt {
+	font-size: 0.68rem;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+}
+
+.profile-inspector__meta dd {
+	margin: 0;
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--text-primary);
+}
+
+.profile-inspector__section h4 {
+	font-size: 0.72rem;
+	font-weight: 800;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+	margin-bottom: 0.6rem;
+}
+
+.profile-inspector__list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.3rem;
+}
+
+.profile-inspector__list li {
+	font-size: 0.82rem;
+	color: var(--text-secondary);
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+	align-items: baseline;
+}
+
+.profile-inspector__list code {
+	font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+	font-size: 0.78rem;
+	color: var(--text-primary);
+	background: rgba(255, 255, 255, 0.04);
+	border-radius: 6px;
+	padding: 0.08rem 0.35rem;
+}
+
+.profile-inspector__unit {
+	font-size: 0.75rem;
+	color: var(--text-muted);
+}
+
+.profile-inspector__empty {
+	font-style: italic;
+}
+
+.profile-inspector__warning {
+	border-left: 2px solid var(--accent-gold);
+	padding-left: 0.6rem;
+}
+
+.profile-inspector__warning-msg {
+	width: 100%;
+	color: var(--text-secondary);
+}
+
+.profile-inspector__coverage {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.profile-inspector__coverage li {
+	font-size: 0.78rem;
+	font-weight: 700;
+	padding: 0.25rem 0.7rem;
+	border-radius: 999px;
+	border: 1px solid var(--border);
+}
+
+.profile-inspector__coverage-on {
+	color: var(--text-primary);
+	background: var(--surface-2);
+}
+
+.profile-inspector__coverage-off {
+	color: var(--text-muted);
+	opacity: 0.55;
+}
+
+.profile-inspector__pre {
+	background: rgba(0, 0, 0, 0.35);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	padding: 1rem;
+	overflow-x: auto;
+
+	font-size: 0.75rem;
+	line-height: 1.5;
+	color: var(--text-secondary);
+
+	max-height: 320px;
+}
+
+/* =========================================================
+   RAW TEST DATA (collapsible)
+========================================================= */
+
+.raw-data {
+	border: 1px solid var(--border);
+	border-radius: var(--radius-lg);
+	background: var(--glass-bg);
+	overflow: hidden;
+}
+
+.raw-data__summary {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+
+	padding: 1.1rem 1.4rem;
+	cursor: pointer;
+	user-select: none;
+
+	font-size: 1rem;
+	font-weight: 800;
+	color: var(--text-primary);
+
+	list-style: none;
+	transition: background var(--transition);
+}
+
+.raw-data__summary::-webkit-details-marker {
+	display: none;
+}
+
+.raw-data__summary::before {
+	content: "▸";
+	color: var(--text-muted);
+	transition: transform 160ms ease;
+}
+
+.raw-data[open] .raw-data__summary::before {
+	transform: rotate(90deg);
+}
+
+.raw-data__summary:hover {
+	background: rgba(255, 255, 255, 0.03);
+}
+
+.raw-data__count {
+	background: var(--surface-2);
+	border-radius: 999px;
+	padding: 0.15rem 0.7rem;
+
+	font-size: 0.72rem;
+	font-weight: 700;
+	color: var(--text-secondary);
+}
+
+.raw-data__note {
+	padding: 0.75rem 1.4rem;
+	font-size: 0.88rem;
+	color: var(--text-muted);
+	border-top: 1px solid var(--border);
+}
+
+.raw-data .test-card {
+	margin: 1rem 1.4rem 1.4rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+	.profile-sunburst-card__body {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 600px) {
+	.profile-sunburst-card {
+		padding: 1rem;
+	}
+
+	.profile-tuner {
+		align-items: stretch;
+	}
+
+	.profile-tuner__description {
+		text-align: left;
+		max-width: none;
+	}
+
+	.profile-sunburst-card__toolbar {
+		justify-content: stretch;
+	}
+}

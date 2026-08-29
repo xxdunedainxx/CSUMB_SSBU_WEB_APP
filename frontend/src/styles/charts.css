@@ -1,0 +1,125 @@
+/* =========================================================
+   CHART THEMING  (sunburst chart)
+   Scoped to the cinematic theme (dark fallback on :root).
+   Hues are desaturated so no green/red good-bad encoding leaks in;
+   they read as a neutral-but-distinct categorical palette on the
+   near-black stage.
+========================================================= */
+
+:root {
+	/* Dark fallback — matches the default ocean-dark palette. */
+	--chart-1: #8b93a7;
+	--chart-2: #7fa5a3;
+	--chart-3: #a89a76;
+	--chart-4: #9386ab;
+	--chart-5: #a58383;
+
+	--chart-background: #0a0a0b;
+	--chart-label: #d6d6da;
+	--chart-foreground: #ececee;
+	--chart-foreground-muted: #6e6e73;
+
+	--chart-ring: rgba(255, 255, 255, 0.1);
+}
+
+html.theme-cinematic {
+	--chart-1: #8b93a7;
+	--chart-2: #7fa5a3;
+	--chart-3: #a89a76;
+	--chart-4: #9386ab;
+	--chart-5: #a58383;
+
+	/* Matches --stage-bg / --page-bg of the cinematic theme. */
+	--chart-background: #0a0a0b;
+	--chart-label: #c9c9cd;
+	--chart-foreground: #ececee;
+	--chart-foreground-muted: #6e6e73;
+
+	--chart-ring: rgba(255, 255, 255, 0.1);
+}
+
+html.theme-light {
+	--chart-1: #6d7688;
+	--chart-2: #5d8280;
+	--chart-3: #8a7d5c;
+	--chart-4: #75678a;
+	--chart-5: #866a6a;
+
+	--chart-background: #e4e3df;
+	--chart-label: #2a2a2c;
+	--chart-foreground: #2a2a2c;
+	--chart-foreground-muted: #747371;
+
+	--chart-ring: rgba(42, 42, 44, 0.14);
+}
+
+/* =========================================================
+   SUNBURST STAGE
+   The 1:1 box holding the svg. Background is transparent so the
+   chart blends into the parent card (the card's glass surface
+   shows through), instead of painting a darker inset box.
+========================================================= */
+
+.sunburst-chart__stage {
+	position: relative;
+	background: transparent;
+}
+
+/* =========================================================
+   BREADCRUMB (drill-down trail)
+========================================================= */
+
+.sunburst-breadcrumb {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.35rem;
+	margin-bottom: 1rem;
+	font-size: 0.85rem;
+	color: var(--text-muted);
+}
+
+/* =========================================================
+   HINT LINE (hover / click guidance)
+========================================================= */
+
+.sunburst-hint {
+	margin-top: 0.75rem;
+	text-align: center;
+	font-size: 0.85rem;
+	color: var(--text-muted);
+	font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================
+   LABELS + SEGMENT FILLS
+========================================================= */
+
+.sunburst-chart__stage text {
+	user-select: none;
+}
+
+/* The vendored chart paints labels with inline paint-order: stroke;
+   keep a fallback for any text we render directly into the svg. */
+.sunburst-chart__stage text,
+.sunburst-label {
+	paint-order: stroke;
+}
+
+.sunburst-segment {
+	outline: none;
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+	.sunburst-chart__stage,
+	.sunburst-chart__stage *,
+	.sunburst-breadcrumb,
+	.sunburst-hint {
+		animation: none !important;
+		transition: none !important;
+	}
+}
