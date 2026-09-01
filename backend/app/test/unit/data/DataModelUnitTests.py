@@ -65,6 +65,7 @@ class DataModelUnitTests(unittest.TestCase):
         )
 
         assert (DataModelValidation.validate_srt_structure(srt))
+        assert (not DataModelValidation.validate_srt_structure(falseSrt))
 
 
 
