@@ -60,8 +60,8 @@ class DataModelUnitTests(unittest.TestCase):
             NumberOfChoices=3,
             TimeBetweenResponseAndNextTrial=9,
             XCoordinateTargetStim=2,
-            ResponseTimeMs=466,
-            StatusOfAnswer=1
+            ResponseTimeMs=9,
+            StatusOfAnswer=9
         )
 
         assert (DataModelValidation.validate_srt_structure(srt))
