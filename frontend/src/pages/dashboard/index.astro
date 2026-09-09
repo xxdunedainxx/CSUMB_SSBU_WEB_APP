@@ -1,8 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Dashboard from '../../react/components/Dashboard';
+import '../../styles/charts.css';
+import '../../styles/dashboard.css';
 ---
-<BaseLayout title="CSUMB SSBU Research Lab" description="CSUMB Research">   
+<BaseLayout
+    title="Dashboard — CSUMB SSBU Research Lab"
+    description="Player archtype and cognitive test results."
+    theme="cinematic"
+>
     <div class="container">
       <h1>Dashboard</h1>
       <Dashboard client:load />
