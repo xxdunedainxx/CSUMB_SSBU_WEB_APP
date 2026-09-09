@@ -1,17 +1,19 @@
 ---
 import Header from '../components/Header.astro';
 import '../styles/global.css';
+import '../styles/fonts.css';
 
 const {
     title = 'Cognitive Test',
     description = 'Test your cognitive and reaction abilities',
     lang = 'en',
     testName = 'Test',
+    theme = 'cinematic',
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} class={`theme-${theme}`}>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
