@@ -209,7 +209,7 @@ class DbQueryFactory:
             testResult=testRecord,
             GngTestResults=gngRecords,
             PosnerRecords=posnerRecords,
-            ControllerRecords=controllerRecords.
+            ControllerRecords=controllerRecords,
             SrtRecords=srtRecords,
             TaskSwitchingRecords=taskRecords
         )
